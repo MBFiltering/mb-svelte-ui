@@ -1,0 +1,70 @@
+<script>
+	import Island from '../molecules/Island.svelte';
+	import { Download, BookOpen, Film, Key, GraduationCap, Package } from '@lucide/svelte';
+
+	// Props
+	let { gridClasses = 'sm:grid-cols-2 lg:grid-cols-3' } = $props();
+
+	// Quick links data
+	const quickLinks = [
+		{
+			name: 'Wiki Docs',
+			url: 'https://admin.tag.org/wiki/mb-smart',
+			icon: BookOpen,
+			description: 'View the documentation on TAG Wiki'
+		},
+		{
+			name: 'Training by MB',
+			url: 'https://sites.google.com/view/mb-smart/',
+			icon: GraduationCap,
+			description: 'Learn about the MB Smart filter'
+		},
+		{
+			name: 'Training by TAG',
+			url: 'https://admin.tag.org/lms/mb-smart',
+			icon: Film,
+			description: 'Learn about the MB Smart filter'
+		},
+		{
+			name: '2-Factor Authentication',
+			url: 'https://admin.tag.org/2fa/bm-smart-2fa',
+			icon: Key,
+			description: 'Get 2FA recovery key'
+		},
+		{
+			name: 'Downloads',
+			url: 'https://admin.tag.org/quicklinks#MB%20Smart',
+			icon: Download,
+			description: 'Download apps and tools'
+		},
+		{
+			name: 'Old Portal',
+			url: 'https://portal.mbsmartservices.net',
+			icon: Package,
+			description: 'Access the old MB Smart portal'
+		}
+	];
+</script>
+
+<Island title="Quick Links" collapsible={false}>
+	<div class="grid gap-3 {gridClasses}">
+		{#each quickLinks as link}
+			<a
+				href={link.url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="flex items-center gap-3 rounded-lg border border-azure-100 bg-azure-50 p-3 transition-all hover:bg-azure-100"
+			>
+				<div
+					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-bl from-azure-500 to-azure-700 text-white"
+				>
+					<link.icon size={20} />
+				</div>
+				<div class="min-w-0 flex-1">
+					<p class="font-medium text-gray-900">{link.name}</p>
+					<p class="truncate text-xs text-gray-900/75">{link.description}</p>
+				</div>
+			</a>
+		{/each}
+	</div>
+</Island>

@@ -1,0 +1,57 @@
+<script>
+	// Props - Svelte 5 style
+	let {
+		label = '', // Used for aria-label
+		customLabel = null,
+		checked = false,
+		onChange = () => {},
+		disabled = false,
+		colorOn = 'bg-azure-500',
+		colorOff = 'bg-gray-300',
+		variant = 'default',
+		iconOn = null,
+		iconOff = null,
+		iconSize = 18
+	} = $props();
+</script>
+
+{#if variant === 'icon'}
+	<button
+		type="button"
+		onclick={() => !disabled && onChange(!checked)}
+		{disabled}
+		class="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors disabled:cursor-default disabled:opacity-50 {checked
+			? colorOn.replace('bg-', 'bg-') + ' text-white'
+			: colorOff.replace('bg-', 'bg-') + ' text-gray-700'}"
+		aria-label={customLabel || `Toggle ${label}`}
+		title={customLabel || `Toggle ${label}`}
+		role="switch"
+		aria-checked={checked}
+	>
+		{#if checked && iconOn}
+			{@const IconOn = iconOn}
+			<IconOn size={iconSize} />
+		{:else if !checked && iconOff}
+			{@const IconOff = iconOff}
+			<IconOff size={iconSize} />
+		{/if}
+	</button>
+{:else}
+	<button
+		type="button"
+		onclick={() => !disabled && onChange(!checked)}
+		{disabled}
+		class="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors disabled:cursor-default disabled:opacity-50 {checked
+			? colorOn
+			: colorOff}"
+		aria-label={customLabel || `Toggle ${label}`}
+		role="switch"
+		aria-checked={checked}
+	>
+		<span
+			class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {checked
+				? 'translate-x-6'
+				: 'translate-x-1'}"
+		></span>
+	</button>
+{/if}

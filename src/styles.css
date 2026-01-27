@@ -1,0 +1,363 @@
+/**
+ * MB Smart UI - Custom Tailwind CSS Theme and Utility Classes
+ * 
+ * Import this file in your app's CSS to get the custom colors, fonts, and utilities:
+ * @import '@mbsmart/ui/styles.css';
+ * 
+ * Then import Tailwind:
+ * @import 'tailwindcss';
+ */
+
+/* =============================================================================
+   POPPINS FONT FAMILY
+   ============================================================================= */
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-Thin.ttf') format('truetype');
+	font-weight: 100;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-ThinItalic.ttf') format('truetype');
+	font-weight: 100;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-ExtraLight.ttf') format('truetype');
+	font-weight: 200;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-ExtraLightItalic.ttf') format('truetype');
+	font-weight: 200;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-Light.ttf') format('truetype');
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-LightItalic.ttf') format('truetype');
+	font-weight: 300;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-Regular.ttf') format('truetype');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-Italic.ttf') format('truetype');
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-Medium.ttf') format('truetype');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-MediumItalic.ttf') format('truetype');
+	font-weight: 500;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-SemiBold.ttf') format('truetype');
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-SemiBoldItalic.ttf') format('truetype');
+	font-weight: 600;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-Bold.ttf') format('truetype');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-BoldItalic.ttf') format('truetype');
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-ExtraBold.ttf') format('truetype');
+	font-weight: 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-ExtraBoldItalic.ttf') format('truetype');
+	font-weight: 800;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-Black.ttf') format('truetype');
+	font-weight: 900;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-BlackItalic.ttf') format('truetype');
+	font-weight: 900;
+	font-style: italic;
+	font-display: swap;
+}
+
+/* =============================================================================
+   DARK MODE - Class-based (requires .dark on html/body ancestor)
+   ============================================================================= */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* =============================================================================
+   TAILWIND THEME - CUSTOM COLORS & FONTS
+   ============================================================================= */
+
+@theme {
+	/* Font Family */
+	--font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+	/* Using: https://uicolors.app/generate/27a9a4 */
+	/* Azure Color Palette */
+	--color-azure-50: #f3f5fb;
+	--color-azure-100: #e4eaf5;
+	--color-azure-200: #cedbef;
+	--color-azure-300: #adc3e3;
+	--color-azure-400: #86a4d4;
+	--color-azure-500: #6987c8;
+	--color-azure-600: #556ebb;
+	--color-azure-700: #4b5eab;
+	--color-azure-800: #414e8c;
+	--color-azure-900: #384370;
+	--color-azure-950: #262b45;
+
+	/* Blue Chill Color Palette */
+	--color-blue-chill-50: #f2f9f9;
+	--color-blue-chill-100: #deefef;
+	--color-blue-chill-200: #c0dfe1;
+	--color-blue-chill-300: #95c8cb;
+	--color-blue-chill-400: #62a8ae;
+	--color-blue-chill-500: #488f96;
+	--color-blue-chill-600: #3d747d;
+	--color-blue-chill-700: #376067;
+	--color-blue-chill-800: #335057;
+	--color-blue-chill-900: #2e454b;
+	--color-blue-chill-950: #1b2c31;
+
+	/* Mulberry Color Palette */
+	--color-mulberry-50: #faf5fa;
+	--color-mulberry-100: #f7ecf5;
+	--color-mulberry-200: #f0daed;
+	--color-mulberry-300: #e4bdde;
+	--color-mulberry-400: #d294c7;
+	--color-mulberry-500: #c272b2;
+	--color-mulberry-600: #b3639f;
+	--color-mulberry-700: #93437c;
+	--color-mulberry-800: #7a3a68;
+	--color-mulberry-900: #673458;
+	--color-mulberry-950: #3d1a33;
+
+	/* Merino Color Palette */
+	--color-merino-50: #f7f4eb;
+	--color-merino-100: #f3efe1;
+	--color-merino-200: #e6dcc2;
+	--color-merino-300: #d6c49b;
+	--color-merino-400: #c4a773;
+	--color-merino-500: #b89257;
+	--color-merino-600: #ab7f4b;
+	--color-merino-700: #8e6640;
+	--color-merino-800: #735239;
+	--color-merino-900: #5e4530;
+	--color-merino-950: #322318;
+
+	/* Green Alt Color Palette */
+	--color-green-alt-50: #f3faf4;
+	--color-green-alt-100: #e2f6e6;
+	--color-green-alt-200: #c7ebcf;
+	--color-green-alt-300: #9bdaaa;
+	--color-green-alt-400: #68c07c;
+	--color-green-alt-500: #43a45a;
+	--color-green-alt-600: #38964e;
+	--color-green-alt-700: #2a6b39;
+	--color-green-alt-800: #265532;
+	--color-green-alt-900: #21462b;
+	--color-green-alt-950: #0d2614;
+
+	/* Red Alt Color Palette */
+	--color-red-alt-50: #fdf3f3;
+	--color-red-alt-100: #fbe5e5;
+	--color-red-alt-200: #f9cfcf;
+	--color-red-alt-300: #f4adad;
+	--color-red-alt-400: #ec7d7d;
+	--color-red-alt-500: #df5454;
+	--color-red-alt-600: #c93434;
+	--color-red-alt-700: #ab2a2a;
+	--color-red-alt-800: #8d2727;
+	--color-red-alt-900: #762626;
+	--color-red-alt-950: #400f0f;
+
+	/* Orange Alt Color Palette */
+	--color-orange-alt-50: #fef9ee;
+	--color-orange-alt-100: #fdf1d7;
+	--color-orange-alt-200: #fbdfad;
+	--color-orange-alt-300: #f8c879;
+	--color-orange-alt-400: #f4a643;
+	--color-orange-alt-500: #f08c1f;
+	--color-orange-alt-600: #e87415;
+	--color-orange-alt-700: #bb5613;
+	--color-orange-alt-800: #954517;
+	--color-orange-alt-900: #783a16;
+	--color-orange-alt-950: #411b09;
+
+	/* Font Families */
+	--font-sans:
+		'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+		Arial, sans-serif;
+}
+
+/* =============================================================================
+   UTILITY CLASSES
+   ============================================================================= */
+
+/* Hide keyboard shortcuts when setting is disabled */
+html.hide-kbd .kbd-helper {
+	display: none !important;
+}
+
+/* Hide info helpers when setting is disabled */
+html.hide-info-helpers .info-helper {
+	display: none !important;
+}
+
+/* ==============================================
+   MAGIC SEARCH CSS SYSTEM
+   ============================================== 
+   
+   How it works:
+   1. When magicSearchActive is true, .magicsearch-active class is added to the wrapper
+   2. Inside .magicsearch-active, all [data-magicsearch] elements are hidden by default
+   3. JS adds .magicsearch-match class to elements whose data-magicsearch matches the query
+   4. Islands (.magicsearch-island) are shown if they have .magicsearch-match or contain any .magicsearch-match descendant
+   5. When island title matches, all items inside are visible (via :has(.magicsearch-match.magicsearch-island-match))
+   
+   Usage:
+   - Add data-magicsearch="search terms" to any searchable element
+   - Add .magicsearch-island to Island wrapper divs
+   - Add .magicsearch-item to individual items inside islands
+   - Wrap content area with div that has .magicsearch-active when search is active
+*/
+
+/* When magic search is active, hide ALL Islands by default */
+.magicsearch-active .magicsearch-island {
+	display: none !important;
+}
+
+/* Show Islands that directly match the search (title match) */
+.magicsearch-active .magicsearch-island.magicsearch-match {
+	display: block !important;
+}
+
+/* Show Islands that contain matching items */
+.magicsearch-active .magicsearch-island:has(.magicsearch-match) {
+	display: block !important;
+}
+
+/* When magic search is active, hide all items by default */
+.magicsearch-active .magicsearch-item {
+	display: none !important;
+}
+
+/* Show items that match the search - block by default */
+.magicsearch-active .magicsearch-item.magicsearch-match {
+	display: block !important;
+}
+
+/* When item has flex class, preserve flex display */
+.magicsearch-active .magicsearch-item.flex.magicsearch-match {
+	display: flex !important;
+}
+
+/* When island title matches (has .magicsearch-island-match), show ALL items inside - block by default */
+.magicsearch-active .magicsearch-island.magicsearch-island-match .magicsearch-item {
+	display: block !important;
+}
+
+/* When item has flex class in matching island, preserve flex */
+.magicsearch-active .magicsearch-island.magicsearch-island-match .magicsearch-item.flex {
+	display: flex !important;
+}
+
+/* Magic search: "nothing found" message is hidden by default, shown when no matches */
+.magicsearch-noresults {
+	display: none;
+}
+
+.magicsearch-active .magicsearch-noresults {
+	display: none;
+}
+
+.magicsearch-active.magicsearch-nomatches .magicsearch-noresults {
+	display: block;
+}
+
+/* Hide scrollbars for elements with .no-scrollbar */
+.no-scrollbar {
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* IE and Edge */
+}
+.no-scrollbar::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera */
+}
