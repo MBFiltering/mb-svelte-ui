@@ -16,7 +16,7 @@
 <button
 	onclick={goBack}
 	title="Go back"
-	class="cursor-pointer rounded-full p-2.5 text-gray-700 transition-colors hover:bg-gray-900/10"
+	class="cursor-pointer rounded-full p-2.5 text-gray-700 transition-colors hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-white/10"
 >
 	<ArrowLeft size="20" strokeWidth="2" />
 </button>

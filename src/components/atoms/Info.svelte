@@ -521,7 +521,10 @@
 			aria-label="Information"
 		>
 			<!-- Lucide Info Icon -->
-			<Info class="h-4 w-4 cursor-help text-gray-400 hover:text-gray-600" aria-hidden="true" />
+			<Info
+				class="h-4 w-4 cursor-help text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-400"
+				aria-hidden="true"
+			/>
 
 			<!-- Tooltip -->
 			{#if showTooltip}

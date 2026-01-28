@@ -30,7 +30,7 @@
 <button
 	type="button"
 	onclick={handleCopy}
-	class="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-gray-900/50 transition-colors hover:bg-gray-900/10"
+	class="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-gray-900/50 transition-colors hover:bg-gray-900/10 dark:text-white/50 dark:hover:bg-white/10"
 	aria-label="Copy to clipboard"
 	title="Copy to clipboard"
 >

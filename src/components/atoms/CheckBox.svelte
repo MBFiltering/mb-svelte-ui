@@ -36,8 +36,8 @@
 	<div
 		class="flex h-5 w-5 items-center justify-center rounded border transition-colors
 			{checked || indeterminate
-			? 'border-azure-700 bg-azure-700'
-			: 'border-gray-300 bg-white hover:border-azure-500'}"
+			? 'border-azure-700 bg-azure-700 dark:border-azure-500 dark:bg-azure-500'
+			: 'border-gray-300 bg-white hover:border-azure-500 dark:border-gray-600 dark:bg-zinc-800 dark:hover:border-azure-300'}"
 	>
 		{#if checked && !indeterminate}
 			<Check size={14} strokeWidth={3} class="text-white" />

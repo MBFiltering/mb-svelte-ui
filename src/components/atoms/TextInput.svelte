@@ -46,7 +46,8 @@
 
 	// Variant styles
 	const variantClasses = {
-		default: 'border-gray-300 bg-white focus:border-azure-700 focus:ring-azure-700/20',
+		default:
+			'border-gray-300 dark:border-gray-600 bg-white dark:bg-zinc-800 focus:border-azure-700 focus:ring-azure-700/20 dark:focus:border-azure-500 dark:focus:ring-azure-500/20',
 		error: 'border-red-alt-500 bg-white focus:border-red-alt-500 focus:ring-red-alt-500/20',
 		success: 'border-green-alt-500 bg-white focus:border-green-alt-500 focus:ring-green-alt-500/20'
 	};
@@ -78,12 +79,12 @@
 		{onkeyup}
 		{onfocus}
 		{onblur}
-		class="w-full rounded-lg border text-gray-700 transition-colors focus:ring-2 focus:outline-none
+		class="w-full rounded-lg border text-gray-700 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200
 			{sizeClasses[size]}
 			{variantClasses[variant]}
 			{type === 'password' ? 'pr-10' : ''}
-			{disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500' : ''}
-			{readonly ? 'bg-gray-50' : ''}
+			{disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''}
+			{readonly ? 'bg-gray-50 dark:bg-gray-900' : ''}
 			{className}"
 	/>
 
@@ -92,7 +93,7 @@
 			type="button"
 			onclick={togglePasswordVisibility}
 			{disabled}
-			class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+			class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-600 dark:hover:text-gray-400"
 			aria-label={showPassword ? 'Hide password' : 'Show password'}
 			tabindex="-1"
 		>

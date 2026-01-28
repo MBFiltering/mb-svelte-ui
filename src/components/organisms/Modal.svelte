@@ -47,7 +47,7 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 z-50 flex {itemsClass} justify-center bg-gray-900/40 p-4 sm:p-6 md:p-8"
+		class="fixed inset-0 z-50 flex {itemsClass} justify-center bg-neutral-900/40 p-4 backdrop-blur-[1px] sm:p-6 md:p-8"
 		onclick={handleBackdropClick}
 	>
 		<!-- Modal Content Container -->
@@ -57,7 +57,7 @@
 				<button
 					type="button"
 					onclick={onClose}
-					class="absolute top-1 right-1 z-10 cursor-pointer rounded-lg p-2 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 sm:top-2 sm:right-2"
+					class="absolute top-1 right-1 z-10 cursor-pointer rounded-lg p-2 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 sm:top-2 sm:right-2 dark:text-gray-200 dark:hover:bg-zinc-800 dark:hover:text-white"
 					aria-label="Close modal"
 				>
 					<X size={20} />

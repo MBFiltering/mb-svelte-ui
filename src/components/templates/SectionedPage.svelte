@@ -303,7 +303,7 @@
 
 				<!-- Navigation tabs -->
 				<div
-					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-r-xl sm:border-0 sm:border-none sm:pb-2"
+					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-r-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
 					<ul class="flex justify-evenly space-y-2 sm:inline sm:w-auto sm:justify-normal">
 						<!-- Nav action buttons -->

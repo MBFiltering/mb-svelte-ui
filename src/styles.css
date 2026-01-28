@@ -170,6 +170,10 @@
 	/* Font Family */
 	--font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
 
+	/* Using: https://oklch.com/#0.322,0.0095,285.919,100 */
+	/* Tailwind Extended Colors */
+	--color-zinc-750: #333338;
+
 	/* Using: https://uicolors.app/generate/27a9a4 */
 	/* Azure Color Palette */
 	--color-azure-50: #f3f5fb;

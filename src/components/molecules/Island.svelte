@@ -29,13 +29,15 @@
 </script>
 
 <!-- Island Container -->
-<div class="bg-white shadow-lg dark:bg-neutral-800 {className} rounded-xl">
+<div
+	class="bg-white shadow-lg dark:bg-zinc-800 {className} rounded-xl text-gray-900 dark:text-white"
+>
 	{#if title && collapsible && !forceExpanded}
 		<!-- Header with collapse functionality -->
 		<button
-			class="flex w-full cursor-pointer items-center justify-between text-gray-700 hover:text-azure-700 {isExpanded
+			class="flex w-full cursor-pointer items-center justify-between text-gray-700 hover:text-azure-700 dark:text-gray-200 dark:hover:text-azure-500 {isExpanded
 				? 'border-b'
-				: ''} border-gray-100 px-3 py-2 transition-colors sm:px-6 sm:py-4"
+				: ''} border-neutral-100 px-3 py-2 transition-colors sm:px-6 sm:py-4 dark:border-zinc-750"
 			onclick={toggleExpanded}
 			aria-label={isExpanded ? 'Collapse' : 'Expand'}
 			title={isExpanded ? 'Collapse' : 'Expand'}
@@ -60,7 +62,9 @@
 		</button>
 	{:else if title}
 		<!-- Header without collapse functionality -->
-		<div class="border-b border-gray-100 px-3 py-2 text-gray-700 sm:px-6 sm:py-4">
+		<div
+			class="border-b border-neutral-100 px-3 py-2 text-gray-700 sm:px-6 sm:py-4 dark:border-zinc-750 dark:text-gray-200"
+		>
 			<div class="flex items-center gap-2">
 				{#if svgIcon}
 					<SvgIcon name={svgIcon} size="w-5 h-5" />
