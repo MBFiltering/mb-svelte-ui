@@ -8,14 +8,14 @@ Since this is a private package, install directly from GitHub:
 
 ```bash
 # Using HTTPS (will prompt for credentials or use token)
-npm install git+https://github.com/gitmorgen/mb-ui.git
+npm install git+https://github.com/MBFiltering/mb-svelte-ui.git
 
 # Using SSH (requires SSH key setup)
-npm install git+ssh://git@github.com:gitmorgen/mb-ui.git
+npm install git+ssh://git@github.com:MBFiltering/mb-svelte-ui.git
 
 # Or add to package.json dependencies directly:
 # "dependencies": {
-#   "@mbsmart/ui": "github:gitmorgen/mb-ui"
+#   "@mbsmart/ui": "github:MBFiltering/mb-svelte-ui"
 # }
 ```
 
@@ -23,10 +23,10 @@ To install a specific version (tag or branch):
 
 ```bash
 # Install specific tag
-npm install git+https://github.com/gitmorgen/mb-ui.git#v0.1.0
+npm install git+https://github.com/MBFiltering/mb-svelte-ui.git#v0.1.0
 
 # Install specific branch
-npm install git+https://github.com/gitmorgen/mb-ui.git#main
+npm install git+https://github.com/MBFiltering/mb-svelte-ui.git#main
 ```
 
 **Note:** Update the GitHub URL above to match your actual repository location.

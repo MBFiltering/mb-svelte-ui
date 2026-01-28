@@ -62,14 +62,14 @@
 
 ```bash
 # Using HTTPS
-npm install git+https://github.com/gitmorgen/mb-ui.git
+npm install git+https://github.com/MBFiltering/mb-svelte-ui.git
 
 # Using SSH
-npm install git+ssh://git@github.com:gitmorgen/mb-ui.git
+npm install git+ssh://git@github.com:MBFiltering/mb-svelte-ui.git
 
 # Or add to package.json
 "dependencies": {
-  "@mbsmart/ui": "github:gitmorgen/mb-ui"
+  "@mbsmart/ui": "github:MBFiltering/mb-svelte-ui"
 }
 ```
 
