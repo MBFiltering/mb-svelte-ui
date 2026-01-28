@@ -200,10 +200,10 @@
 				type="text"
 				bind:value={searchQuery}
 				placeholder={searchPlaceholder}
-				class="peer w-full rounded-lg border border-gray-300 py-1.5 pr-10 pl-3 text-sm focus:border-azure-700 focus:outline-none"
+				class="peer w-full rounded-lg border border-gray-300 py-1.5 pr-10 pl-3 text-sm focus:border-azure-700 focus:outline-none dark:border-gray-600 dark:focus:border-azure-500"
 			/>
 			<div
-				class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 peer-focus:text-azure-700"
+				class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 peer-focus:text-azure-700 dark:text-gray-500 dark:peer-focus:text-azure-500"
 			>
 				<Search size={20} strokeWidth={2} class="" />
 			</div>
@@ -217,7 +217,7 @@
 	</div>
 
 	<!-- Results Count -->
-	<div class="magicsearch-item text-sm text-gray-600">
+	<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
 		{filteredItems.length} of {items.length}
 		{pluralItemName}{bulk ? `, ${selected.length} selected` : ''}
 	</div>
@@ -225,7 +225,7 @@
 	<!-- List Container -->
 	<Grid flow="col" itemCount={filteredItems.length} {columns} {columns2Xl} disabled={disableGrid}>
 		{#if filteredItems.length === 0}
-			<div class="rounded-lg bg-white py-8 text-center text-gray-500">
+			<div class="rounded-lg py-8 text-center text-gray-500 dark:text-gray-400">
 				{emptyMessage}
 			</div>
 		{:else}

@@ -2,7 +2,7 @@
 	import { Eye, EyeOff } from '@lucide/svelte';
 
 	/**
-	 * TextInput component for text and password inputs
+	 * TextInput component for text, password, number, date inputs, and textareas
 	 * Consistent styling with focus states and optional password visibility toggle
 	 */
 	let {
@@ -19,6 +19,10 @@
 		maxlength = undefined,
 		minlength = undefined,
 		pattern = undefined,
+		min = undefined,
+		max = undefined,
+		step = undefined,
+		rows = 4,
 		size = 'md',
 		variant = 'default',
 		className = '',
@@ -34,7 +38,10 @@
 	// For password visibility toggle
 	let showPassword = $state(false);
 
-	// Determine actual input type
+	// Determine if this is a textarea
+	let isTextarea = $derived(type === 'textarea');
+
+	// Determine actual input type (for password toggle)
 	let inputType = $derived(type === 'password' && showPassword ? 'text' : type);
 
 	// Size variants
@@ -55,38 +62,64 @@
 	function togglePasswordVisibility() {
 		showPassword = !showPassword;
 	}
+
+	// Common classes for both input and textarea
+	const baseClasses = $derived(
+		`w-full rounded-lg border text-gray-700 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200 ${sizeClasses[size]} ${variantClasses[variant]} ${type === 'password' ? 'pr-10' : ''} ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''} ${readonly ? 'bg-gray-50 dark:bg-gray-900' : ''} ${className}`
+	);
 </script>
 
 <div class="relative w-full">
-	<input
-		type={inputType}
-		bind:value
-		{placeholder}
-		{disabled}
-		{id}
-		{name}
-		{required}
-		{readonly}
-		{maxlength}
-		{minlength}
-		{pattern}
-		autocomplete={autocomplete || undefined}
-		aria-label={ariaLabel || placeholder || undefined}
-		{onchange}
-		{oninput}
-		{onkeydown}
-		{onkeypress}
-		{onkeyup}
-		{onfocus}
-		{onblur}
-		class="w-full rounded-lg border text-gray-700 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200
-			{sizeClasses[size]}
-			{variantClasses[variant]}
-			{type === 'password' ? 'pr-10' : ''}
-			{disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''}
-			{readonly ? 'bg-gray-50 dark:bg-gray-900' : ''}
-			{className}"
-	/>
+	{#if isTextarea}
+		<textarea
+			bind:value
+			{placeholder}
+			{disabled}
+			{id}
+			{name}
+			{required}
+			{readonly}
+			{maxlength}
+			{minlength}
+			{rows}
+			aria-label={ariaLabel || placeholder || undefined}
+			{onchange}
+			{oninput}
+			{onkeydown}
+			{onkeypress}
+			{onkeyup}
+			{onfocus}
+			{onblur}
+			class={baseClasses}
+		></textarea>
+	{:else}
+		<input
+			type={inputType}
+			bind:value
+			{placeholder}
+			{disabled}
+			{id}
+			{name}
+			{required}
+			{readonly}
+			{maxlength}
+			{minlength}
+			{pattern}
+			{min}
+			{max}
+			{step}
+			autocomplete={autocomplete || undefined}
+			aria-label={ariaLabel || placeholder || undefined}
+			{onchange}
+			{oninput}
+			{onkeydown}
+			{onkeypress}
+			{onkeyup}
+			{onfocus}
+			{onblur}
+			class={baseClasses}
+		/>
+	{/if}
 
 	{#if type === 'password'}
 		<button

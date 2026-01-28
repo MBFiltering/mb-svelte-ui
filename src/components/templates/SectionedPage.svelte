@@ -429,8 +429,8 @@
 					<!-- Collapse/Expand All -->
 					<button
 						class="h-full rounded-full p-2 transition-colors {magicSearchActive
-							? 'cursor-not-allowed text-gray-400 opacity-50'
-							: 'cursor-pointer text-gray-700 hover:bg-gray-900/10'}"
+							? 'cursor-not-allowed text-gray-400 opacity-50 dark:text-gray-500'
+							: 'cursor-pointer text-gray-700 hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10'}"
 						title={magicSearchActive
 							? 'Disabled during search'
 							: allIslandsExpanded

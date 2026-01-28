@@ -1,6 +1,8 @@
 <script>
 	import { toast } from '../../utils/toastStore.js';
 	import Clipboard from '../atoms/Clipboard.svelte';
+	import ControlButton from '../atoms/ControlButton.svelte';
+	import TextInput from '../atoms/TextInput.svelte';
 	import { Eye, EyeClosed } from '@lucide/svelte';
 
 	// Props - Svelte 5 style
@@ -100,25 +102,14 @@
 							<Clipboard content={formData[field.key]} />
 						{/if}
 					</label>
-					{#if field.type === 'textarea'}
-						<textarea
-							id="field-{field.key}"
-							bind:value={formData[field.key]}
-							disabled={!isEditing}
-							rows={field.rows || 4}
-							class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-azure-500 focus:outline-none disabled:bg-white disabled:text-gray-600"
-							placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
-						></textarea>
-					{:else}
-						<input
-							id="field-{field.key}"
-							type={field.type || 'text'}
-							bind:value={formData[field.key]}
-							disabled={!isEditing}
-							class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-azure-500 focus:outline-none disabled:bg-white disabled:text-gray-600"
-							placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
-						/>
-					{/if}
+					<TextInput
+						id="field-{field.key}"
+						type={field.type || 'text'}
+						bind:value={formData[field.key]}
+						disabled={!isEditing}
+						rows={field.rows || 4}
+						placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}...`}
+					/>
 				</div>
 			{:else}
 				<!-- Regular Field -->
@@ -136,20 +127,19 @@
 						{#if field.hidden && !isEditing}
 							<!-- Hidden field display mode -->
 							<div class="flex items-center gap-2">
-								<input
+								<TextInput
 									id="field-{field.key}"
 									type="text"
 									value={visibleFields[field.key]
 										? formData[field.key]
 										: getMaskedValue(formData[field.key])}
 									disabled={true}
-									class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-azure-500 focus:outline-none disabled:bg-white disabled:text-gray-600"
 									placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
 								/>
 								<button
 									type="button"
 									onclick={() => toggleFieldVisibility(field.key)}
-									class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-gray-300 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+									class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-gray-300 text-gray-500 transition-colors hover:bg-neutral-100 hover:text-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-zinc-750 dark:hover:text-gray-200"
 									title={visibleFields[field.key] ? 'Hide' : 'Show'}
 								>
 									{#if visibleFields[field.key]}
@@ -161,12 +151,11 @@
 							</div>
 						{:else}
 							<!-- Normal input (editing mode or non-hidden field) -->
-							<input
+							<TextInput
 								id="field-{field.key}"
 								type={field.type || 'text'}
 								bind:value={formData[field.key]}
 								disabled={!isEditing}
-								class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-azure-500 focus:outline-none disabled:bg-white disabled:text-gray-600"
 								placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
 							/>
 						{/if}
@@ -179,29 +168,14 @@
 	<!-- Action Buttons -->
 	<div class="flex gap-3">
 		{#if !isEditing}
-			<button
-				type="button"
-				onclick={toggleEdit}
-				class="cursor-pointer rounded-lg bg-azure-700 px-6 py-2 font-medium text-white transition-colors hover:bg-azure-900"
-			>
-				Edit
-			</button>
+			<ControlButton onclick={toggleEdit} size="lg">Edit</ControlButton>
 		{:else}
-			<button
-				type="submit"
-				disabled={isSaving}
-				class="cursor-pointer rounded-lg bg-azure-700 px-6 py-2 font-medium text-white hover:bg-azure-900 disabled:cursor-default disabled:bg-gray-400"
-			>
+			<ControlButton type="submit" disabled={isSaving} size="lg">
 				{isSaving ? 'Saving...' : 'Save changes'}
-			</button>
-			<button
-				type="button"
-				onclick={toggleEdit}
-				disabled={isSaving}
-				class="cursor-pointer rounded-lg bg-gray-500 px-6 py-2 font-medium text-white hover:bg-neutral-600 disabled:cursor-default disabled:bg-gray-400"
-			>
+			</ControlButton>
+			<ControlButton onclick={toggleEdit} disabled={isSaving} color="gray" size="lg">
 				Cancel
-			</button>
+			</ControlButton>
 		{/if}
 	</div>
 </form>

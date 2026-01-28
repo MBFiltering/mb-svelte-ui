@@ -1,6 +1,7 @@
 <script>
 	import { toast } from '../../utils/toastStore.js';
 	import Clipboard from './Clipboard.svelte';
+	import TextInput from './TextInput.svelte';
 	import { Pencil, Check, X } from '@lucide/svelte';
 
 	// Props - Svelte 5 style
@@ -75,23 +76,14 @@
 			<Clipboard content={value} />
 		{/if}
 		{#if isEditing}
-			{#if type === 'textarea'}
-				<textarea
-					bind:value={currentValue}
-					disabled={isSaving}
-					{rows}
-					class="w-full rounded border border-gray-300 px-1 text-sm text-gray-700 focus:border-azure-500 focus:outline-none disabled:bg-gray-900/10"
-					{placeholder}
-				></textarea>
-			{:else}
-				<input
-					type="text"
-					bind:value={currentValue}
-					disabled={isSaving}
-					class="w-full rounded border border-gray-300 px-1 text-sm text-gray-700 focus:border-azure-500 focus:outline-none disabled:bg-gray-900/10"
-					{placeholder}
-				/>
-			{/if}
+			<TextInput
+				{type}
+				bind:value={currentValue}
+				disabled={isSaving}
+				{rows}
+				{placeholder}
+				size="sm"
+			/>
 		{:else if type === 'textarea'}
 			<p class="flex-1 text-sm whitespace-pre-wrap {value ? 'text-gray-700' : 'text-gray-900/50'}">
 				{value || `No ${label.toLowerCase()} added yet.`}
