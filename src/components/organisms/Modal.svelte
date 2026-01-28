@@ -12,19 +12,6 @@
 		children
 	} = $props();
 
-	// Computed class for vertical alignment
-	let itemsClass = $derived(() => {
-		switch (verticalAlign) {
-			case 'top':
-				return 'items-start';
-			case 'bottom':
-				return 'items-end';
-			case 'center':
-			default:
-				return 'items-center';
-		}
-	});
-
 	// Handle backdrop click
 	function handleBackdropClick(event) {
 		if (closeOnBackdrop && event.target === event.currentTarget) {
@@ -47,7 +34,11 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 z-50 flex {itemsClass} justify-center bg-neutral-900/40 p-4 backdrop-blur-[1px] sm:p-6 md:p-8"
+		class="fixed inset-0 z-50 flex {verticalAlign === 'top'
+			? 'items-start'
+			: verticalAlign === 'bottom'
+				? 'items-end'
+				: 'items-center'} justify-center bg-neutral-900/40 p-4 backdrop-blur-[1px] sm:p-6 md:p-8 dark:bg-neutral-900/75"
 		onclick={handleBackdropClick}
 	>
 		<!-- Modal Content Container -->

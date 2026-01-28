@@ -93,7 +93,7 @@
 				<div class="md:col-span-2">
 					<label
 						for="field-{field.key}"
-						class="mb-2 flex h-6.5 items-center gap-1 text-sm font-medium text-gray-700"
+						class="mb-2 flex h-6.5 items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-200"
 					>
 						{field.label}
 						{#if formData[field.key] && !isEditing}
@@ -125,7 +125,7 @@
 				<div>
 					<label
 						for="field-{field.key}"
-						class="flex h-6.5 items-center gap-1 text-sm font-medium text-gray-700 sm:mb-2"
+						class="flex h-6.5 items-center gap-1 text-sm font-medium text-gray-700 sm:mb-2 dark:text-gray-200"
 					>
 						{field.label}
 						{#if formData[field.key] && !isEditing && (!field.hidden || visibleFields[field.key])}

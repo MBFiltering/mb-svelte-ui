@@ -15,7 +15,7 @@
 <button
 	type="button"
 	onclick={toggle}
-	class="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-gray-900/50 transition-colors hover:bg-gray-900/10"
+	class="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-gray-900/50 transition-colors hover:bg-gray-900/10 dark:text-gray-50/50 dark:hover:bg-white/10"
 	aria-label={visible ? labelHide : labelShow}
 	title={visible ? labelHide : labelShow}
 >

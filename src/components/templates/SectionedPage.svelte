@@ -314,7 +314,7 @@
 								{#each navActions as action}
 									<li>
 										<button
-											class="cursor-pointer text-xs font-medium text-azure-700 hover:text-azure-900 hover:underline"
+											class="cursor-pointer text-xs font-medium text-azure-700 hover:text-azure-900 hover:underline dark:text-azure-400 dark:hover:text-azure-600"
 											title={action.title || action.label}
 											onclick={action.onclick}
 										>
@@ -339,10 +339,10 @@
 									onclick={() => selectSection(section.key)}
 									title={section.name}
 									class="flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors lg:px-4 {magicSearchActive
-										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50'
+										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
 										: activeSection === section.key
 											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
-											: 'cursor-pointer border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100'}"
+											: 'cursor-pointer border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
 									disabled={magicSearchActive}
 								>
 									<div class="flex items-center gap-2">
@@ -397,7 +397,7 @@
 					<div class="relative flex-1 lg:px-0">
 						<div class="relative">
 							<div
-								class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 peer-focus:text-azure-700"
+								class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 peer-focus:text-azure-700 dark:text-gray-500 dark:peer-focus:text-azure-200"
 							>
 								<Search size={16} />
 							</div>
@@ -406,7 +406,7 @@
 								bind:this={magicSearchInput}
 								bind:value={magicSearchQuery}
 								placeholder="Magic search..."
-								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 pr-28 pl-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pr-8 focus:outline-none"
+								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 pr-28 pl-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pr-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
 							/>
 							{#if !magicSearchActive}
 								<div

@@ -30,7 +30,7 @@
 
 <!-- Island Container -->
 <div
-	class="bg-white shadow-lg dark:bg-zinc-800 {className} rounded-xl text-gray-900 dark:text-white"
+	class="bg-white shadow-lg dark:bg-zinc-800 {className} rounded-xl text-gray-900 dark:text-gray-50"
 >
 	{#if title && collapsible && !forceExpanded}
 		<!-- Header with collapse functionality -->

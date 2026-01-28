@@ -522,7 +522,7 @@
 		>
 			<!-- Lucide Info Icon -->
 			<Info
-				class="h-4 w-4 cursor-help text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-400"
+				class="h-4 w-4 cursor-help text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
 				aria-hidden="true"
 			/>
 
@@ -546,6 +546,6 @@
 			{/if}
 		</div>
 	{:else if variant === 'inline'}
-		<span class="info-helper text-sm text-gray-600">{@html infoText}</span>
+		<span class="info-helper text-sm text-gray-600 dark:text-gray-300">{@html infoText}</span>
 	{/if}
 {/if}

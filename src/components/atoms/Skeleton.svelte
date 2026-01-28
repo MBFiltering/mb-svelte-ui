@@ -54,15 +54,17 @@
 
 {#if rows.length > 0}
 	<!-- Skeleton with sub-rows -->
-	<div class="{rounded} bg-gray-900/10 p-4 dark:bg-white/10 {className}">
+	<div class="{rounded} bg-gray-900/10 p-4 dark:bg-gray-50/10 {className}">
 		<div class="flex flex-col gap-3">
 			{#each processedRows as row}
 				{#if row.type === 'full'}
-					<div class="{row.height} animate-pulse rounded bg-gray-900/15 dark:bg-white/15"></div>
+					<div class="{row.height} animate-pulse rounded bg-gray-900/15 dark:bg-gray-50/15"></div>
 				{:else if row.type === 'grid'}
 					<div class="grid {row.gap}" style={getGridStyle(row.columns)}>
 						{#each row.columns as _, i}
-							<div class="{row.height} animate-pulse rounded bg-gray-900/15 dark:bg-white/15"></div>
+							<div
+								class="{row.height} animate-pulse rounded bg-gray-900/15 dark:bg-gray-50/15"
+							></div>
 						{/each}
 					</div>
 				{/if}
@@ -72,6 +74,6 @@
 {:else}
 	<!-- Simple skeleton -->
 	<div
-		class="{height} {width} {rounded} animate-pulse bg-gray-900/10 dark:bg-white/10 {className}"
+		class="{height} {width} {rounded} animate-pulse bg-gray-900/10 dark:bg-gray-50/10 {className}"
 	></div>
 {/if}

@@ -53,7 +53,7 @@
 				href={link.url}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="flex items-center gap-3 rounded-lg border border-azure-100 bg-azure-50 p-3 transition-all hover:bg-azure-100 dark:border-azure-800 dark:bg-azure-900 dark:hover:bg-azure-800"
+				class="flex items-center gap-3 rounded-lg border border-azure-100 bg-azure-50 p-3 transition-all hover:bg-azure-100 dark:border-azure-800 dark:bg-zinc-800 dark:hover:bg-zinc-750"
 			>
 				<div
 					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-bl from-azure-500 to-azure-700 text-white"
@@ -61,8 +61,8 @@
 					<link.icon size={20} />
 				</div>
 				<div class="min-w-0 flex-1">
-					<p class="font-medium text-gray-900 dark:text-white">{link.name}</p>
-					<p class="truncate text-xs text-gray-900/75 dark:text-white/75">{link.description}</p>
+					<p class="font-medium text-gray-900 dark:text-gray-50">{link.name}</p>
+					<p class="truncate text-xs text-gray-900/75 dark:text-gray-50/75">{link.description}</p>
 				</div>
 			</a>
 		{/each}

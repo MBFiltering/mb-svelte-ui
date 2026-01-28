@@ -53,9 +53,11 @@
 
 	// Get the button color based on which option is selected
 	function getButtonColor(option, isSelected) {
-		if (!option) return 'bg-gray-100';
+		if (!option) return 'bg-gray-100 dark:bg-zinc-750';
 		// Show actual color only if selected, otherwise gray
-		return isSelected ? option.color || 'bg-gray-100' : 'bg-gray-100';
+		return isSelected
+			? option.color || 'bg-gray-100 dark:bg-zinc-750'
+			: 'bg-gray-100 dark:bg-zinc-750';
 	}
 
 	// Handle clicking the first option
@@ -95,7 +97,7 @@
 			currentValue === firstOption?.value
 		)} {currentValue === firstOption?.value
 			? 'text-white opacity-100'
-			: 'text-gray-700 opacity-100 hover:opacity-80'} disabled:cursor-default disabled:opacity-40"
+			: 'text-gray-700 opacity-100 hover:opacity-80 dark:text-gray-200'} disabled:cursor-default disabled:opacity-40"
 	>
 		{firstOption?.label || 'Option 1'}
 	</button>
@@ -117,7 +119,7 @@
 			<span
 				class="text-sm font-medium {currentValue === displayedDropdownOption?.value
 					? 'text-white'
-					: 'text-gray-700'}"
+					: 'text-gray-700 dark:text-gray-200'}"
 			>
 				{displayedDropdownOption?.label || 'Select'}
 			</span>
@@ -125,7 +127,9 @@
 				<ChevronDown
 					size={14}
 					strokeWidth={2}
-					class={currentValue === displayedDropdownOption?.value ? 'text-white' : 'text-gray-700'}
+					class={currentValue === displayedDropdownOption?.value
+						? 'text-white'
+						: 'text-gray-700 dark:text-gray-200'}
 				/>
 			{/if}
 		</button>
