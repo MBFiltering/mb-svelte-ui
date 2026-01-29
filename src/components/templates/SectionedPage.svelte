@@ -287,7 +287,7 @@
 	<div class="relative flex">
 		<!-- Sidebar -->
 		<div
-			class="fixed bottom-0 left-0 z-40 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8 lg:w-96"
+			class="lgv:w-96 fixed bottom-0 left-0 z-30 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
 		>
 			{#if loading}
 				{#if sidebarSkeleton}
@@ -296,7 +296,7 @@
 			{:else}
 				<!-- Header slot (hidden on mobile, shown on desktop) -->
 				{#if header}
-					<div class="hidden pl-4 lg:inline-block">
+					<div class="lgv:inline-block hidden pl-4">
 						{@render header()}
 					</div>
 				{/if}
@@ -309,7 +309,7 @@
 						<!-- Nav action buttons -->
 						{#if navActions.length > 0}
 							<div
-								class="mt-1.5 mb-2 flex flex-row justify-between gap-2 px-1.5 sm:mt-1 sm:flex-col lg:mt-0 lg:mb-1 lg:flex-row"
+								class="lgv:mt-0 lgv:mb-1 lgv:flex-row mt-1.5 mb-2 flex flex-row justify-between gap-2 px-1.5 sm:mt-1 sm:flex-col"
 							>
 								{#each navActions as action}
 									<li>
@@ -318,11 +318,11 @@
 											title={action.title || action.label}
 											onclick={action.onclick}
 										>
-											<div class="hidden gap-1 lg:flex">
+											<div class="lgv:flex hidden gap-1">
 												<action.icon size={16} />
-												<p class="hidden lg:inline">{action.label}</p>
+												<p class="lgv:inline hidden">{action.label}</p>
 											</div>
-											<div class="inline lg:hidden">
+											<div class="lgv:hidden inline">
 												<action.icon size={24} />
 											</div>
 										</button>
@@ -338,7 +338,7 @@
 									type="button"
 									onclick={() => selectSection(section.key)}
 									title={section.name}
-									class="flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors lg:px-4 {magicSearchActive
+									class="lgv:px-4 flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors {magicSearchActive
 										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
 										: activeSection === section.key
 											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
@@ -351,15 +351,15 @@
 										{:else if section.icon}
 											<section.icon size={18} strokeWidth={2} />
 										{/if}
-										<p class="hidden font-medium lg:inline-block">{section.name}</p>
+										<p class="lgv:inline-block hidden font-medium">{section.name}</p>
 										{#if section.shortcut}
-											<div class="hidden lg:inline-block">
+											<div class="lgv:inline-block hidden">
 												<Kbd>Alt + Shift + {section.shortcut}</Kbd>
 											</div>
 										{/if}
 									</div>
 									{#if section.advanced}
-										<p class="hidden text-sm lg:block">advanced</p>
+										<p class="lgv:block hidden text-sm">advanced</p>
 									{/if}
 								</button>
 							</li>
@@ -385,14 +385,14 @@
 			{:else}
 				<!-- Header on mobile (shown on mobile, hidden on desktop since it's in sidebar) -->
 				{#if header}
-					<div class="inline-block w-full lg:hidden">
+					<div class="lgv:hidden inline-block w-full">
 						{@render header()}
 					</div>
 				{/if}
 
 				<!-- Magic Search Bar -->
-				<div class="z-30 flex gap-1 px-4">
-					<div class="relative flex-1 lg:px-0">
+				<div class="flex gap-1 px-4">
+					<div class="lgv:px-0 relative flex-1">
 						<div class="relative">
 							<div
 								class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 peer-focus:text-azure-700 dark:text-gray-500 dark:peer-focus:text-azure-200"

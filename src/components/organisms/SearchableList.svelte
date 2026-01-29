@@ -167,7 +167,7 @@
 <div class="space-y-4">
 	<!-- Filter Tabs -->
 	{#if filterTabs.length > 0}
-		<div class="flex gap-2 border-b border-gray-200">
+		<div class="flex gap-2 border-b border-neutral-100 dark:border-zinc-750">
 			{#each filterTabs as tab}
 				<button
 					type="button"

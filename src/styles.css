@@ -163,12 +163,33 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* =============================================================================
+	CUSTOM BREAKPOINTS - Responsive design
+	============================================================================= */
+
+/* Horizontal breakpoint for extra small screens (not in default Tailwind) */
+@custom-variant xs (@media (min-width: 475px));
+
+/* Small viewport (combines horizontal sm and vertical short) */
+@custom-variant smv (@media (min-width: 640px) and (min-height: 500px));
+
+/* Medium viewport (combines horizontal md and vertical medium) */
+@custom-variant mdv (@media (min-width: 768px) and (min-height: 700px));
+
+/* Large viewport (combines horizontal lg and vertical tall) */
+@custom-variant lgv (@media (min-width: 1024px) and (min-height: 900px));
+
+/* Extra large viewport (combines horizontal xl and vertical vtall) */
+@custom-variant xlv (@media (min-width: 1280px) and (min-height: 1100px));
+
+/* =============================================================================
    TAILWIND THEME - CUSTOM COLORS & FONTS
    ============================================================================= */
 
 @theme {
 	/* Font Family */
-	--font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+	--font-sans:
+		'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+		Arial, sans-serif;
 
 	/* Using: https://oklch.com/#0.322,0.0095,285.919,100 */
 	/* Tailwind Extended Colors */
@@ -265,11 +286,6 @@
 	--color-orange-alt-800: #954517;
 	--color-orange-alt-900: #783a16;
 	--color-orange-alt-950: #411b09;
-
-	/* Font Families */
-	--font-sans:
-		'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-		Arial, sans-serif;
 }
 
 /* =============================================================================

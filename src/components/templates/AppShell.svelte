@@ -47,7 +47,7 @@
 						className="text-azure-700 dark:text-azure-500 group-hover:text-azure-900 dark:group-hover:text-azure-700 transition-colors"
 					/>
 				</a>
-				<div class="group hidden items-center justify-center gap-2 sm:flex">
+				<div class="group hidden items-center justify-center gap-2 xs:flex">
 					{#if title}
 						<h1
 							class="text-center text-sm leading-none font-semibold whitespace-nowrap text-azure-700 lg:text-xl dark:text-azure-500"
@@ -56,9 +56,7 @@
 						</h1>
 					{/if}
 					{#if versionString}
-						<p
-							class="hidden p-0.5 px-1 text-[10px] font-semibold text-gray-700 sm:inline dark:text-gray-200"
-						>
+						<p class="p-0.5 px-1 text-[10px] font-semibold text-gray-700 dark:text-gray-200">
 							{versionString}
 						</p>
 					{/if}
