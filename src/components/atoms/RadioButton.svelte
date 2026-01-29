@@ -36,10 +36,12 @@
 	<!-- Custom radio visual -->
 	<div
 		class="flex h-5 w-5 items-center justify-center rounded-full border transition-colors
-			{checked ? 'border-azure-700 bg-white' : 'border-gray-300 bg-white hover:border-azure-500'}"
+			{checked
+			? 'border-azure-700 bg-transparent dark:border-azure-500'
+			: 'border-gray-300 bg-transparent hover:border-azure-500 dark:border-gray-600 dark:hover:border-azure-300'}"
 	>
 		{#if checked}
-			<div class="h-2.5 w-2.5 rounded-full bg-azure-700"></div>
+			<div class="h-2.5 w-2.5 rounded-full bg-azure-700 dark:bg-azure-500"></div>
 		{/if}
 	</div>
 </label>

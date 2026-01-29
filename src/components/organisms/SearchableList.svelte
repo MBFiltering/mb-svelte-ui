@@ -1,6 +1,6 @@
 <script>
-	import { Search } from '@lucide/svelte';
 	import Checkbox from '../atoms/CheckBox.svelte';
+	import TextInput from '../atoms/TextInput.svelte';
 	import Grid from '../molecules/Grid.svelte';
 	import { fuzzyIncludes } from '../../utils/stringUtils.js';
 
@@ -196,17 +196,12 @@
 					/>
 				</div>
 			{/if}
-			<input
-				type="text"
+			<TextInput
 				bind:value={searchQuery}
 				placeholder={searchPlaceholder}
-				class="peer w-full rounded-lg border border-gray-300 py-1.5 pr-10 pl-3 text-sm focus:border-azure-700 focus:outline-none dark:border-gray-600 dark:focus:border-azure-500"
+				size="sm"
+				showSearchIcon
 			/>
-			<div
-				class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 peer-focus:text-azure-700 dark:text-gray-500 dark:peer-focus:text-azure-500"
-			>
-				<Search size={20} strokeWidth={2} class="" />
-			</div>
 		</div>
 		<!-- Optional actions slot -->
 		{#if searchActions}

@@ -65,7 +65,9 @@
 	}
 </script>
 
-<div class="mb-1 flex w-full items-start justify-between gap-1 text-sm font-medium text-gray-700">
+<div
+	class="mb-1 flex w-full items-start justify-between gap-1 text-sm font-medium text-gray-700 dark:text-gray-200"
+>
 	<div class="mt-[0.4rem] flex w-full items-start gap-1">
 		{#if !hideLabel}
 			<span class="whitespace-nowrap">
@@ -85,33 +87,41 @@
 				size="sm"
 			/>
 		{:else if type === 'textarea'}
-			<p class="flex-1 text-sm whitespace-pre-wrap {value ? 'text-gray-700' : 'text-gray-900/50'}">
+			<p
+				class="flex-1 text-sm whitespace-pre-wrap {value
+					? 'text-gray-700 dark:text-gray-200'
+					: 'text-gray-900/50 dark:text-gray-50/50'}"
+			>
 				{value || `No ${label.toLowerCase()} added yet.`}
 			</p>
 		{:else}
-			<p class="flex-1 text-sm {value ? 'text-gray-700' : 'text-gray-900/50'}">
+			<p
+				class="flex-1 text-sm {value
+					? 'text-gray-700 dark:text-gray-200'
+					: 'text-gray-900/50 dark:text-gray-50/50'}"
+			>
 				{value || `No ${label.toLowerCase()} added yet.`}
 			</p>
 		{/if}
 	</div>
 
 	{#if isEditing}
-		<div class="flex gap-1">
-			<button
-				onclick={save}
-				disabled={isSaving}
-				title={isSaving ? 'Saving...' : 'Save'}
-				class="cursor-pointer rounded-full bg-azure-500 p-2 text-white transition-colors hover:bg-azure-900 disabled:cursor-default disabled:opacity-50"
-			>
-				<Check size="18" />
-			</button>
+		<div class="flex flex-col gap-1">
 			<button
 				onclick={cancelEditing}
 				disabled={isSaving}
 				title="Cancel"
-				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10 disabled:cursor-default disabled:opacity-50"
+				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10 disabled:cursor-default disabled:opacity-50 dark:text-gray-200 dark:hover:bg-gray-50/10"
 			>
 				<X size="18" />
+			</button>
+			<button
+				onclick={save}
+				disabled={isSaving}
+				title={isSaving ? 'Saving...' : 'Save'}
+				class="cursor-pointer rounded-full bg-azure-700 p-2 text-white transition-colors hover:bg-azure-900 disabled:cursor-default disabled:opacity-50 dark:bg-azure-500 dark:hover:bg-azure-700"
+			>
+				<Check size="18" />
 			</button>
 		</div>
 	{:else}
@@ -119,7 +129,7 @@
 			<button
 				onclick={startEditing}
 				title="Edit"
-				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10"
+				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10"
 			>
 				<Pencil size="18" />
 			</button>

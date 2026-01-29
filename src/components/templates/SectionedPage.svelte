@@ -380,10 +380,8 @@
 					{@render mainSkeleton()}
 				{/if}
 			{:else if error}
-				<div class="rounded-lg bg-white p-8 shadow-lg">
-					<div class="mb-4 rounded bg-red-alt-50 px-4 py-3 text-red-alt-600">{error}</div>
-					<ControlButton onclick={onRetry} color="azure" size="md">Try Again</ControlButton>
-				</div>
+				<div class="mb-4 px-4 py-3 text-red-alt-600 dark:text-red-alt-500">{error}</div>
+				<ControlButton onclick={onRetry} color="azure" size="md">Try Again</ControlButton>
 			{:else}
 				<!-- Header on mobile (shown on mobile, hidden on desktop since it's in sidebar) -->
 				{#if header}
@@ -448,9 +446,10 @@
 
 				<!-- Magic search: No results message -->
 				<div class="magicsearch-noresults p-8 text-center">
-					<p class="text-gray-900/50">
-						Nothing found for <span class="font-medium text-gray-700">"{magicSearchQuery}"</span><br
-						/><br />
+					<p class="text-gray-900/50 dark:text-gray-50/50">
+						Nothing found for <span class="font-medium text-gray-700 dark:text-gray-200"
+							>"{magicSearchQuery}"</span
+						><br /><br />
 						Check your spelling, or try searching for related words.
 					</p>
 				</div>

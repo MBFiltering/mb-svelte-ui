@@ -168,12 +168,12 @@
 	<!-- Action Buttons -->
 	<div class="flex gap-3">
 		{#if !isEditing}
-			<ControlButton onclick={toggleEdit} size="lg">Edit</ControlButton>
+			<ControlButton onclick={toggleEdit} size="md">Edit</ControlButton>
 		{:else}
-			<ControlButton type="submit" disabled={isSaving} size="lg">
+			<ControlButton type="submit" disabled={isSaving} size="md">
 				{isSaving ? 'Saving...' : 'Save changes'}
 			</ControlButton>
-			<ControlButton onclick={toggleEdit} disabled={isSaving} color="gray" size="lg">
+			<ControlButton onclick={toggleEdit} disabled={isSaving} color="gray" size="md">
 				Cancel
 			</ControlButton>
 		{/if}

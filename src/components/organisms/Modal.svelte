@@ -38,7 +38,7 @@
 			? 'items-start'
 			: verticalAlign === 'bottom'
 				? 'items-end'
-				: 'items-center'} justify-center bg-neutral-900/40 p-4 backdrop-blur-[1px] sm:p-6 md:p-8 dark:bg-neutral-900/75"
+				: 'items-center'} justify-center bg-neutral-900/40 p-4 sm:p-6 md:p-8 dark:bg-neutral-900/60"
 		onclick={handleBackdropClick}
 	>
 		<!-- Modal Content Container -->
