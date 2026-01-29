@@ -13,6 +13,8 @@
 1. [Installation & Setup](#installation--setup)
 2. [Atoms (Basic Components)](#atoms)
    - [BackButton](#backbutton)
+   - [Badge](#badge)
+   - [Callout](#callout)
    - [CheckBox](#checkbox)
    - [Clipboard](#clipboard)
    - [ControlButton](#controlbutton)
@@ -34,7 +36,6 @@
    - [VisibilityToggle](#visibilitytoggle)
 3. [Molecules (Composite Components)](#molecules)
    - [Grid](#grid)
-   - [ImageFilteringPresets](#imagefilteringpresets)
    - [Island](#island)
    - [MultiInput](#multiinput)
    - [NamedControl](#namedcontrol)
@@ -122,6 +123,99 @@ A simple navigation button that goes back in browser history.
 
 ---
 
+### Badge
+
+Small outlined indicator pill for status labels like Pro/Basic, Paid/Unpaid.
+
+**Import:**
+
+```svelte
+<script>
+	import { Badge } from '@mbsmart/ui/atoms';
+</script>
+```
+
+**Props:**
+
+| Prop        | Type      | Default   | Description                                                                                  |
+| ----------- | --------- | --------- | -------------------------------------------------------------------------------------------- |
+| `color`     | `string`  | `'azure'` | Color variant: `'azure'`, `'mulberry'`, `'green'`, `'red'`, `'orange'`, `'yellow'`, `'gray'` |
+| `size`      | `string`  | `'small'` | Size variant: `'small'`, `'tiny'`                                                            |
+| `className` | `string`  | `''`      | Additional CSS classes                                                                       |
+| `children`  | `snippet` | -         | Badge content                                                                                |
+
+**Usage:**
+
+```svelte
+<!-- PRO/BASIC indicators -->
+<Badge color="mulberry">PRO</Badge>
+<Badge color="gray">BASIC</Badge>
+
+<!-- Payment status -->
+<Badge color="green" size="small">Paid</Badge>
+<Badge color="red" size="tiny">Unpaid</Badge>
+
+<!-- Custom label -->
+<Badge color="orange">BETA</Badge>
+```
+
+**Styling:**
+
+Badges have a light background with matching border and text color. Dark mode support is built-in.
+
+---
+
+### Callout
+
+Styled container with colored left border for announcements, tips, warnings, and other highlighted content.
+
+**Import:**
+
+```svelte
+<script>
+	import { Callout } from '@mbsmart/ui/atoms';
+</script>
+```
+
+**Props:**
+
+| Prop        | Type      | Default   | Description                                                                    |
+| ----------- | --------- | --------- | ------------------------------------------------------------------------------ |
+| `color`     | `string`  | `'azure'` | Color variant: `'orange'`, `'azure'`, `'red'`, `'green'`, `'yellow'`, `'gray'` |
+| `className` | `string`  | `''`      | Additional CSS classes                                                         |
+| `children`  | `snippet` | -         | Callout content                                                                |
+
+**Usage:**
+
+```svelte
+<!-- Warning callout -->
+<Callout color="orange">
+	<p>Warning: This action cannot be undone.</p>
+</Callout>
+
+<!-- Info/tip callout -->
+<Callout color="azure">
+	<p class="font-semibold">Did you know?</p>
+	<p>You can use keyboard shortcuts for faster navigation.</p>
+</Callout>
+
+<!-- Success callout -->
+<Callout color="green">
+	<p>Your changes have been saved successfully.</p>
+</Callout>
+
+<!-- Error callout -->
+<Callout color="red">
+	<p>There was an error processing your request.</p>
+</Callout>
+```
+
+**Styling:**
+
+Callouts have a 4px left border, subtle background tint, and matching text color. Dark mode adjusts colors appropriately.
+
+---
+
 ### CheckBox
 
 Custom checkbox with Lucide icons supporting checked, unchecked, and indeterminate states.
@@ -202,14 +296,15 @@ Styled button with color and size variants.
 
 **Props:**
 
-| Prop        | Type       | Default    | Description                                              |
-| ----------- | ---------- | ---------- | -------------------------------------------------------- |
-| `onclick`   | `function` | `() => {}` | Click handler                                            |
-| `disabled`  | `boolean`  | `false`    | Disables the button                                      |
-| `color`     | `string`   | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'` |
-| `size`      | `string`   | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                     |
-| `className` | `string`   | `''`       | Additional CSS classes                                   |
-| `children`  | `snippet`  | -          | Button content                                           |
+| Prop        | Type       | Default    | Description                                                        |
+| ----------- | ---------- | ---------- | ------------------------------------------------------------------ |
+| `onclick`   | `function` | `() => {}` | Click handler                                                      |
+| `disabled`  | `boolean`  | `false`    | Disables the button                                                |
+| `color`     | `string`   | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'`, `'gray'` |
+| `size`      | `string`   | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                               |
+| `type`      | `string`   | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                     |
+| `className` | `string`   | `''`       | Additional CSS classes                                             |
+| `children`  | `snippet`  | -          | Button content                                                     |
 
 **Usage:**
 
@@ -219,6 +314,14 @@ Styled button with color and size variants.
 <ControlButton onclick={handleDelete} color="red" disabled={isDeleting}>
 	{isDeleting ? 'Deleting...' : 'Delete'}
 </ControlButton>
+
+<!-- Submit button in a form -->
+<form onsubmit={handleSubmit}>
+	<ControlButton type="submit" color="azure">Submit</ControlButton>
+</form>
+
+<!-- Gray variant for neutral actions -->
+<ControlButton color="gray" onclick={handleCancel}>Cancel</ControlButton>
 ```
 
 ---
@@ -673,7 +776,7 @@ Inline SVG icons from `/static/icons` directory.
 
 ### TextInput
 
-Styled text input component for text, password, email, and other text-based inputs.
+Styled text input component for text, password, email, textarea, and other text-based inputs.
 
 **Import:**
 
@@ -685,31 +788,36 @@ Styled text input component for text, password, email, and other text-based inpu
 
 **Props:**
 
-| Prop           | Type       | Default     | Description                                                  |
-| -------------- | ---------- | ----------- | ------------------------------------------------------------ |
-| `type`         | `string`   | `'text'`    | Input type: `'text'`, `'password'`, `'email'`, `'tel'`, etc. |
-| `value`        | `string`   | `''`        | Input value (bindable)                                       |
-| `placeholder`  | `string`   | `''`        | Placeholder text                                             |
-| `disabled`     | `boolean`  | `false`     | Disables the input                                           |
-| `id`           | `string`   | `''`        | Input ID attribute                                           |
-| `name`         | `string`   | `''`        | Input name attribute                                         |
-| `ariaLabel`    | `string`   | `''`        | Accessibility label                                          |
-| `autocomplete` | `string`   | `''`        | Autocomplete attribute                                       |
-| `required`     | `boolean`  | `false`     | Makes input required                                         |
-| `readonly`     | `boolean`  | `false`     | Makes input readonly                                         |
-| `maxlength`    | `number`   | `undefined` | Maximum character length                                     |
-| `minlength`    | `number`   | `undefined` | Minimum character length                                     |
-| `pattern`      | `string`   | `undefined` | Validation pattern                                           |
-| `size`         | `string`   | `'md'`      | Size variant: `'sm'`, `'md'`, `'lg'`                         |
-| `variant`      | `string`   | `'default'` | Style variant: `'default'`, `'error'`, `'success'`           |
-| `className`    | `string`   | `''`        | Additional CSS classes                                       |
-| `onchange`     | `function` | `() => {}`  | Change event handler                                         |
-| `oninput`      | `function` | `() => {}`  | Input event handler                                          |
-| `onkeydown`    | `function` | `() => {}`  | Keydown event handler                                        |
-| `onkeypress`   | `function` | `() => {}`  | Keypress event handler                                       |
-| `onkeyup`      | `function` | `() => {}`  | Keyup event handler                                          |
-| `onfocus`      | `function` | `() => {}`  | Focus event handler                                          |
-| `onblur`       | `function` | `() => {}`  | Blur event handler                                           |
+| Prop             | Type       | Default     | Description                                                                                                |
+| ---------------- | ---------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
+| `type`           | `string`   | `'text'`    | Input type: `'text'`, `'password'`, `'email'`, `'tel'`, `'textarea'`, `'number'`, `'datetime-local'`, etc. |
+| `value`          | `string`   | `''`        | Input value (bindable)                                                                                     |
+| `placeholder`    | `string`   | `''`        | Placeholder text                                                                                           |
+| `disabled`       | `boolean`  | `false`     | Disables the input                                                                                         |
+| `id`             | `string`   | `''`        | Input ID attribute                                                                                         |
+| `name`           | `string`   | `''`        | Input name attribute                                                                                       |
+| `ariaLabel`      | `string`   | `''`        | Accessibility label                                                                                        |
+| `autocomplete`   | `string`   | `''`        | Autocomplete attribute                                                                                     |
+| `required`       | `boolean`  | `false`     | Makes input required                                                                                       |
+| `readonly`       | `boolean`  | `false`     | Makes input readonly                                                                                       |
+| `maxlength`      | `number`   | `undefined` | Maximum character length                                                                                   |
+| `minlength`      | `number`   | `undefined` | Minimum character length                                                                                   |
+| `pattern`        | `string`   | `undefined` | Validation pattern                                                                                         |
+| `min`            | `number`   | `undefined` | Minimum value (for number/date inputs)                                                                     |
+| `max`            | `number`   | `undefined` | Maximum value (for number/date inputs)                                                                     |
+| `step`           | `number`   | `undefined` | Step increment (for number inputs)                                                                         |
+| `rows`           | `number`   | `4`         | Number of rows (for textarea)                                                                              |
+| `size`           | `string`   | `'md'`      | Size variant: `'sm'`, `'md'`, `'lg'`                                                                       |
+| `variant`        | `string`   | `'default'` | Style variant: `'default'`, `'error'`, `'success'`                                                         |
+| `showSearchIcon` | `boolean`  | `false`     | Show magnifying glass icon on left side                                                                    |
+| `className`      | `string`   | `''`        | Additional CSS classes                                                                                     |
+| `onchange`       | `function` | `() => {}`  | Change event handler                                                                                       |
+| `oninput`        | `function` | `() => {}`  | Input event handler                                                                                        |
+| `onkeydown`      | `function` | `() => {}`  | Keydown event handler                                                                                      |
+| `onkeypress`     | `function` | `() => {}`  | Keypress event handler                                                                                     |
+| `onkeyup`        | `function` | `() => {}`  | Keyup event handler                                                                                        |
+| `onfocus`        | `function` | `() => {}`  | Focus event handler                                                                                        |
+| `onblur`         | `function` | `() => {}`  | Blur event handler                                                                                         |
 
 **Size Variants:**
 
@@ -735,6 +843,8 @@ Styled text input component for text, password, email, and other text-based inpu
 	let username = '';
 	let password = '';
 	let email = '';
+	let notes = '';
+	let searchQuery = '';
 </script>
 
 <!-- Basic text input -->
@@ -750,6 +860,15 @@ Styled text input component for text, password, email, and other text-based inpu
 	bind:value={email}
 	variant={email && !email.includes('@') ? 'error' : 'default'}
 />
+
+<!-- Textarea for multi-line input -->
+<TextInput type="textarea" placeholder="Enter notes..." bind:value={notes} rows={4} />
+
+<!-- Search input with magnifying glass icon -->
+<TextInput placeholder="Search..." bind:value={searchQuery} showSearchIcon size="sm" />
+
+<!-- Number input with min/max/step -->
+<TextInput type="number" min={0} max={100} step={5} bind:value={quantity} />
 
 <!-- Different sizes -->
 <TextInput size="sm" placeholder="Small input" />
@@ -767,6 +886,10 @@ Styled text input component for text, password, email, and other text-based inpu
 **Password Visibility Toggle:**
 
 When `type="password"`, a built-in eye icon button appears that toggles between showing and hiding the password. This is handled automatically - no additional props needed.
+
+**Search Icon:**
+
+When `showSearchIcon` is true, a magnifying glass icon appears on the left side of the input. The icon color changes to azure on focus.
 
 ---
 
@@ -935,56 +1058,6 @@ Responsive grid with row-first or column-first flow.
 		<div>{item.name}</div>
 	{/each}
 </Grid>
-```
-
----
-
-### ImageFilteringPresets
-
-Visual preset selector for image filtering settings.
-
-**Import:**
-
-```svelte
-<script>
-	import { ImageFilteringPresets } from '@mbsmart/ui/molecules';
-</script>
-```
-
-**Props:**
-
-| Prop            | Type       | Default    | Description                       |
-| --------------- | ---------- | ---------- | --------------------------------- |
-| `imageSettings` | `object`   | `{}`       | Current settings from API         |
-| `disabled`      | `boolean`  | `false`    | Disables all controls             |
-| `onChange`      | `function` | `() => {}` | Callback with new settings object |
-
-**imageSettings Object:**
-
-```javascript
-{
-  explicit_image_removal: 'strict' | 'moderate',
-  skin_painting: 'off' | 'women_strict' | 'women_moderate' | 'all_people',
-  human_removal: 'off' | 'women_strict' | 'women_moderate' | 'all_people'
-}
-```
-
-**Available Presets:**
-
-1. Only Block Explicit Images
-2. Skin Painting - Women
-3. Skin Painting - All People
-4. Remove Women
-5. Remove Women & Paint Men
-6. Remove All People
-
-**Usage:**
-
-```svelte
-<ImageFilteringPresets
-	imageSettings={device.image_settings}
-	onChange={(newSettings) => updateImageSettings(newSettings)}
-/>
 ```
 
 ---
