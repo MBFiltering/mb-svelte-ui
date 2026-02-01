@@ -67,7 +67,7 @@ export const colorClasses = {
 	yellow: 'border-yellow-500 bg-yellow-500/5 text-yellow-500',
 	orange: 'border-orange-alt-500 bg-orange-alt-500/5 text-orange-alt-500',
 	red: 'border-red-alt-500 bg-red-alt-500/5 text-red-alt-500',
-	gray: 'border-gray-300 bg-gray-300/5 text-gray-300'
+	gray: 'border-gray-600 bg-gray-600/5 text-gray-600 dark:border-gray-300 dark:bg-gray-300/5 dark:text-gray-300'
 };
 
 /**

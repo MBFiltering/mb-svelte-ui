@@ -8,6 +8,7 @@
 	let {
 		type = 'text',
 		value = $bindable(''),
+		ref = $bindable(null),
 		placeholder = '',
 		disabled = false,
 		id = '',
@@ -122,6 +123,7 @@
 		></textarea>
 	{:else}
 		<input
+			bind:this={ref}
 			type={inputType}
 			bind:value
 			{placeholder}
