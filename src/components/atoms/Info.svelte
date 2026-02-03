@@ -39,7 +39,7 @@
 			<!-- Tooltip -->
 			{#if showTooltip}
 				<div
-					class="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 -translate-y-2 transform whitespace-normal"
+					class="absolute bottom-full left-1/2 z-40 mb-2 -translate-x-1/2 -translate-y-2 transform whitespace-normal"
 				>
 					<!-- Arrow -->
 					<div

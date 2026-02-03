@@ -19,8 +19,12 @@
 		saveTitle = 'Save',
 		savingTitle = 'Saving...',
 		cancelTitle = 'Cancel',
-		noChangesMessage = 'No changes to save'
+		noChangesMessage = 'No changes to save',
+		emptyMessage = '' // Full message for empty state (overrides default)
 	} = $props();
+
+	// Compute the message to show when empty
+	const emptyText = $derived(emptyMessage || `No ${label.toLowerCase()} added yet.`);
 
 	let isEditing = $state(false);
 	let currentValue = $state(value);
@@ -98,7 +102,7 @@
 					? 'text-gray-700 dark:text-gray-200'
 					: 'text-gray-900/50 dark:text-gray-50/50'}"
 			>
-				{value || `No ${label.toLowerCase()} added yet.`}
+				{value || emptyText}
 			</p>
 		{:else}
 			<p
@@ -106,7 +110,7 @@
 					? 'text-gray-700 dark:text-gray-200'
 					: 'text-gray-900/50 dark:text-gray-50/50'}"
 			>
-				{value || `No ${label.toLowerCase()} added yet.`}
+				{value || emptyText}
 			</p>
 		{/if}
 	</div>

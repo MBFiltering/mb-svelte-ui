@@ -296,7 +296,7 @@
 	<div class="relative flex">
 		<!-- Sidebar -->
 		<div
-			class="lgv:w-96 fixed bottom-0 left-0 z-20 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
+			class="lgv:w-96 fixed bottom-0 left-0 z-10 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
 		>
 			{#if loading}
 				{#if sidebarSkeleton}
