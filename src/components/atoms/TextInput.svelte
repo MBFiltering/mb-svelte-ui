@@ -56,14 +56,14 @@
 	// Horizontal padding based on size and icons
 	const paddingClasses = $derived.by(() => {
 		const leftPadding = showSearchIcon
-			? 'pl-9'
+			? 'ps-9'
 			: size === 'sm'
-				? 'pl-2'
+				? 'ps-2'
 				: size === 'lg'
-					? 'pl-4'
-					: 'pl-3';
+					? 'ps-4'
+					: 'ps-3';
 		const rightPadding =
-			type === 'password' ? 'pr-10' : size === 'sm' ? 'pr-2' : size === 'lg' ? 'pr-4' : 'pr-3';
+			type === 'password' ? 'pe-10' : size === 'sm' ? 'pe-2' : size === 'lg' ? 'pe-4' : 'pe-3';
 		return `${leftPadding} ${rightPadding}`;
 	});
 
@@ -93,7 +93,7 @@
 <div class="group relative w-full">
 	{#if showSearchIcon}
 		<div
-			class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-azure-700 dark:text-gray-500 dark:group-focus-within:text-azure-500"
+			class="pointer-events-none absolute top-1/2 ltr:left-3 rtl:right-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-azure-700 dark:text-gray-500 dark:group-focus-within:text-azure-500"
 		>
 			<Search size={searchIconSize} strokeWidth={2} />
 		</div>
@@ -156,7 +156,7 @@
 			type="button"
 			onclick={togglePasswordVisibility}
 			{disabled}
-			class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-600 dark:hover:text-gray-400"
+			class="absolute top-1/2 rtl:left-3 ltr:right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-600 dark:hover:text-gray-400"
 			aria-label={showPassword ? 'Hide password' : 'Show password'}
 			tabindex="-1"
 		>

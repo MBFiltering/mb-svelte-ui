@@ -13,7 +13,13 @@
 		rows = 3,
 		type = 'textarea', // 'textarea' or 'text'
 		onSave = async () => {},
-		onUpdate = () => {}
+		onUpdate = () => {},
+		// i18n props for button titles
+		editTitle = 'Edit',
+		saveTitle = 'Save',
+		savingTitle = 'Saving...',
+		cancelTitle = 'Cancel',
+		noChangesMessage = 'No changes to save'
 	} = $props();
 
 	let isEditing = $state(false);
@@ -37,7 +43,7 @@
 	async function save() {
 		// Check if value actually changed
 		if (currentValue === value) {
-			toast.info('No changes to save');
+			toast.info(noChangesMessage);
 			isEditing = false;
 			return;
 		}
@@ -110,7 +116,7 @@
 			<button
 				onclick={cancelEditing}
 				disabled={isSaving}
-				title="Cancel"
+				title={cancelTitle}
 				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10 disabled:cursor-default disabled:opacity-50 dark:text-gray-200 dark:hover:bg-gray-50/10"
 			>
 				<X size="18" />
@@ -118,7 +124,7 @@
 			<button
 				onclick={save}
 				disabled={isSaving}
-				title={isSaving ? 'Saving...' : 'Save'}
+				title={isSaving ? savingTitle : saveTitle}
 				class="cursor-pointer rounded-full bg-azure-700 p-2 text-white transition-colors hover:bg-azure-900 disabled:cursor-default disabled:opacity-50 dark:bg-azure-500 dark:hover:bg-azure-700"
 			>
 				<Check size="18" />
@@ -128,7 +134,7 @@
 		<div class="flex items-start gap-1">
 			<button
 				onclick={startEditing}
-				title="Edit"
+				title={editTitle}
 				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10"
 			>
 				<Pencil size="18" />

@@ -13,6 +13,7 @@
 		specialFilters = {},
 		emptyMessage = 'No items found',
 		itemName = 'item',
+		itemNamePlural = '', // Optional plural form (if not provided, will auto-pluralize itemName)
 		filterTabs = [], // Array of { key, label, filterFn }
 		columns = 1, // Number of columns for calculating rows
 		columns2Xl = 2, // Number of columns for calculating rows
@@ -24,7 +25,10 @@
 		selected = $bindable([]), // array of selected item ids (bind:selected)
 		selectedItems = $bindable([]), // array of selected item objects (bind:selectedItems)
 		selectId = 'id',
-		idKey = null // Optional key to use for the each block (overrides auto-detection)
+		idKey = null, // Optional key to use for the each block (overrides auto-detection)
+		// i18n text props
+		ofText = 'of', // "of" text for "X of Y items"
+		selectedText = 'selected' // "selected" text for bulk mode
 	} = $props();
 
 	let searchQuery = $state('');
@@ -32,6 +36,11 @@
 
 	// Get plural form of item name with proper pluralization rules
 	const pluralItemName = $derived.by(() => {
+		// If explicit plural provided, use it
+		if (itemNamePlural) {
+			return items.length === 1 ? itemName : itemNamePlural;
+		}
+
 		if (items.length === 1) return itemName;
 
 		// Handle irregular plurals
@@ -187,7 +196,7 @@
 	<div class="magicsearch-item flex flex-col items-center gap-3 md:flex-row">
 		<div class="relative flex w-full flex-1 gap-1 md:w-auto">
 			{#if bulk}
-				<div class="mr-2 flex items-center">
+				<div class="me-2 flex items-center">
 					<Checkbox
 						checked={allVisibleSelected}
 						indeterminate={someVisibleSelected && !allVisibleSelected}
@@ -213,8 +222,8 @@
 
 	<!-- Results Count -->
 	<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
-		{filteredItems.length} of {items.length}
-		{pluralItemName}{bulk ? `, ${selected.length} selected` : ''}
+		{filteredItems.length} {ofText} {items.length}
+		{pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
 	</div>
 
 	<!-- List Container -->

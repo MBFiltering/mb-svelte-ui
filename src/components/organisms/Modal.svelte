@@ -48,7 +48,7 @@
 				<button
 					type="button"
 					onclick={onClose}
-					class="absolute top-1 right-1 z-10 cursor-pointer rounded-lg p-2 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 sm:top-2 sm:right-2 dark:text-gray-200 dark:hover:bg-zinc-800 dark:hover:text-white"
+					class="absolute top-1 rtl:left-1 ltr:right-1 z-10 cursor-pointer rounded-lg p-2 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 sm:top-2 ltr:sm:right-2 rtl:sm:left-2 dark:text-gray-200 dark:hover:bg-zinc-750 dark:hover:text-white"
 					aria-label="Close modal"
 				>
 					<X size={20} />

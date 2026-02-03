@@ -17,6 +17,7 @@
 	let {
 		colorKey = '', // Direct color key: 'green', 'yellow', 'orange', 'red', 'gray'
 		label = '', // Optional: category label to derive color from
+		riskLabelOverride = '', // Optional: Override the risk label text (for i18n)
 		showLabel = true, // Whether to show the risk label text
 		size = 'sm', // Size variant: 'xs', 'sm', 'md'
 		className = '' // Additional CSS classes
@@ -42,7 +43,7 @@
 
 	// Computed values
 	const resolvedColorKey = $derived(resolveColorKey(colorKey, label));
-	const riskLabel = $derived(getRiskLabel(resolvedColorKey));
+	const riskLabel = $derived(riskLabelOverride || getRiskLabel(resolvedColorKey));
 	const badgeClasses = $derived(
 		`rounded-lg border font-semibold ${colorClasses[resolvedColorKey] || colorClasses.gray} ${sizeClasses[size] || sizeClasses.sm} ${className}`
 	);

@@ -53,6 +53,15 @@
 		error = '',
 		onRetry = () => {},
 
+		// i18n text props
+		magicSearchPlaceholder = 'Magic search...',
+		magicSearchNoResultsPrefix = 'Nothing found for',
+		magicSearchNoResultsSuffix = 'Check your spelling, or try searching for related words.',
+		collapseAllSectionsTitle = 'Collapse all sections',
+		expandAllSectionsTitle = 'Expand all sections',
+		disabledDuringSearchTitle = 'Disabled during search',
+		advancedText = 'advanced',
+
 		// Snippets (sidebarSkeleton and mainSkeleton are required for loading states)
 		header,
 		sidebarSkeleton,
@@ -287,7 +296,7 @@
 	<div class="relative flex">
 		<!-- Sidebar -->
 		<div
-			class="lgv:w-96 fixed bottom-0 left-0 z-30 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
+			class="lgv:w-96 fixed bottom-0 left-0 z-20 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
 		>
 			{#if loading}
 				{#if sidebarSkeleton}
@@ -296,14 +305,14 @@
 			{:else}
 				<!-- Header slot (hidden on mobile, shown on desktop) -->
 				{#if header}
-					<div class="lgv:inline-block hidden pl-4">
+					<div class="lgv:inline-block hidden ps-4">
 						{@render header()}
 					</div>
 				{/if}
 
 				<!-- Navigation tabs -->
 				<div
-					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-r-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
+					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
 					<ul class="flex justify-evenly space-y-2 sm:inline sm:w-auto sm:justify-normal">
 						<!-- Nav action buttons -->
@@ -333,7 +342,7 @@
 
 						<!-- Section tabs -->
 						{#each sections as section}
-							<li class="pr-2 sm:pr-0">
+							<li class="pe-2 sm:pe-0">
 								<button
 									type="button"
 									onclick={() => selectSection(section.key)}
@@ -359,7 +368,7 @@
 										{/if}
 									</div>
 									{#if section.advanced}
-										<p class="lgv:block hidden text-sm">advanced</p>
+										<p class="lgv:block hidden text-sm">{advancedText}</p>
 									{/if}
 								</button>
 							</li>
@@ -395,7 +404,7 @@
 					<div class="lgv:px-0 relative flex-1">
 						<div class="relative">
 							<div
-								class="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 peer-focus:text-azure-700 dark:text-gray-500 dark:peer-focus:text-azure-200"
+								class="pointer-events-none absolute top-1/2 rtl:right-3 ltr:left-3 -translate-y-1/2 text-gray-400 peer-focus:text-azure-700 dark:text-gray-500 dark:peer-focus:text-azure-200"
 							>
 								<Search size={16} />
 							</div>
@@ -403,12 +412,12 @@
 								type="text"
 								bind:this={magicSearchInput}
 								bind:value={magicSearchQuery}
-								placeholder="Magic search..."
-								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 pr-28 pl-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pr-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
+								placeholder={magicSearchPlaceholder}
+								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 pe-28 ps-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
 							/>
 							{#if !magicSearchActive}
 								<div
-									class="helper pointer-events-none absolute top-1/2 right-2 -translate-y-4 peer-focus:hidden"
+									class="helper pointer-events-none absolute top-1/2 rtl:left-2 ltr:right-2 -translate-y-4 peer-focus:hidden"
 								>
 									<Kbd>Alt+Shift+M</Kbd>
 								</div>
@@ -417,7 +426,7 @@
 								<button
 									type="button"
 									onclick={clearMagicSearch}
-									class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
+									class="absolute top-1/2 ltr:right-2 rtl:left-2 -translate-y-1/2 cursor-pointer rounded p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
 								>
 									<X size={14} />
 								</button>
@@ -430,10 +439,10 @@
 							? 'cursor-not-allowed text-gray-400 opacity-50 dark:text-gray-500'
 							: 'cursor-pointer text-gray-700 hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10'}"
 						title={magicSearchActive
-							? 'Disabled during search'
+							? disabledDuringSearchTitle
 							: allIslandsExpanded
-								? 'Collapse all sections (CC)'
-								: 'Expand all sections (CC)'}
+								? `${collapseAllSectionsTitle} (CC)`
+								: `${expandAllSectionsTitle} (CC)`}
 						onclick={toggleAllIslands}
 						disabled={magicSearchActive}
 					>
@@ -447,10 +456,10 @@
 				<!-- Magic search: No results message -->
 				<div class="magicsearch-noresults p-8 text-center">
 					<p class="text-gray-900/50 dark:text-gray-50/50">
-						Nothing found for <span class="font-medium text-gray-700 dark:text-gray-200"
+						{magicSearchNoResultsPrefix} <span class="font-medium text-gray-700 dark:text-gray-200"
 							>"{magicSearchQuery}"</span
 						><br /><br />
-						Check your spelling, or try searching for related words.
+						{magicSearchNoResultsSuffix}
 					</p>
 				</div>
 

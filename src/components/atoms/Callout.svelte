@@ -40,6 +40,6 @@
 	const classes = $derived(colorClasses[color] || colorClasses.azure);
 </script>
 
-<div class="border-l-4 p-4 pl-6 text-sm sm:text-base {classes} {className}">
+<div class="border-s-4 p-4 ps-6 text-sm sm:text-base {classes} {className}">
 	{@render children()}
 </div>

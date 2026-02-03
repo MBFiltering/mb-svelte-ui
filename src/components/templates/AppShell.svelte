@@ -31,7 +31,7 @@
 
 <div class="flex min-h-screen flex-col bg-neutral-100 dark:bg-zinc-750 {className}">
 	<!-- Sticky Header -->
-	<header class="sticky top-0 z-40 h-14 bg-white px-4 py-2 shadow-lg dark:bg-zinc-800">
+	<header class="sticky top-0 z-30 h-14 bg-white px-4 py-2 shadow-lg dark:bg-zinc-800">
 		<div class="flex items-center justify-between gap-4">
 			<!-- Logo and Title Section -->
 			<div class="flex gap-4">
@@ -75,7 +75,7 @@
 	<!-- Loading Progress Bar -->
 	<div class="sticky top-14 left-0 z-30 w-full">
 		<div
-			class="absolute h-1 bg-azure-500 transition-all duration-300 ease-out dark:bg-azure-300 {isFullyLoaded
+			class="absolute h-1 bg-azure-500 transition-all duration-300 ease-out {isFullyLoaded
 				? 'opacity-0'
 				: 'opacity-100'}"
 			style="width: {loadingProgress}%"

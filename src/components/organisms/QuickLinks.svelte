@@ -3,10 +3,14 @@
 	import { Download, BookOpen, Film, Key, GraduationCap, Package } from '@lucide/svelte';
 
 	// Props
-	let { gridClasses = 'sm:grid-cols-2 lg:grid-cols-3' } = $props();
+	let { 
+		gridClasses = 'sm:grid-cols-2 lg:grid-cols-3', 
+		title = 'Quick Links',
+		links = null  // Optional: pass translated links array
+	} = $props();
 
-	// Quick links data
-	const quickLinks = [
+	// Default quick links data (used when links prop is not provided)
+	const defaultLinks = [
 		{
 			name: 'Wiki Docs',
 			url: 'https://admin.tag.org/wiki/mb-smart',
@@ -44,9 +48,12 @@
 			description: 'Access the old MB Smart portal'
 		}
 	];
+	
+	// Use provided links or fall back to defaults
+	const quickLinks = $derived(links || defaultLinks);
 </script>
 
-<Island title="Quick Links" collapsible={false}>
+<Island {title} collapsible={false}>
 	<div class="grid gap-3 {gridClasses}">
 		{#each quickLinks as link}
 			<a

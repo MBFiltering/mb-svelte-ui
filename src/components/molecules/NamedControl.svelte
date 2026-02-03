@@ -2,7 +2,15 @@
 	import Info from '../atoms/Info.svelte';
 
 	// Props - Svelte 5 style
-	let { label = '', description = '', info = false, infoLabel = '', prefix, children } = $props();
+	let {
+		label = '',
+		description = '',
+		info = false,
+		infoLabel = '',
+		infoDirectory = null, // Custom info directory for i18n
+		prefix,
+		children
+	} = $props();
 </script>
 
 <div
@@ -16,7 +24,7 @@
 			<span class="">{label}</span>
 			<span class="hidden h-5 sm:inline-block">
 				{#if info}
-					<Info label={infoLabel || label} />
+					<Info label={infoLabel || label} {infoDirectory} />
 				{/if}
 			</span>
 		</div>
@@ -25,11 +33,11 @@
 		{/if}
 		<div class="inline sm:hidden">
 			{#if info}
-				<Info label={infoLabel || label} variant="inline" />
+				<Info label={infoLabel || label} variant="inline" {infoDirectory} />
 			{/if}
 		</div>
 	</div>
-	<div class="ml-auto">
+	<div class="ms-auto">
 		{@render children?.()}
 	</div>
 </div>

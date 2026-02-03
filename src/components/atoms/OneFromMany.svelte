@@ -92,7 +92,7 @@
 		type="button"
 		onclick={handleFirstClick}
 		{disabled}
-		class="cursor-pointer rounded-l-lg px-3 py-1.5 text-sm font-medium transition-all {getButtonColor(
+		class="cursor-pointer rounded-s-lg px-3 py-1.5 text-sm font-medium transition-all {getButtonColor(
 			firstOption,
 			currentValue === firstOption?.value
 		)} {currentValue === firstOption?.value
@@ -104,7 +104,7 @@
 
 	<!-- Dropdown for remaining options -->
 	<div
-		class="relative rounded-r-lg {getButtonColor(
+		class="relative rounded-e-lg {getButtonColor(
 			displayedDropdownOption,
 			currentValue === displayedDropdownOption?.value
 		)}"
@@ -140,7 +140,7 @@
 				onchange={handleDropdownSelect}
 				value={selected}
 				{disabled}
-				class="absolute top-0 right-0 h-8 w-8 cursor-pointer opacity-0 disabled:cursor-default"
+				class="absolute top-0 ltr:right-0 rtl:left-0 h-8 w-8 cursor-pointer opacity-0 disabled:cursor-default"
 			>
 				{#each dropdownOptions as option}
 					<option value={option.value}>{option.label}</option>
