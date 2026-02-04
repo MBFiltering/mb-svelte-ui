@@ -35,10 +35,10 @@
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		class="fixed inset-0 z-50 flex {verticalAlign === 'top'
-			? 'items-start'
+			? 'items-end sm:items-start'
 			: verticalAlign === 'bottom'
 				? 'items-end'
-				: 'items-center'} justify-center bg-neutral-900/40 p-4 sm:p-6 md:p-8 dark:bg-neutral-900/60"
+				: 'items-end sm:items-center'} justify-center bg-neutral-900/40 sm:p-6 md:p-8 dark:bg-neutral-900/60"
 		onclick={handleBackdropClick}
 	>
 		<!-- Modal Content Container -->
