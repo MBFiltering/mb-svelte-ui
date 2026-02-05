@@ -63,7 +63,7 @@
 	{:else if title}
 		<!-- Header without collapse functionality -->
 		<div
-			class="border-b border-neutral-100 px-3 py-2 text-gray-700 sm:px-6 sm:py-4 dark:border-zinc-750 dark:text-gray-200"
+			class="border-b border-neutral-100 px-3 py-2 pt-5 sm:pt-auto text-gray-700 sm:px-6 sm:py-4 dark:border-zinc-750 dark:text-gray-200"
 		>
 			<div class="flex items-center gap-2">
 				{#if svgIcon}
