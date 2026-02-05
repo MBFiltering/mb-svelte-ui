@@ -1,9 +1,9 @@
 <script>
 	import { toast } from '../../utils/toastStore.js';
+	import CircleButton from '../atoms/CircleButton.svelte';
 	import Clipboard from '../atoms/Clipboard.svelte';
-	import ControlButton from '../atoms/ControlButton.svelte';
 	import TextInput from '../atoms/TextInput.svelte';
-	import { Eye, EyeClosed } from '@lucide/svelte';
+	import { Pencil, Check, X, Eye, EyeClosed } from '@lucide/svelte';
 
 	// Props - Svelte 5 style
 	let { fields = [], initialData = {}, onSave = async () => {}, onUpdate = () => {} } = $props();
@@ -166,16 +166,12 @@
 	</div>
 
 	<!-- Action Buttons -->
-	<div class="flex gap-3">
+	<div class="flex gap-2">
 		{#if !isEditing}
-			<ControlButton onclick={toggleEdit} size="md">Edit</ControlButton>
+			<CircleButton onclick={toggleEdit} title="Edit" icon={Pencil} />
 		{:else}
-			<ControlButton type="submit" disabled={isSaving} size="md">
-				{isSaving ? 'Saving...' : 'Save changes'}
-			</ControlButton>
-			<ControlButton onclick={toggleEdit} disabled={isSaving} color="gray" size="md">
-				Cancel
-			</ControlButton>
+			<CircleButton onclick={toggleEdit} disabled={isSaving} title="Cancel" icon={X} />
+			<CircleButton type="submit" disabled={isSaving} title={isSaving ? 'Saving...' : 'Save'} color="azure" icon={Check} />
 		{/if}
 	</div>
 </form>

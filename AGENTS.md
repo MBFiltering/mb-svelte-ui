@@ -14,7 +14,7 @@ When working on this codebase, adhere to these principles:
 
 2. **Brevity** — Write concise code. Avoid verbosity. If a simpler solution exists, use it.
 
-3. **Readability over cleverness** — Code should be immediately understandable. Favour explicit naming and straightforward logic over terse, clever one-liners.
+3. **Readability to Humans** — Code should be immediately understandable to a human reader.
 
 4. **Separation of concerns** — Components handle UI. Utilities handle logic. Keep them distinct.
 

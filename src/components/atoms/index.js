@@ -3,6 +3,7 @@ export { default as BackButton } from './BackButton.svelte';
 export { default as Badge } from './Badge.svelte';
 export { default as Callout } from './Callout.svelte';
 export { default as CheckBox } from './CheckBox.svelte';
+export { default as CircleButton } from './CircleButton.svelte';
 export { default as Clipboard } from './Clipboard.svelte';
 export { default as ControlButton } from './ControlButton.svelte';
 export { default as ExternalLinkText } from './ExternalLinkText.svelte';

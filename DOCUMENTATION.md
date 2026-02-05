@@ -16,6 +16,7 @@
    - [Badge](#badge)
    - [Callout](#callout)
    - [CheckBox](#checkbox)
+   - [CircleButton](#circlebutton)
    - [Clipboard](#clipboard)
    - [ControlButton](#controlbutton)
    - [ExternalLinkText](#externallinktext)
@@ -278,6 +279,51 @@ Copy-to-clipboard button with visual feedback.
 <Clipboard content={device.id}>
 	<span class="font-mono">{device.id}</span>
 </Clipboard>
+```
+
+---
+
+### CircleButton
+
+Circular icon button with color and size variants. Used for inline actions like edit, save, cancel.
+
+**Import:**
+
+```svelte
+<script>
+	import { CircleButton } from '@mbsmart/ui/atoms';
+	import { Pencil, Check, X } from '@lucide/svelte';
+</script>
+```
+
+**Props:**
+
+| Prop       | Type        | Default    | Description                                                                   |
+| ---------- | ----------- | ---------- | ----------------------------------------------------------------------------- |
+| `onclick`  | `function`  | `() => {}` | Click handler                                                                 |
+| `disabled` | `boolean`   | `false`    | Disables the button                                                           |
+| `title`    | `string`    | `''`       | Tooltip text                                                                  |
+| `type`     | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                |
+| `color`    | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
+| `size`     | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                          |
+| `icon`     | `Component` | -          | Lucide icon component                                                         |
+| `iconSize` | `number`    | `18`       | Size of the icon in pixels                                                    |
+| `className`| `string`    | `''`       | Additional CSS classes                                                        |
+
+**Usage:**
+
+```svelte
+<!-- Ghost button (default) - transparent background with hover effect -->
+<CircleButton onclick={startEditing} title="Edit" icon={Pencil} />
+
+<!-- Colored button for primary actions -->
+<CircleButton onclick={save} color="azure" title="Save" icon={Check} />
+
+<!-- Disabled state -->
+<CircleButton onclick={cancel} disabled={isSaving} title="Cancel" icon={X} />
+
+<!-- Custom icon size -->
+<CircleButton onclick={doSomething} icon={Pencil} iconSize={24} size="lg" />
 ```
 
 ---

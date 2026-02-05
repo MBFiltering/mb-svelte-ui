@@ -1,5 +1,6 @@
 <script>
 	import { toast } from '../../utils/toastStore.js';
+	import CircleButton from './CircleButton.svelte';
 	import Clipboard from './Clipboard.svelte';
 	import TextInput from './TextInput.svelte';
 	import { Pencil, Check, X } from '@lucide/svelte';
@@ -117,32 +118,12 @@
 
 	{#if isEditing}
 		<div class="flex flex-col gap-1">
-			<button
-				onclick={cancelEditing}
-				disabled={isSaving}
-				title={cancelTitle}
-				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10 disabled:cursor-default disabled:opacity-50 dark:text-gray-200 dark:hover:bg-gray-50/10"
-			>
-				<X size="18" />
-			</button>
-			<button
-				onclick={save}
-				disabled={isSaving}
-				title={isSaving ? savingTitle : saveTitle}
-				class="cursor-pointer rounded-full bg-azure-700 p-2 text-white transition-colors hover:bg-azure-900 disabled:cursor-default disabled:opacity-50 dark:bg-azure-500 dark:hover:bg-azure-700"
-			>
-				<Check size="18" />
-			</button>
+			<CircleButton onclick={cancelEditing} disabled={isSaving} title={cancelTitle} icon={X} />
+			<CircleButton onclick={save} disabled={isSaving} title={isSaving ? savingTitle : saveTitle} color="azure" icon={Check} />
 		</div>
 	{:else}
 		<div class="flex items-start gap-1">
-			<button
-				onclick={startEditing}
-				title={editTitle}
-				class="cursor-pointer rounded-full p-2 text-gray-700 transition-colors hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10"
-			>
-				<Pencil size="18" />
-			</button>
+			<CircleButton onclick={startEditing} title={editTitle} icon={Pencil} />
 		</div>
 	{/if}
 </div>
