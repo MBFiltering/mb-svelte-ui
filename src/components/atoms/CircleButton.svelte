@@ -15,6 +15,7 @@
 	// Color variants
 	const colorClasses = {
 		ghost: 'text-gray-700 hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10',
+		ghost2: 'text-gray-900/50 hover:bg-gray-900/10 dark:text-gray-50/50 dark:hover:bg-white/10',
 		azure: 'bg-azure-700 text-white hover:bg-azure-900 dark:bg-azure-500 dark:hover:bg-azure-700',
 		green: 'bg-green-alt-500 text-white hover:bg-green-alt-600',
 		red: 'bg-red-alt-500 text-white hover:bg-red-alt-600',

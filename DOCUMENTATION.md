@@ -272,15 +272,15 @@ Circular icon button with color and size variants. Used for inline actions like 
 
 | Prop       | Type        | Default    | Description                                                                   |
 | ---------- | ----------- | ---------- | ----------------------------------------------------------------------------- |
-| `onclick`  | `function`  | `() => {}` | Click handler                                                                 |
-| `disabled` | `boolean`   | `false`    | Disables the button                                                           |
-| `title`    | `string`    | `''`       | Tooltip text                                                                  |
-| `type`     | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                |
-| `color`    | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
-| `size`     | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                          |
-| `icon`     | `Component` | -          | Lucide icon component                                                         |
-| `iconSize` | `number`    | `18`       | Size of the icon in pixels                                                    |
-| `className`| `string`    | `''`       | Additional CSS classes                                                        |
+| `onclick`  | `function`  | `() => {}` | Click handler                                                                            |
+| `disabled` | `boolean`   | `false`    | Disables the button                                                                      |
+| `title`    | `string`    | `''`       | Tooltip text                                                                             |
+| `type`     | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                           |
+| `color`    | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'ghost2'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
+| `size`     | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                                     |
+| `icon`     | `Component` | -          | Lucide icon component                                                                    |
+| `iconSize` | `number`    | `18`       | Size of the icon in pixels                                                               |
+| `className`| `string`    | `''`       | Additional CSS classes                                                                   |
 
 **Usage:**
 

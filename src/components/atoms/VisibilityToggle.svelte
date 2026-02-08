@@ -1,5 +1,6 @@
 <script>
 	import { Eye, EyeClosed } from '@lucide/svelte';
+	import CircleButton from './CircleButton.svelte';
 
 	/**
 	 * Visibility toggle component
@@ -12,16 +13,12 @@
 	}
 </script>
 
-<button
-	type="button"
+<CircleButton
 	onclick={toggle}
-	class="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-gray-900/50 transition-colors hover:bg-gray-900/10 dark:text-gray-50/50 dark:hover:bg-white/10"
-	aria-label={visible ? labelHide : labelShow}
+	icon={visible ? EyeClosed : Eye}
+	iconSize={14}
+	size="sm"
+	color="ghost2"
 	title={visible ? labelHide : labelShow}
->
-	{#if visible}
-		<EyeClosed size="14" strokeWidth="2" />
-	{:else}
-		<Eye size="14" strokeWidth="2" />
-	{/if}
-</button>
+	className="[&>svg]:stroke-2"
+/>

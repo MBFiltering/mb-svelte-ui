@@ -1,5 +1,6 @@
 <script>
 	import { Check, Copy } from '@lucide/svelte';
+	import CircleButton from './CircleButton.svelte';
 
 	// Props - Svelte 5 style
 	let { content = '', title = 'Copy to clipboard', ariaLabel = 'Copy to clipboard', children } = $props();
@@ -27,19 +28,15 @@
 	}
 </script>
 
-<button
-	type="button"
+<CircleButton
 	onclick={handleCopy}
-	class="inline-flex cursor-pointer items-center justify-center rounded-full p-1.5 text-gray-900/50 transition-colors hover:bg-gray-900/10 dark:text-gray-50/50 dark:hover:bg-white/10"
-	aria-label={ariaLabel}
+	icon={copied ? Check : Copy}
+	iconSize={14}
+	size="sm"
+	color="ghost2"
 	{title}
->
-	{#if copied}
-		<Check size="14" strokeWidth="2" />
-	{:else}
-		<Copy size="14" strokeWidth="2" />
-	{/if}
-</button>
+	className="[&>svg]:stroke-2"
+/>
 
 {#if children}
 	<span
