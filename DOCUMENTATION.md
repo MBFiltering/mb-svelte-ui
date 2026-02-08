@@ -12,7 +12,6 @@
 
 1. [Installation & Setup](#installation--setup)
 2. [Atoms (Basic Components)](#atoms)
-   - [BackButton](#backbutton)
    - [Badge](#badge)
    - [Callout](#callout)
    - [CheckBox](#checkbox)
@@ -96,33 +95,6 @@ npm install svelte@^5.0.0 @lucide/svelte@>=0.400.0
 ## Atoms
 
 Basic building blocks - simple, single-purpose components.
-
-### BackButton
-
-A simple navigation button that goes back in browser history.
-
-**Import:**
-
-```svelte
-<script>
-	import { BackButton } from '@mbsmart/ui/atoms';
-</script>
-```
-
-**Usage:**
-
-```svelte
-<BackButton />
-```
-
-**Props:** None
-
-**Behavior:**
-
-- Navigates to previous page via `history.back()`
-- Falls back to `/dashboard` if no history exists
-
----
 
 ### Badge
 

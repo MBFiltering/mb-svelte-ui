@@ -93,7 +93,7 @@ src/
 **Do not rely on this file for component details.** Instead:
 
 1. **Read the component source** — Open `src/components/{layer}/{Component}.svelte`
-2. **Check DOCUMENTATION.md** — Contains full API reference with props, usage examples, and behaviours. If you notice that the component source has diverged from DOCUMENTATION.md, *update DOCUMENTATION.md*.
+2. **Check DOCUMENTATION.md** — Contains full API reference with props, usage examples, and behaviours. If you happen to notice that the component source has diverged from DOCUMENTATION.md, *update DOCUMENTATION.md*.
 3. **Review index.js files** — Understand exports and available components
 
 Example: To understand the `Modal` component, read:
