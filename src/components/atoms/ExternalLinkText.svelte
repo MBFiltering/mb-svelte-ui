@@ -19,6 +19,6 @@
 	rel="noopener noreferrer"
 	class="inline-flex items-center gap-2 hover:underline {className}"
 >
-	<ExternalLink size={iconSize} />
+	<ExternalLink size={iconSize} class="shrink-0" />
 	<span>{text}</span>
 </a>
