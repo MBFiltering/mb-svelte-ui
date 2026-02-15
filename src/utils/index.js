@@ -1,6 +1,7 @@
 // Utils barrel export
 export * from './categoryColors.js';
 export * from './dateTime.js';
+export * from './playSound.js';
 export * from './stringUtils.js';
 export * from './urlUtils.js';
 

@@ -1,7 +1,10 @@
 <script>
+	import { playSound } from '../../utils/playSound.js';
+
 	// Props - Svelte 5 style
 	let {
 		onclick = () => {},
+		sound = null,
 		disabled = false,
 		title = '',
 		type = 'button',
@@ -32,10 +35,16 @@
 
 	const colorClass = $derived(colorClasses[color] || colorClasses.ghost);
 	const sizeClass = $derived(sizeClasses[size] || sizeClasses.md);
+
+	function handleClick(event) {
+		if (disabled) return;
+		playSound(sound);
+		onclick(event);
+	}
 </script>
 
 <button
-	{onclick}
+	onclick={handleClick}
 	{disabled}
 	{title}
 	{type}

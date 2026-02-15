@@ -2,6 +2,7 @@
 	// Props - Svelte 5 style
 	import { ChevronDown } from '@lucide/svelte';
 	import SvgIcon from '../atoms/SvgIcon.svelte';
+	import { playSound } from '../../utils/playSound.js';
 
 	let {
 		title = '',
@@ -9,6 +10,8 @@
 		svgIcon = '', // Name of SVG file in /static/icons (without .svg extension)
 		defaultExpanded = true,
 		forceExpanded = false, // When true, island is always expanded and cannot be collapsed
+		soundExpand = null,
+		soundCollapse = null,
 		className = '',
 		collapsible = true,
 		children
@@ -23,7 +26,9 @@
 	// Toggle expand/collapse (only works if not forceExpanded)
 	function toggleExpanded() {
 		if (!forceExpanded) {
-			internalExpanded = !internalExpanded;
+			const nextExpanded = !internalExpanded;
+			playSound(nextExpanded ? soundExpand : soundCollapse);
+			internalExpanded = nextExpanded;
 		}
 	}
 </script>

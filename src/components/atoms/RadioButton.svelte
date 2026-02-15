@@ -3,12 +3,15 @@
 	 * Custom RadioButton component with azure-700 styling
 	 * Works like a real radio button under the hood for accessibility
 	 */
+	import { playSound } from '../../utils/playSound.js';
+
 	let {
 		checked = false,
 		disabled = false,
 		name = '',
 		value = '',
 		ariaLabel = '',
+		sound = null,
 		onchange = () => {}
 	} = $props();
 </script>
@@ -28,6 +31,7 @@
 		aria-label={ariaLabel}
 		onchange={(e) => {
 			if (!disabled) {
+				playSound(sound);
 				onchange(e);
 			}
 		}}

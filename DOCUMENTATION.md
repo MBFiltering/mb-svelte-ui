@@ -203,13 +203,15 @@ Custom checkbox with Lucide icons supporting checked, unchecked, and indetermina
 
 **Props:**
 
-| Prop            | Type       | Default    | Description                       |
-| --------------- | ---------- | ---------- | --------------------------------- |
-| `checked`       | `boolean`  | `false`    | Whether the checkbox is checked   |
-| `indeterminate` | `boolean`  | `false`    | Shows minus icon instead of check |
-| `disabled`      | `boolean`  | `false`    | Disables interaction              |
-| `ariaLabel`     | `string`   | `''`       | Accessibility label               |
-| `onclick`       | `function` | `() => {}` | Click handler                     |
+| Prop            | Type                                  | Default    | Description                       |
+| --------------- | ------------------------------------- | ---------- | --------------------------------- |
+| `checked`       | `boolean`                             | `false`    | Whether the checkbox is checked   |
+| `indeterminate` | `boolean`                             | `false`    | Shows minus icon instead of check |
+| `disabled`      | `boolean`                             | `false`    | Disables interaction              |
+| `ariaLabel`     | `string`                              | `''`       | Accessibility label               |
+| `soundOn`       | `string | HTMLAudioElement | function` | `null`     | Sound played when toggling on     |
+| `soundOff`      | `string | HTMLAudioElement | function` | `null`     | Sound played when toggling off    |
+| `onclick`       | `function`                            | `() => {}` | Click handler                     |
 
 **Usage:**
 
@@ -236,10 +238,11 @@ Copy-to-clipboard button with visual feedback.
 
 **Props:**
 
-| Prop       | Type      | Default | Description                |
-| ---------- | --------- | ------- | -------------------------- |
-| `content`  | `string`  | `''`    | Text to copy to clipboard  |
-| `children` | `snippet` | -       | Optional clickable content |
+| Prop       | Type                                  | Default | Description                |
+| ---------- | ------------------------------------- | ------- | -------------------------- |
+| `content`  | `string`                              | `''`    | Text to copy to clipboard  |
+| `sound`    | `string | HTMLAudioElement | function` | `null`  | Sound played on copy       |
+| `children` | `snippet`                             | -       | Optional clickable content |
 
 **Usage:**
 
@@ -270,17 +273,18 @@ Circular icon button with color and size variants. Used for inline actions like 
 
 **Props:**
 
-| Prop       | Type        | Default    | Description                                                                   |
-| ---------- | ----------- | ---------- | ----------------------------------------------------------------------------- |
-| `onclick`  | `function`  | `() => {}` | Click handler                                                                            |
-| `disabled` | `boolean`   | `false`    | Disables the button                                                                      |
-| `title`    | `string`    | `''`       | Tooltip text                                                                             |
-| `type`     | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                           |
-| `color`    | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'ghost2'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
-| `size`     | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                                     |
-| `icon`     | `Component` | -          | Lucide icon component                                                                    |
-| `iconSize` | `number`    | `18`       | Size of the icon in pixels                                                               |
-| `className`| `string`    | `''`       | Additional CSS classes                                                                   |
+| Prop       | Type                                  | Default    | Description                                                                   |
+| ---------- | ------------------------------------- | ---------- | ----------------------------------------------------------------------------- |
+| `onclick`  | `function`                            | `() => {}` | Click handler                                                                 |
+| `sound`    | `string | HTMLAudioElement | function` | `null`     | Sound played on click                                                         |
+| `disabled` | `boolean`                             | `false`    | Disables the button                                                           |
+| `title`    | `string`                              | `''`       | Tooltip text                                                                  |
+| `type`     | `string`                              | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                |
+| `color`    | `string`                              | `'ghost'`  | Color variant: `'ghost'`, `'ghost2'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
+| `size`     | `string`                              | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                          |
+| `icon`     | `Component`                           | -          | Lucide icon component                                                         |
+| `iconSize` | `number`                              | `18`       | Size of the icon in pixels                                                    |
+| `className`| `string`                              | `''`       | Additional CSS classes                                                        |
 
 **Usage:**
 
@@ -314,15 +318,16 @@ Styled button with color and size variants.
 
 **Props:**
 
-| Prop        | Type       | Default    | Description                                                        |
-| ----------- | ---------- | ---------- | ------------------------------------------------------------------ |
-| `onclick`   | `function` | `() => {}` | Click handler                                                      |
-| `disabled`  | `boolean`  | `false`    | Disables the button                                                |
-| `color`     | `string`   | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'`, `'gray'` |
-| `size`      | `string`   | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                               |
-| `type`      | `string`   | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                     |
-| `className` | `string`   | `''`       | Additional CSS classes                                             |
-| `children`  | `snippet`  | -          | Button content                                                     |
+| Prop        | Type                                  | Default    | Description                                                        |
+| ----------- | ------------------------------------- | ---------- | ------------------------------------------------------------------ |
+| `onclick`   | `function`                            | `() => {}` | Click handler                                                      |
+| `sound`     | `string | HTMLAudioElement | function` | `null`     | Sound played on click                                              |
+| `disabled`  | `boolean`                             | `false`    | Disables the button                                                |
+| `color`     | `string`                              | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'`, `'gray'` |
+| `size`      | `string`                              | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                               |
+| `type`      | `string`                              | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                     |
+| `className` | `string`                              | `''`       | Additional CSS classes                                             |
+| `children`  | `snippet`                             | -          | Button content                                                     |
 
 **Usage:**
 
@@ -480,16 +485,17 @@ Navigation button or link for headers, toolbars, and navigation actions. Support
 
 **Props:**
 
-| Prop        | Type      | Default   | Description                                    |
-| ----------- | --------- | --------- | ---------------------------------------------- |
-| `href`      | string    | `null`    | Link destination (renders as `<a>` if set)     |
-| `onclick`   | function  | `null`    | Click handler (renders as `<button>` if set)   |
-| `icon`      | component | `null`    | Lucide icon component (e.g. `LogOut`)          |
-| `label`     | string    | `''`      | Button/link label text                         |
-| `title`     | string    | `''`      | Tooltip text                                   |
-| `color`     | string    | `'azure'` | Color variant: `azure`, `red`, `green`, `gray` |
-| `className` | string    | `''`      | Additional CSS classes                         |
-| `disabled`  | boolean   | `false`   | Disabled state                                 |
+| Prop        | Type                                  | Default   | Description                                    |
+| ----------- | ------------------------------------- | --------- | ---------------------------------------------- |
+| `href`      | string                                | `null`    | Link destination (renders as `<a>` if set)     |
+| `onclick`   | function                              | `null`    | Click handler (renders as `<button>` if set)   |
+| `sound`     | `string | HTMLAudioElement | function` | `null`    | Sound played on click (button mode)            |
+| `icon`      | component                             | `null`    | Lucide icon component (e.g. `LogOut`)          |
+| `label`     | string                                | `''`      | Button/link label text                         |
+| `title`     | string                                | `''`      | Tooltip text                                   |
+| `color`     | string                                | `'azure'` | Color variant: `azure`, `red`, `green`, `gray` |
+| `className` | string                                | `''`      | Additional CSS classes                         |
+| `disabled`  | boolean                               | `false`   | Disabled state                                 |
 
 **Usage:**
 
@@ -522,14 +528,15 @@ Segmented button selector for choosing one option from a list.
 
 **Props:**
 
-| Prop       | Type       | Default    | Description                                    |
-| ---------- | ---------- | ---------- | ---------------------------------------------- |
-| `options`  | `array`    | `[]`       | Array of `{ value, label, color }` objects     |
-| `selected` | `string`   | `''`       | Currently selected value                       |
-| `value`    | `string`   | `''`       | Alias for `selected` (backwards compatibility) |
-| `onChange` | `function` | `() => {}` | Callback with new value                        |
-| `onSelect` | `function` | `() => {}` | Alias for `onChange`                           |
-| `disabled` | `boolean`  | `false`    | Disables all options                           |
+| Prop       | Type                                  | Default    | Description                                    |
+| ---------- | ------------------------------------- | ---------- | ---------------------------------------------- |
+| `options`  | `array`                               | `[]`       | Array of `{ value, label, color }` objects     |
+| `selected` | `string`                              | `''`       | Currently selected value                       |
+| `value`    | `string`                              | `''`       | Alias for `selected` (backwards compatibility) |
+| `onChange` | `function`                            | `() => {}` | Callback with new value                        |
+| `onSelect` | `function`                            | `() => {}` | Alias for `onChange`                           |
+| `sound`    | `string | HTMLAudioElement | function` | `null`     | Sound played on selection                      |
+| `disabled` | `boolean`                             | `false`    | Disables all options                           |
 
 **Usage:**
 
@@ -568,14 +575,15 @@ Custom radio button with azure-700 styling.
 
 **Props:**
 
-| Prop        | Type       | Default    | Description               |
-| ----------- | ---------- | ---------- | ------------------------- |
-| `checked`   | `boolean`  | `false`    | Whether radio is selected |
-| `disabled`  | `boolean`  | `false`    | Disables interaction      |
-| `name`      | `string`   | `''`       | Radio group name          |
-| `value`     | `string`   | `''`       | Radio value               |
-| `ariaLabel` | `string`   | `''`       | Accessibility label       |
-| `onchange`  | `function` | `() => {}` | Change handler            |
+| Prop        | Type                                  | Default    | Description               |
+| ----------- | ------------------------------------- | ---------- | ------------------------- |
+| `checked`   | `boolean`                             | `false`    | Whether radio is selected |
+| `disabled`  | `boolean`                             | `false`    | Disables interaction      |
+| `name`      | `string`                              | `''`       | Radio group name          |
+| `value`     | `string`                              | `''`       | Radio value               |
+| `ariaLabel` | `string`                              | `''`       | Accessibility label       |
+| `sound`     | `string | HTMLAudioElement | function` | `null`     | Sound played on select    |
+| `onchange`  | `function`                            | `() => {}` | Change handler            |
 
 **Usage:**
 
@@ -957,19 +965,21 @@ Toggle switch with default and icon variants.
 
 **Props:**
 
-| Prop          | Type        | Default          | Description                         |
-| ------------- | ----------- | ---------------- | ----------------------------------- |
-| `label`       | `string`    | `''`             | Used for aria-label                 |
-| `customLabel` | `string`    | `null`           | Override aria-label                 |
-| `checked`     | `boolean`   | `false`          | Toggle state                        |
-| `onChange`    | `function`  | `() => {}`       | Callback with new value             |
-| `disabled`    | `boolean`   | `false`          | Disables toggle                     |
-| `colorOn`     | `string`    | `'bg-azure-500'` | Background when on                  |
-| `colorOff`    | `string`    | `'bg-gray-300'`  | Background when off                 |
-| `variant`     | `string`    | `'default'`      | `'default'` or `'icon'`             |
-| `iconOn`      | `component` | `null`           | Lucide icon when on (icon variant)  |
-| `iconOff`     | `component` | `null`           | Lucide icon when off (icon variant) |
-| `iconSize`    | `number`    | `18`             | Icon size (icon variant)            |
+| Prop          | Type                                  | Default          | Description                         |
+| ------------- | ------------------------------------- | ---------------- | ----------------------------------- |
+| `label`       | `string`                              | `''`             | Used for aria-label                 |
+| `customLabel` | `string`                              | `null`           | Override aria-label                 |
+| `checked`     | `boolean`                             | `false`          | Toggle state                        |
+| `onChange`    | `function`                            | `() => {}`       | Callback with new value             |
+| `soundOn`     | `string | HTMLAudioElement | function` | `null`           | Sound played when toggling on       |
+| `soundOff`    | `string | HTMLAudioElement | function` | `null`           | Sound played when toggling off      |
+| `disabled`    | `boolean`                             | `false`          | Disables toggle                     |
+| `colorOn`     | `string`                              | `'bg-azure-500'` | Background when on                  |
+| `colorOff`    | `string`                              | `'bg-gray-300'`  | Background when off                 |
+| `variant`     | `string`                              | `'default'`      | `'default'` or `'icon'`             |
+| `iconOn`      | `component`                           | `null`           | Lucide icon when on (icon variant)  |
+| `iconOff`     | `component`                           | `null`           | Lucide icon when off (icon variant) |
+| `iconSize`    | `number`                              | `18`             | Icon size (icon variant)            |
 
 **Usage:**
 
@@ -1007,11 +1017,13 @@ Eye icon button for showing/hiding sensitive content.
 
 **Props:**
 
-| Prop        | Type      | Default  | Description                         |
-| ----------- | --------- | -------- | ----------------------------------- |
-| `visible`   | `boolean` | `false`  | Current visibility state (bindable) |
-| `labelShow` | `string`  | `'Show'` | Tooltip when hidden                 |
-| `labelHide` | `string`  | `'Hide'` | Tooltip when visible                |
+| Prop        | Type                                  | Default  | Description                         |
+| ----------- | ------------------------------------- | -------- | ----------------------------------- |
+| `visible`   | `boolean`                             | `false`  | Current visibility state (bindable) |
+| `labelShow` | `string`                              | `'Show'` | Tooltip when hidden                 |
+| `labelHide` | `string`                              | `'Hide'` | Tooltip when visible                |
+| `soundOn`   | `string | HTMLAudioElement | function` | `null`   | Sound played when showing           |
+| `soundOff`  | `string | HTMLAudioElement | function` | `null`   | Sound played when hiding            |
 
 **Usage:**
 
@@ -1094,16 +1106,18 @@ Collapsible card container with optional title and icon.
 
 **Props:**
 
-| Prop              | Type        | Default | Description                      |
-| ----------------- | ----------- | ------- | -------------------------------- |
-| `title`           | `string`    | `''`    | Header title                     |
-| `icon`            | `component` | `null`  | Lucide icon component            |
-| `svgIcon`         | `string`    | `''`    | SVG icon name from /static/icons |
-| `defaultExpanded` | `boolean`   | `true`  | Initial expanded state           |
-| `forceExpanded`   | `boolean`   | `false` | Always expanded, no toggle       |
-| `collapsible`     | `boolean`   | `true`  | Enable collapse functionality    |
-| `className`       | `string`    | `''`    | Additional classes               |
-| `children`        | `snippet`   | -       | Island content                   |
+| Prop              | Type                                  | Default | Description                      |
+| ----------------- | ------------------------------------- | ------- | -------------------------------- |
+| `title`           | `string`                              | `''`    | Header title                     |
+| `icon`            | `component`                           | `null`  | Lucide icon component            |
+| `svgIcon`         | `string`                              | `''`    | SVG icon name from /static/icons |
+| `defaultExpanded` | `boolean`                             | `true`  | Initial expanded state           |
+| `forceExpanded`   | `boolean`                             | `false` | Always expanded, no toggle       |
+| `soundExpand`     | `string | HTMLAudioElement | function` | `null`  | Sound played on expand           |
+| `soundCollapse`   | `string | HTMLAudioElement | function` | `null`  | Sound played on collapse         |
+| `collapsible`     | `boolean`                             | `true`  | Enable collapse functionality    |
+| `className`       | `string`                              | `''`    | Additional classes               |
+| `children`        | `snippet`                             | -       | Island content                   |
 
 **Usage:**
 

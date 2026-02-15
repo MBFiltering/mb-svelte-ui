@@ -1,15 +1,23 @@
 <script>
 	import { Check, Copy } from '@lucide/svelte';
 	import CircleButton from './CircleButton.svelte';
+	import { playSound } from '../../utils/playSound.js';
 
 	// Props - Svelte 5 style
-	let { content = '', title = 'Copy to clipboard', ariaLabel = 'Copy to clipboard', children } = $props();
+	let {
+		content = '',
+		title = 'Copy to clipboard',
+		ariaLabel = 'Copy to clipboard',
+		sound = null,
+		children
+	} = $props();
 
 	let copied = $state(false);
 	let timeout;
 
 	async function handleCopy() {
 		try {
+			playSound(sound);
 			await navigator.clipboard.writeText(content);
 			copied = true;
 
