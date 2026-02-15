@@ -1,10 +1,9 @@
 <script>
 	import { onMount } from 'svelte';
 	import { CheckCircle, XCircle, Info, AlertTriangle } from '@lucide/svelte';
-	import { playSound } from '../../utils/playSound.js';
 
 	// Props - Svelte 5 style
-	let { message = '', type = 'success', duration = 3000, sound = null, onClose = () => {} } = $props();
+	let { message = '', type = 'success', duration = 3000, onClose = () => {} } = $props();
 
 	let visible = $state(false);
 	let mounted = $state(false);
@@ -28,8 +27,6 @@
 	const IconComponent = typeIcons[type];
 
 	onMount(() => {
-		// Play sound on mount
-		playSound(sound);
 		// Trigger mount state first
 		mounted = true;
 		// Then trigger visible state for animation

@@ -933,13 +933,12 @@ Individual toast notification component (usually used via ToastContainer).
 
 **Props:**
 
-| Prop       | Type                                  | Default     | Description                                         |
-| ---------- | ------------------------------------- | ----------- | --------------------------------------------------- |
-| `message`  | `string`                              | `''`        | Toast message                                       |
-| `type`     | `string`                              | `'success'` | Type: `'success'`, `'error'`, `'info'`, `'warning'` |
-| `duration` | `number`                              | `3000`      | Auto-dismiss in ms (0 = no auto-dismiss)            |
-| `sound`    | `string \| HTMLAudioElement \| function` | `null`      | Sound played when the toast appears                 |
-| `onClose`  | `function`                            | `() => {}`  | Close callback                                      |
+| Prop       | Type       | Default     | Description                                         |
+| ---------- | ---------- | ----------- | --------------------------------------------------- |
+| `message`  | `string`   | `''`        | Toast message                                       |
+| `type`     | `string`   | `'success'` | Type: `'success'`, `'error'`, `'info'`, `'warning'` |
+| `duration` | `number`   | `3000`      | Auto-dismiss in ms (0 = no auto-dismiss)            |
+| `onClose`  | `function` | `() => {}`  | Close callback                                      |
 
 **Type Styling:**
 
@@ -1446,14 +1445,6 @@ Container component for displaying toast notifications.
 </script>
 ```
 
-**Props:**
-
-| Prop     | Type     | Default | Description                                                        |
-| -------- | -------- | ------- | ------------------------------------------------------------------ |
-| `sounds` | `object` | `{}`    | Map of toast types to sounds: `{ success, error, info, warning }` |
-
-Each value in `sounds` can be a URL string, an `HTMLAudioElement`, or a callback function.
-
 **Usage:**
 
 Add once in your root layout:
@@ -1464,15 +1455,7 @@ Add once in your root layout:
 	import { ToastContainer } from '@mbsmart/ui/organisms';
 </script>
 
-<!-- Without sounds -->
 <ToastContainer />
-
-<!-- With per-type sounds -->
-<ToastContainer sounds={{
-	success: '/sounds/success.mp3',
-	error: '/sounds/error.mp3',
-	warning: '/sounds/warning.mp3'
-}} />
 {@render children()}
 ```
 

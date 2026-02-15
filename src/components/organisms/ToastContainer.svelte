@@ -2,11 +2,9 @@
 	import Toast from '../atoms/Toast.svelte';
 	import toasts, { removeToast } from '../../utils/toastStore.js';
 
-	/**
-	 * Optional sounds config — map toast types to sound sources.
-	 * @type {{ success?: *, error?: *, info?: *, warning?: * }}
-	 */
-	let { sounds = {} } = $props();
+	// $effect(() => {
+	// 	console.log('Toasts in store:', $toasts);
+	// });
 </script>
 
 <!-- Toast Container -->
@@ -16,7 +14,6 @@
 			message={toast.message}
 			type={toast.type}
 			duration={toast.duration}
-			sound={sounds[toast.type] ?? null}
 			onClose={() => removeToast(toast.id)}
 		/>
 	{/each}
