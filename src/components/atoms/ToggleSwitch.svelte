@@ -1,14 +1,10 @@
 <script>
-	import { playSound } from '../../utils/playSound.js';
-
 	// Props - Svelte 5 style
 	let {
 		label = '', // Used for aria-label
 		customLabel = null,
 		checked = false,
 		onChange = () => {},
-		soundOn = null,
-		soundOff = null,
 		disabled = false,
 		colorOn = 'bg-azure-500',
 		colorOff = 'bg-gray-300 dark:bg-gray-600',
@@ -17,19 +13,12 @@
 		iconOff = null,
 		iconSize = 18
 	} = $props();
-
-	function handleToggle() {
-		if (disabled) return;
-		const nextChecked = !checked;
-		playSound(nextChecked ? soundOn : soundOff);
-		onChange(nextChecked);
-	}
 </script>
 
 {#if variant === 'icon'}
 	<button
 		type="button"
-		onclick={handleToggle}
+		onclick={() => !disabled && onChange(!checked)}
 		{disabled}
 		class="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors disabled:cursor-default disabled:opacity-50 {checked
 			? colorOn.replace('bg-', 'bg-') + ' text-white dark:text-zinc-750'
@@ -50,7 +39,7 @@
 {:else}
 	<button
 		type="button"
-		onclick={handleToggle}
+		onclick={() => !disabled && onChange(!checked)}
 		{disabled}
 		class="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors disabled:cursor-default disabled:opacity-50 {checked
 			? colorOn

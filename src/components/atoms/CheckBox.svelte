@@ -1,6 +1,5 @@
 <script>
 	import { Check, Minus } from '@lucide/svelte';
-	import { playSound } from '../../utils/playSound.js';
 
 	/**
 	 * Custom Checkbox component with Lucide icons
@@ -11,8 +10,6 @@
 		indeterminate = false,
 		disabled = false,
 		ariaLabel = '',
-		soundOn = null,
-		soundOff = null,
 		onclick = () => {}
 	} = $props();
 </script>
@@ -30,8 +27,6 @@
 		aria-label={ariaLabel}
 		onclick={(e) => {
 			if (!disabled) {
-				const nextChecked = indeterminate ? true : !checked;
-				playSound(nextChecked ? soundOn : soundOff);
 				onclick(e);
 			}
 		}}

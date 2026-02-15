@@ -74,7 +74,7 @@ src/
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
 ├── fonts/                # Custom fonts (JetBrains Mono)
-└── utils/                # Helper functions (dateTime, playSound, stringUtils, toastStore, etc.)
+└── utils/                # Helper functions (dateTime, stringUtils, toastStore, etc.)
 ```
 
 ### Component Hierarchy (Atomic Design)

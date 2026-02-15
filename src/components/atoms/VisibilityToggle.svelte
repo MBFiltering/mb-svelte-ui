@@ -6,13 +6,7 @@
 	 * Visibility toggle component
 	 * Shows/hides sensitive content with an eye icon button
 	 */
-	let {
-		visible = $bindable(false),
-		labelShow = 'Show',
-		labelHide = 'Hide',
-		soundOn = null,
-		soundOff = null
-	} = $props();
+	let { visible = $bindable(false), labelShow = 'Show', labelHide = 'Hide' } = $props();
 
 	function toggle() {
 		visible = !visible;
@@ -21,7 +15,6 @@
 
 <CircleButton
 	onclick={toggle}
-	sound={visible ? soundOff : soundOn}
 	icon={visible ? EyeClosed : Eye}
 	iconSize={14}
 	size="sm"

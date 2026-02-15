@@ -1,6 +1,4 @@
 <script>
-	import { playSound } from '../../utils/playSound.js';
-
 	/**
 	 * NavButton - Navigation button/link for header use
 	 * Supports both link (href) and button (onclick) modes
@@ -9,7 +7,6 @@
 	let {
 		href = '',
 		onclick = null,
-		sound = null,
 		icon = null,
 		label = '',
 		title = '',
@@ -30,12 +27,6 @@
 
 	const baseClasses = `flex items-center gap-2 rounded-lg border px-2 py-2 font-medium transition-colors lg:px-4 ${colorClasses[color] || colorClasses.azure} ${className}`;
 	const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
-
-	function handleClick(event) {
-		if (disabled) return;
-		playSound(sound);
-		if (onclick) onclick(event);
-	}
 </script>
 
 {#if href && !onclick}
@@ -58,7 +49,7 @@
 	<!-- Button mode -->
 	<button
 		type="button"
-		onclick={handleClick}
+		{onclick}
 		{disabled}
 		class="{baseClasses} {disabledClasses}"
 		title={title || label}

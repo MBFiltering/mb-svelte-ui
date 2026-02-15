@@ -1,6 +1,5 @@
 <script>
 	import { ChevronDown } from '@lucide/svelte';
-	import { playSound } from '../../utils/playSound.js';
 
 	let {
 		options = [], // Array of { value, label, color }
@@ -8,7 +7,6 @@
 		value = '', // Support both selected and value for backwards compatibility
 		onChange = () => {}, // Primary callback
 		onSelect = () => {}, // Backwards compatibility
-		sound = null,
 		disabled = false
 	} = $props();
 
@@ -65,7 +63,6 @@
 	// Handle clicking the first option
 	function handleFirstClick() {
 		if (disabled) return;
-		playSound(sound);
 		if (onChange) onChange(firstOption.value);
 		if (onSelect) onSelect(firstOption.value);
 	}
@@ -75,7 +72,6 @@
 		if (disabled) return;
 		const targetValue = displayedDropdownOption?.value;
 		lastDropdownSelection = targetValue; // Remember this selection
-		playSound(sound);
 		if (onChange) onChange(targetValue);
 		if (onSelect) onSelect(targetValue);
 	}
@@ -85,7 +81,6 @@
 		if (disabled) return;
 		const selectedValue = event.target.value;
 		lastDropdownSelection = selectedValue; // Remember this selection
-		playSound(sound);
 		if (onChange) onChange(selectedValue);
 		if (onSelect) onSelect(selectedValue);
 	}
