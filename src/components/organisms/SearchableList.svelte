@@ -239,7 +239,7 @@
 						<div class="magicsearch-item flex items-start">
 							<Checkbox checked={isSelected(item)} onclick={() => toggleSelect(item)} />
 						</div>
-						<div class="flex-1">{@render children?.(item, activeFilter)}</div>
+						<div class="flex-1 min-w-0">{@render children?.(item, activeFilter)}</div>
 					</div>
 				{:else}
 					{@render children?.(item, activeFilter)}
