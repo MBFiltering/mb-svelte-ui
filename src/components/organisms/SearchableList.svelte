@@ -26,13 +26,40 @@
 		selectedItems = $bindable([]), // array of selected item objects (bind:selectedItems)
 		selectId = 'id',
 		idKey = null, // Optional key to use for the each block (overrides auto-detection)
+		// Pagination props
+		pageSize = 28, // 0 = no pagination, >0 = items per page
 		// i18n text props
 		ofText = 'of', // "of" text for "X of Y items"
-		selectedText = 'selected' // "selected" text for bulk mode
+		selectedText = 'selected', // "selected" text for bulk mode
+		pageText = 'Page', // "Page" label for pagination
+		prevText = 'Previous', // aria-label for previous button
+		nextText = 'Next' // aria-label for next button
 	} = $props();
 
 	let searchQuery = $state('');
 	let activeFilter = $state(filterTabs.length > 0 ? filterTabs[0].key : null);
+	let currentPage = $state(1);
+
+	// Reset to page 1 when search or filter changes
+	$effect(() => {
+		// track dependencies
+		void searchQuery;
+		void activeFilter;
+		currentPage = 1;
+	});
+
+	const totalPages = $derived(pageSize > 0 ? Math.max(1, Math.ceil(filteredItems.length / pageSize)) : 1);
+
+	// Clamp page if items shrink
+	$effect(() => {
+		if (currentPage > totalPages) currentPage = totalPages;
+	});
+
+	const paginatedItems = $derived.by(() => {
+		if (pageSize <= 0) return filteredItems;
+		const start = (currentPage - 1) * pageSize;
+		return filteredItems.slice(start, start + pageSize);
+	});
 
 	// Get plural form of item name with proper pluralization rules
 	const pluralItemName = $derived.by(() => {
@@ -103,8 +130,9 @@
 	});
 
 	// Derived list of visible ids for current filter/search
+	// Visible ids scoped to the current page
 	const visibleIds = $derived.by(() =>
-		filteredItems.map((it) => getItemId(it)).filter((id) => id !== undefined && id !== null)
+		paginatedItems.map((it) => getItemId(it)).filter((id) => id !== undefined && id !== null)
 	);
 
 	const allVisibleSelected = $derived.by(() => {
@@ -131,7 +159,7 @@
 			const newSelected = Array.from(new Set([...selected, ...ids]));
 			selected = newSelected;
 			// ensure selectedItems contains the visible objects
-			const vis = filteredItems;
+			const vis = paginatedItems;
 			vis.forEach((it) => {
 				const id = getItemId(it);
 				if (!selectedItems.some((si) => getItemId(si) === id)) selectedItems.push(it);
@@ -227,13 +255,13 @@
 	</div>
 
 	<!-- List Container -->
-	<Grid flow="col" itemCount={filteredItems.length} {columns} {columns2Xl} disabled={disableGrid}>
-		{#if filteredItems.length === 0}
+	<Grid flow="col" itemCount={paginatedItems.length} {columns} {columns2Xl} disabled={disableGrid}>
+		{#if paginatedItems.length === 0}
 			<div class="rounded-lg py-8 text-center text-gray-500 dark:text-gray-400">
 				{emptyMessage}
 			</div>
 		{:else}
-			{#each filteredItems as item, index (idKey ? item[idKey] : item.package || item.url || item.id || index)}
+			{#each paginatedItems as item, index (idKey ? item[idKey] : item.package || item.url || item.id || index)}
 				{#if bulk}
 					<div class="flex items-center gap-3">
 						<div class="magicsearch-item flex items-start">
@@ -247,4 +275,39 @@
 			{/each}
 		{/if}
 	</Grid>
+
+	<!-- Pagination Controls -->
+	{#if pageSize > 0 && totalPages > 1}
+		<div class="flex items-center justify-center gap-2 pt-2">
+			<button
+				type="button"
+				aria-label={prevText}
+				disabled={currentPage <= 1}
+				onclick={() => (currentPage = Math.max(1, currentPage - 1))}
+				class="rounded-md px-3 py-1.5 text-sm font-medium transition-colors
+					{currentPage <= 1
+						? 'cursor-not-allowed text-gray-400 dark:text-gray-600'
+						: 'cursor-pointer text-azure-700 hover:bg-azure-50 dark:hover:bg-azure-900/30'}"
+			>
+				‹
+			</button>
+
+			<span class="text-sm text-gray-600 dark:text-gray-300">
+				{pageText} {currentPage} {ofText} {totalPages}
+			</span>
+
+			<button
+				type="button"
+				aria-label={nextText}
+				disabled={currentPage >= totalPages}
+				onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
+				class="rounded-md px-3 py-1.5 text-sm font-medium transition-colors
+					{currentPage >= totalPages
+						? 'cursor-not-allowed text-gray-400 dark:text-gray-600'
+						: 'cursor-pointer text-azure-700 hover:bg-azure-50 dark:hover:bg-azure-900/30'}"
+			>
+				›
+			</button>
+		</div>
+	{/if}
 </div>

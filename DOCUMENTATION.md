@@ -1361,6 +1361,12 @@ Searchable, filterable list with optional bulk selection.
 | `selectedItems`     | `array`   | `[]`               | Selected item objects (bindable) |
 | `selectId`          | `string`  | `'id'`             | Path to item ID                  |
 | `idKey`             | `string`  | `null`             | Key for #each block              |
+| `pageSize`          | `number`  | `0`                | Items per page (0 = no pagination) |
+| `ofText`            | `string`  | `'of'`             | i18n "of" text                   |
+| `selectedText`      | `string`  | `'selected'`       | i18n "selected" text             |
+| `pageText`          | `string`  | `'Page'`           | i18n "Page" label                |
+| `prevText`          | `string`  | `'Previous'`       | i18n aria-label for prev button  |
+| `nextText`          | `string`  | `'Next'`           | i18n aria-label for next button  |
 
 **filterTabs Format:**
 
@@ -1410,6 +1416,21 @@ Searchable, filterable list with optional bulk selection.
 	bulk={true}
 	bind:selected={selectedIds}
 	bind:selectedItems={selectedObjects}
+>
+	{#snippet children(item)}
+		<span>{item.name}</span>
+	{/snippet}
+</SearchableList>
+```
+
+**With pagination:**
+
+```svelte
+<SearchableList
+	{items}
+	searchKeys={['name']}
+	itemName="item"
+	pageSize={20}
 >
 	{#snippet children(item)}
 		<span>{item.name}</span>
