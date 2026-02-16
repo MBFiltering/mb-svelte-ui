@@ -426,7 +426,7 @@
 								<button
 									type="button"
 									onclick={clearMagicSearch}
-									class="absolute top-1/2 ltr:right-2 rtl:left-2 -translate-y-1/2 cursor-pointer rounded p-0.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600"
+									class="absolute top-1/2 ltr:right-2 rtl:left-2 -translate-y-1/2 cursor-pointer rounded p-0.5 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
 								>
 									<X size={14} />
 								</button>
