@@ -1,5 +1,7 @@
 <script>
+	import { ChevronLeft, ChevronRight } from '@lucide/svelte';
 	import Checkbox from '../atoms/CheckBox.svelte';
+	import CircleButton from '../atoms/CircleButton.svelte';
 	import TextInput from '../atoms/TextInput.svelte';
 	import Grid from '../molecules/Grid.svelte';
 	import { fuzzyIncludes } from '../../utils/stringUtils.js';
@@ -27,7 +29,8 @@
 		selectId = 'id',
 		idKey = null, // Optional key to use for the each block (overrides auto-detection)
 		// Pagination props
-		pageSize = 28, // 0 = no pagination, >0 = items per page
+		pageSize = 24, // 0 = no pagination, >0 = items per page
+		externalQuery = '', // Supplied search query from outside (e.g. SectionedPage magic search)
 		// i18n text props
 		ofText = 'of', // "of" text for "X of Y items"
 		selectedText = 'selected', // "selected" text for bulk mode
@@ -40,10 +43,13 @@
 	let activeFilter = $state(filterTabs.length > 0 ? filterTabs[0].key : null);
 	let currentPage = $state(1);
 
+	// Effective query: externalQuery takes priority over the built-in search
+	const effectiveQuery = $derived(externalQuery.trim() || searchQuery);
+
 	// Reset to page 1 when search or filter changes
 	$effect(() => {
 		// track dependencies
-		void searchQuery;
+		void effectiveQuery;
 		void activeFilter;
 		currentPage = 1;
 	});
@@ -104,11 +110,11 @@
 		}
 
 		// Then apply search filter
-		if (!searchQuery.trim()) {
+		if (!effectiveQuery.trim()) {
 			return tabFilteredItems;
 		}
 
-		const query = searchQuery.toLowerCase().trim();
+		const query = effectiveQuery.toLowerCase().trim();
 
 		// Check if query matches any special filter
 		for (const [filterKey, filterValue] of Object.entries(specialFilters)) {
@@ -129,8 +135,7 @@
 		});
 	});
 
-	// Derived list of visible ids for current filter/search
-	// Visible ids scoped to the current page
+	// Derived list of visible ids for current page
 	const visibleIds = $derived.by(() =>
 		paginatedItems.map((it) => getItemId(it)).filter((id) => id !== undefined && id !== null)
 	);
@@ -199,6 +204,7 @@
 	function getNestedValue(obj, path) {
 		return path.split('.').reduce((current, prop) => current?.[prop], obj);
 	}
+
 </script>
 
 <div class="space-y-4">
@@ -250,7 +256,7 @@
 
 	<!-- Results Count -->
 	<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
-		{filteredItems.length} {ofText} {items.length}
+		{paginatedItems.length} {ofText} {filteredItems.length}
 		{pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
 	</div>
 
@@ -279,35 +285,29 @@
 	<!-- Pagination Controls -->
 	{#if pageSize > 0 && totalPages > 1}
 		<div class="flex items-center justify-center gap-2 pt-2">
-			<button
-				type="button"
-				aria-label={prevText}
+			<CircleButton
+				icon={ChevronLeft}
+				title={prevText}
 				disabled={currentPage <= 1}
 				onclick={() => (currentPage = Math.max(1, currentPage - 1))}
-				class="rounded-md px-3 py-1.5 text-sm font-medium transition-colors
-					{currentPage <= 1
-						? 'cursor-not-allowed text-gray-400 dark:text-gray-600'
-						: 'cursor-pointer text-azure-700 hover:bg-azure-50 dark:hover:bg-azure-900/30'}"
-			>
-				‹
-			</button>
+				color="ghost2"
+				size="sm"
+				className="rtl:rotate-180"
+			/>
 
 			<span class="text-sm text-gray-600 dark:text-gray-300">
 				{pageText} {currentPage} {ofText} {totalPages}
 			</span>
 
-			<button
-				type="button"
-				aria-label={nextText}
+			<CircleButton
+				icon={ChevronRight}
+				title={nextText}
 				disabled={currentPage >= totalPages}
 				onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
-				class="rounded-md px-3 py-1.5 text-sm font-medium transition-colors
-					{currentPage >= totalPages
-						? 'cursor-not-allowed text-gray-400 dark:text-gray-600'
-						: 'cursor-pointer text-azure-700 hover:bg-azure-50 dark:hover:bg-azure-900/30'}"
-			>
-				›
-			</button>
+				color="ghost2"
+				size="sm"
+				className="rtl:rotate-180"
+			/>
 		</div>
 	{/if}
 </div>

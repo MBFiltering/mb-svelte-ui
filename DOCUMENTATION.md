@@ -1361,7 +1361,8 @@ Searchable, filterable list with optional bulk selection.
 | `selectedItems`     | `array`   | `[]`               | Selected item objects (bindable) |
 | `selectId`          | `string`  | `'id'`             | Path to item ID                  |
 | `idKey`             | `string`  | `null`             | Key for #each block              |
-| `pageSize`          | `number`  | `0`                | Items per page (0 = no pagination) |
+| `pageSize`          | `number`  | `28`               | Items per page (0 = no pagination) |
+| `externalQuery`     | `string`  | `''`               | Supplied search query from outside |
 | `ofText`            | `string`  | `'of'`             | i18n "of" text                   |
 | `selectedText`      | `string`  | `'selected'`       | i18n "selected" text             |
 | `pageText`          | `string`  | `'Page'`           | i18n "Page" label                |
@@ -1436,6 +1437,24 @@ Searchable, filterable list with optional bulk selection.
 		<span>{item.name}</span>
 	{/snippet}
 </SearchableList>
+```
+
+**Magic Search Integration:**
+
+Pass `ctx.magicSearchQuery` as `externalQuery` to let SectionedPage's magic search drive the list's filtering. It feeds into the same search pipeline as the built-in search bar (which is automatically hidden by magic search CSS). Pagination, tab filters, and special filters all continue to work normally.
+
+```svelte
+{#snippet sectionContent(ctx)}
+	<SearchableList
+		{items}
+		searchKeys={['name', 'package']}
+		externalQuery={ctx.magicSearchQuery}
+	>
+		{#snippet children(item)}
+			<span>{item.name}</span>
+		{/snippet}
+	</SearchableList>
+{/snippet}
 ```
 
 ---
