@@ -140,7 +140,7 @@
 				onchange={handleDropdownSelect}
 				value={selected}
 				{disabled}
-				class="absolute top-0 ltr:right-0 rtl:left-0 h-8 w-8 cursor-pointer opacity-0 disabled:cursor-default"
+				class="absolute top-0 ltr:right-0 rtl:left-0 h-8 w-8 bg-gray-950 dark:bg-zinc-750 cursor-pointer opacity-0 disabled:cursor-default"
 			>
 				{#each dropdownOptions as option}
 					<option value={option.value}>{option.label}</option>
