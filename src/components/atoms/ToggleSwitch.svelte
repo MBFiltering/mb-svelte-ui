@@ -37,21 +37,26 @@
 		{/if}
 	</button>
 {:else}
-	<button
-		type="button"
-		onclick={() => !disabled && onChange(!checked)}
-		{disabled}
-		class="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors disabled:cursor-default disabled:opacity-50 {checked
-			? colorOn
-			: colorOff}"
-		aria-label={customLabel || `Toggle ${label}`}
-		role="switch"
-		aria-checked={checked}
-	>
-		<span
-			class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {checked
-				? 'ltr:translate-x-6 rtl:-translate-x-6'
-				: 'ltr:translate-x-1 rtl:-translate-x-1'}"
-		></span>
-	</button>
+	<div class="flex gap-2 items-center">
+		<p class="text-sm font-medium text-gray-700 dark:text-gray-200">
+			{checked ? 'On' : 'Off'}
+		</p>
+		<button
+			type="button"
+			onclick={() => !disabled && onChange(!checked)}
+			{disabled}
+			class="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors disabled:cursor-default disabled:opacity-50 {checked
+				? colorOn
+				: colorOff}"
+			aria-label={customLabel || `Toggle ${label}`}
+			role="switch"
+			aria-checked={checked}
+		>
+			<span
+				class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {checked
+					? 'ltr:translate-x-6 rtl:-translate-x-6'
+					: 'ltr:translate-x-1 rtl:-translate-x-1'}"
+			></span>
+		</button>
+	</div>
 {/if}

@@ -318,7 +318,7 @@
 						<!-- Nav action buttons -->
 						{#if navActions.length > 0}
 							<div
-								class="lgv:mt-0 lgv:mb-1 lgv:flex-row mt-1.5 mb-2 flex flex-row justify-between gap-2 px-1.5 sm:mt-1 sm:flex-col"
+								class="lgv:mt-0 lgv:mb-1 lgv:flex-row mt-1.5 mb-2 px-1.5 sm:mt-1 {navActions.length > 2 ? 'grid grid-cols-2 justify-items-stretch' : 'flex flex-row justify-between gap-2 sm:flex-col'}"
 							>
 								{#each navActions as action}
 									<li>
