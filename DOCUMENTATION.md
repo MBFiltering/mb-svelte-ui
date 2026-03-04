@@ -2190,11 +2190,58 @@ For use with `SectionedPage`:
 
 ---
 
-## Version History
+## Internationalization (i18n)
 
-- **0.1.0** - Initial release with full component library
+This package now includes a shared i18n engine and language store designed for use across MB Smart projects.
 
----
+### Exports
+Import from the package path `@mbsmart/ui/i18n`:
 
-**Documentation Version**: 1.0  
-**Last Updated**: January 2026
+- `registerTranslations(data)` — merge/register project translations (key-first format: `{ namespace: { key: { en: '...', he: '...' } } }`).
+- `t` — reactive translation store for templates: `{$t('namespace.key')}`.
+- `tr(key, props)` — non-reactive translator for scripts: `tr('namespace.key', { name: 'John' })`.
+- `getTranslation(key, lang, props)`, `hasTranslation(key)`, `addTranslation(namespace, key, langValues)`
+- `getNamespaceKeys(namespace)`, `getAvailableLanguages()`
+
+Language store available from same module:
+
+- `language` — Svelte writable store with current language code.
+- `setLanguage(lang)`, `setLanguageAndNavigate(lang, currentPath, navigateFn?)` — `setLanguageAndNavigate` accepts an optional navigation function (e.g., SvelteKit's `goto`).
+- `getCurrentLanguage()`, `getLanguageInfo(code)`, `SUPPORTED_LANGUAGES`, `DEFAULT_LANGUAGE`, `isRTL()`
+
+### Usage (project)
+
+1. In your app, register translations at startup (example for SvelteKit):
+
+```js
+import { registerTranslations } from '@mbsmart/ui/i18n';
+import { translations } from '$lib/translations.js';
+
+registerTranslations(translations);
+```
+
+2. In components and scripts:
+
+```svelte
+<script>
+  import { t, tr } from '@mbsmart/ui/i18n';
+</script>
+
+<h1>{$t('dashboard.welcome')}</h1>
+```
+
+```js
+import { tr } from '@mbsmart/ui/i18n';
+const msg = tr('toast.success_login');
+```
+
+3. Language management:
+
+```js
+import { language, setLanguage, SUPPORTED_LANGUAGES } from '@mbsmart/ui/i18n';
+setLanguage('he'); // switches language and updates document dir when used in-browser
+```
+
+Notes:
+- The engine is intentionally data-agnostic: translation DATA should live in each project (as a key-first object) and be registered with `registerTranslations()`; this keeps the shared lib small and allows projects to control their translations and lazy-loading strategies.
+- The `setLanguageAndNavigate` helper can accept a navigation function for frameworks that need it (SvelteKit's `goto`).

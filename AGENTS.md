@@ -22,6 +22,8 @@ When working on this codebase, adhere to these principles:
 
 6. **Consistency** — Follow existing patterns in the codebase. Match naming conventions, file structure, and coding style.
 
+7. **Zero Git usage** — NEVER commit, make pull requests, or change the branch, even if the user gives explicit permission to.
+
 ### Svelte-Specific Guidelines
 
 - **Svelte 5 Runes** — This library uses Svelte 5 with runes (`$state`, `$derived`, `$effect`, `$props`, etc.). Do not use legacy Svelte 4 reactive syntax.
