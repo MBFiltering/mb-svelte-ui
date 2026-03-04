@@ -46,6 +46,7 @@
    - [ToastContainer](#toastcontainer)
 5. [Templates (Page Layouts)](#templates)
    - [AppShell](#appshell)
+   - [ErrorPage](#errorpage)
    - [SectionedPage](#sectionedpage)
 6. [Utilities](#utilities)
    - [categoryColors](#categorycolors)
@@ -1502,6 +1503,61 @@ Then use the `toast` utility anywhere:
 ## Templates
 
 Full page layout components.
+
+### ErrorPage
+
+Full-screen error page template with status code, message, bundled light/dark images, and a customisable action button via a snippet. Default images are included in the library; override with your own via `darkImage` / `lightImage` props.
+
+**Import:**
+
+```svelte
+<script>
+	import { ErrorPage } from '@mbsmart/ui/templates';
+</script>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `statusCode` | `number` | `404` | HTTP status code displayed as a heading |
+| `message` | `string` | `''` | Error message shown below the status code |
+| `darkImage` | `string` | bundled image | Image path/URL shown in dark mode |
+| `lightImage` | `string` | bundled image | Image path/URL shown in light mode |
+| `imageAlt` | `string` | `''` | Alt text for the images |
+
+**Snippets:**
+
+| Snippet | Description |
+|---------|-------------|
+| `action` | Custom action button (e.g. "Back to Dashboard") |
+
+**Usage:**
+
+```svelte
+<!-- Minimal — uses bundled images -->
+<ErrorPage statusCode={404} message="Page not found">
+	{#snippet action()}
+		<ControlButton onclick={goHome} color="azure" size="lg">
+			Back to Dashboard
+		</ControlButton>
+	{/snippet}
+</ErrorPage>
+
+<!-- Custom images -->
+<ErrorPage
+	statusCode={500}
+	message="Something went wrong"
+	darkImage="/my-dark-error.png"
+	lightImage="/my-light-error.png"
+>
+	{#snippet action()}
+		<a href="/">Go home</a>
+	{/snippet}
+</ErrorPage>
+```
+
+---
 
 ### SectionedPage
 
