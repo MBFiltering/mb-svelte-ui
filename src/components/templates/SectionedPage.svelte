@@ -305,7 +305,7 @@
 	<div class="relative flex">
 		<!-- Sidebar -->
 		<div
-			class="lg:w-96 fixed bottom-0 left-0 z-10 flex h-18 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
+			class="lg:w-96 fixed bottom-0 left-0 z-10 flex h-18 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-24 sm:pt-8"
 		>
 			{#if loading}
 				{#if sidebarSkeleton}
@@ -323,16 +323,16 @@
 				<div
 					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
-					<ul class="flex justify-evenly space-y-2 sm:inline sm:w-auto sm:justify-normal">
+					<ul class="flex justify-evenly space-y-6 lg:space-y-2 sm:inline sm:w-auto sm:justify-normal">
 					<!-- Nav action buttons (hidden on mobile, shown on sm+ sidebar) -->
 					{#if navActions.length > 0}
 						<div
-							class="lg:mt-0 lg:mb-1 mt-1.5 mb-2 px-1.5 sm:mt-1 hidden sm:flex flex-row justify-between gap-2 lg:gap-0 sm:flex-col {navActions.length > 2 ? 'lg:grid lg:grid-cols-2 lg:justify-items-stretch' : ''}"
+							class="lg:mt-0 mt-1.5 px-1.5 sm:mt-1 hidden sm:flex flex-row justify-between gap-6 lg:gap-2 sm:flex-col {navActions.length > 2 ? 'lg:grid lg:grid-cols-2 lg:justify-items-stretch' : ''}"
 							>
 								{#each navActions as action}
-									<li>
+									<li class="relative">
 										<button
-											class="cursor-pointer text-xs font-medium text-azure-700 hover:text-azure-900 hover:underline dark:text-azure-400 dark:hover:text-azure-600"
+											class="cursor-pointer text-xs font-medium text-azure-700 hover:text-azure-900 hover:underline dark:text-azure-400 dark:hover:text-azure-600 sm:flex sm:justify-center sm:w-full lgv:block lg:block"
 											title={action.title || action.label}
 											onclick={action.onclick}
 										>
@@ -344,6 +344,8 @@
 												<action.icon size={24} />
 											</div>
 										</button>
+										<!-- Sidebar label (sm to lg only) -->
+										<p class="hidden sm:block lg:hidden absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-center text-[10px] leading-tight truncate pointer-events-none font-medium text-azure-600 dark:text-azure-400">{action.label}</p>
 									</li>
 								{/each}
 							</div>
@@ -351,19 +353,19 @@
 
 					<!-- Section tabs (unimportant ones hidden on mobile) -->
 					{#each sections as section}
-						<li class="relative me-2 sm:me-0 {section.unimportant ? 'hidden sm:list-item' : ''}">
+						<li class="relative me-2 sm:me-0 px-0 sm:px-[1.375rem] lgv:px-0 lg:px-0 {section.unimportant ? 'hidden sm:list-item' : ''}">
 								<button
 									type="button"
 									onclick={() => selectSection(section.key)}
 									title={section.name}
-									class="lg:px-4 flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 {magicSearchActive
+									class="lg:px-4 flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 sm:justify-center lgv:justify-between lg:justify-between {magicSearchActive
 										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
 										: activeSection === section.key
 											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
 											: 'cursor-pointer border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
 									disabled={magicSearchActive}
 								>
-								<div class="sm:flex-row sm:gap-2 flex items-center">
+								<div class="sm:flex-row sm:gap-2 flex items-center lg:gap-2">
 									{#if section.svgIcon}
 										<SvgIcon name={section.svgIcon} size="w-[18px] h-[18px]" />
 									{:else if section.icon}
@@ -380,8 +382,8 @@
 										<p class="lg:block hidden text-sm truncate">{advancedText}</p>
 									{/if}
 								</button>
-								<!-- Mobile label (absolute, outside button, no layout impact) -->
-								<p class="sm:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : activeSection === section.key ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{section.name}</p>
+								<!-- Label under button (mobile + sm-to-lg sidebar, hidden at lg+) -->
+								<p class="lg:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 sm:translate-y-0 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : activeSection === section.key ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{section.name}</p>
 							</li>
 						{/each}
 
@@ -392,17 +394,14 @@
 									type="button"
 									onclick={() => (overflowMenuOpen = true)}
 									title={overflowMenuTitle}
-									class="flex w-full items-center justify-center rounded-lg border px-2 py-2 transition-colors {magicSearchActive
-										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
-										: unimportantSectionActive
-											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
-											: 'cursor-pointer border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
-									disabled={magicSearchActive}
+									class="flex w-full items-center justify-center rounded-lg border px-2 py-2 transition-colors cursor-pointer {unimportantSectionActive
+										? 'border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
+										: 'border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
 								>
 									<Ellipsis size={18} strokeWidth={2} />
 								</button>
 								<!-- Mobile label (absolute, outside button, no layout impact) -->
-								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{overflowMenuTitle}</p>
+								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap {unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{overflowMenuTitle}</p>
 							</li>
 						{/if}
 					</ul>
