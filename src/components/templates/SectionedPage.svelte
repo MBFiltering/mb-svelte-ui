@@ -296,7 +296,7 @@
 	<div class="relative flex">
 		<!-- Sidebar -->
 		<div
-			class="md:w-96 fixed bottom-0 left-0 z-10 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
+			class="lg:w-96 fixed bottom-0 left-0 z-10 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
 		>
 			{#if loading}
 				{#if sidebarSkeleton}
@@ -318,7 +318,7 @@
 						<!-- Nav action buttons -->
 						{#if navActions.length > 0}
 							<div
-								class="md:mt-0 md:mb-1 mt-1.5 mb-2 px-1.5 sm:mt-1 flex flex-row justify-between gap-2 md:gap-0 sm:flex-col {navActions.length > 2 ? 'md:grid md:grid-cols-2 md:justify-items-stretch' : ''}"
+								class="lg:mt-0 lg:mb-1 mt-1.5 mb-2 px-1.5 sm:mt-1 flex flex-row justify-between gap-2 lg:gap-0 sm:flex-col {navActions.length > 2 ? 'lg:grid lg:grid-cols-2 lg:justify-items-stretch' : ''}"
 							>
 								{#each navActions as action}
 									<li>
@@ -327,11 +327,11 @@
 											title={action.title || action.label}
 											onclick={action.onclick}
 										>
-											<div class="md:flex hidden gap-1">
+											<div class="lg:flex hidden gap-1">
 												<action.icon size={16} />
-												<p class="md:inline hidden">{action.label}</p>
+												<p class="lg:inline hidden">{action.label}</p>
 											</div>
-											<div class="md:hidden inline">
+											<div class="lg:hidden inline">
 												<action.icon size={24} />
 											</div>
 										</button>
@@ -347,7 +347,7 @@
 									type="button"
 									onclick={() => selectSection(section.key)}
 									title={section.name}
-									class="md:px-4 flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 {magicSearchActive
+									class="lg:px-4 flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 {magicSearchActive
 										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
 										: activeSection === section.key
 											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
@@ -360,15 +360,15 @@
 										{:else if section.icon}
 											<section.icon size={18} strokeWidth={2} />
 										{/if}
-										<p class="md:inline-block hidden font-medium truncate">{section.name}</p>
+										<p class="lg:inline-block hidden font-medium truncate">{section.name}</p>
 										{#if section.shortcut}
-											<div class="md:inline-block hidden">
+											<div class="lg:inline-block hidden">
 												<Kbd>Alt + Shift + {section.shortcut}</Kbd>
 											</div>
 										{/if}
 									</div>
 									{#if section.advanced}
-										<p class="md:block hidden text-sm truncate">{advancedText}</p>
+										<p class="lg:block hidden text-sm truncate">{advancedText}</p>
 									{/if}
 								</button>
 							</li>
@@ -401,7 +401,7 @@
 
 				<!-- Magic Search Bar -->
 				<div class="flex gap-1 px-4">
-					<div class="md:px-0 relative flex-1">
+					<div class="lg:px-0 relative flex-1">
 						<div class="relative">
 							<div
 								class="pointer-events-none absolute top-1/2 rtl:right-3 ltr:left-3 -translate-y-1/2 text-gray-400 peer-focus:text-azure-700 dark:text-gray-500 dark:peer-focus:text-azure-200"
