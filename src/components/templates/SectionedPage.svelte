@@ -3,7 +3,8 @@
 	import SvgIcon from '../atoms/SvgIcon.svelte';
 	import Kbd from '../atoms/Kbd.svelte';
 	import ControlButton from '../atoms/ControlButton.svelte';
-	import { Search, X, ListCollapse } from '@lucide/svelte';
+	import Modal from '../organisms/Modal.svelte';
+	import { Search, X, ListCollapse, Ellipsis } from '@lucide/svelte';
 	import { fuzzyIncludes } from '../../utils/stringUtils.js';
 
 	// Browser detection (works without SvelteKit's $app/environment)
@@ -17,7 +18,7 @@
 	 *
 	 * Usage:
 	 * <SectionedPage
-	 *   sections={[{ key: 'info', name: 'Info', icon: User, shortcut: 'I' }]}
+	 *   sections={[{ key: 'info', name: 'Info', icon: User, shortcut: 'I', unimportant: false }]}
 	 *   navActions={[{ label: 'Action', icon: Star, onclick: () => {} }]}
 	 *   loading={false}
 	 *   error=""
@@ -61,6 +62,7 @@
 		expandAllSectionsTitle = 'Expand all sections',
 		disabledDuringSearchTitle = 'Disabled during search',
 		advancedText = 'advanced',
+		overflowMenuTitle = 'More',
 
 		// Snippets (sidebarSkeleton and mainSkeleton are required for loading states)
 		header,
@@ -76,9 +78,16 @@
 	let magicSearchQuery = $state('');
 	let magicSearchInput = $state(null);
 	let magicSearchNoMatches = $state(false);
+	let overflowMenuOpen = $state(false);
 
 	// Derived state
 	let magicSearchActive = $derived(magicSearchQuery.trim().length > 0);
+
+	// Split sections into important (shown on bottom bar) and unimportant (tucked into overflow)
+	let importantSections = $derived(sections.filter((s) => !s.unimportant));
+	let unimportantSections = $derived(sections.filter((s) => s.unimportant));
+	let hasOverflowItems = $derived(unimportantSections.length > 0 || navActions.length > 0);
+	let unimportantSectionActive = $derived(unimportantSections.some((s) => s.key === activeSection));
 
 	// Double-tap "C" detection for collapse/expand all shortcut
 	let lastCPressTime = 0;
@@ -296,7 +305,7 @@
 	<div class="relative flex">
 		<!-- Sidebar -->
 		<div
-			class="lg:w-96 fixed bottom-0 left-0 z-10 flex h-14 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
+			class="lg:w-96 fixed bottom-0 left-0 z-10 flex h-18 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-13 sm:pt-8"
 		>
 			{#if loading}
 				{#if sidebarSkeleton}
@@ -315,10 +324,10 @@
 					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
 					<ul class="flex justify-evenly space-y-2 sm:inline sm:w-auto sm:justify-normal">
-						<!-- Nav action buttons -->
-						{#if navActions.length > 0}
-							<div
-								class="lg:mt-0 lg:mb-1 mt-1.5 mb-2 px-1.5 sm:mt-1 flex flex-row justify-between gap-2 lg:gap-0 sm:flex-col {navActions.length > 2 ? 'lg:grid lg:grid-cols-2 lg:justify-items-stretch' : ''}"
+					<!-- Nav action buttons (hidden on mobile, shown on sm+ sidebar) -->
+					{#if navActions.length > 0}
+						<div
+							class="lg:mt-0 lg:mb-1 mt-1.5 mb-2 px-1.5 sm:mt-1 hidden sm:flex flex-row justify-between gap-2 lg:gap-0 sm:flex-col {navActions.length > 2 ? 'lg:grid lg:grid-cols-2 lg:justify-items-stretch' : ''}"
 							>
 								{#each navActions as action}
 									<li>
@@ -340,9 +349,9 @@
 							</div>
 						{/if}
 
-						<!-- Section tabs -->
-						{#each sections as section}
-							<li class="pe-2 sm:pe-0">
+					<!-- Section tabs (unimportant ones hidden on mobile) -->
+					{#each sections as section}
+						<li class="relative me-2 sm:me-0 {section.unimportant ? 'hidden sm:list-item' : ''}">
 								<button
 									type="button"
 									onclick={() => selectSection(section.key)}
@@ -354,12 +363,12 @@
 											: 'cursor-pointer border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
 									disabled={magicSearchActive}
 								>
-									<div class="flex items-center gap-2">
-										{#if section.svgIcon}
-											<SvgIcon name={section.svgIcon} size="w-[18px] h-[18px]" />
-										{:else if section.icon}
-											<section.icon size={18} strokeWidth={2} />
-										{/if}
+								<div class="sm:flex-row sm:gap-2 flex items-center">
+									{#if section.svgIcon}
+										<SvgIcon name={section.svgIcon} size="w-[18px] h-[18px]" />
+									{:else if section.icon}
+										<section.icon size={18} strokeWidth={2} />
+									{/if}
 										<p class="lg:inline-block hidden font-medium truncate">{section.name}</p>
 										{#if section.shortcut}
 											<div class="lg:inline-block hidden">
@@ -371,8 +380,28 @@
 										<p class="lg:block hidden text-sm truncate">{advancedText}</p>
 									{/if}
 								</button>
+								<!-- Mobile label (absolute, outside button, no layout impact) -->
+								<p class="sm:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {activeSection === section.key ? 'font-bold' : 'font-medium'} {activeSection === section.key ? 'text-azure-700 dark:text-azure-200' : 'text-gray-500 dark:text-gray-400'}">{section.name}</p>
 							</li>
 						{/each}
+
+						<!-- Overflow / Ellipsis menu button (mobile only) -->
+						{#if hasOverflowItems}
+							<li class="relative sm:hidden">
+								<button
+									type="button"
+									onclick={() => (overflowMenuOpen = true)}
+									title={overflowMenuTitle}
+									class="flex w-full items-center justify-center rounded-lg border px-2 py-2 transition-colors cursor-pointer {unimportantSectionActive
+										? 'border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
+										: 'border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
+								>
+									<Ellipsis size={18} strokeWidth={2} />
+								</button>
+								<!-- Mobile label (absolute, outside button, no layout impact) -->
+								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{overflowMenuTitle}</p>
+							</li>
+						{/if}
 					</ul>
 				</div>
 			{/if}
@@ -473,3 +502,48 @@
 		</div>
 	</div>
 </div>
+
+<!-- Overflow menu Modal (mobile) -->
+<Modal isOpen={overflowMenuOpen} onClose={() => (overflowMenuOpen = false)} verticalAlign="bottom">
+	<div class="rounded-t-2xl bg-white p-4 pt-6 dark:bg-zinc-800">
+		<ul class="space-y-1">
+			<!-- Unimportant section tabs -->
+			{#each unimportantSections as section}
+				<li>
+					<button
+						type="button"
+						onclick={() => { selectSection(section.key); overflowMenuOpen = false; }}
+						class="cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start transition-colors {activeSection === section.key
+							? 'bg-azure-50 text-azure-700 dark:bg-azure-900/30 dark:text-azure-200'
+							: 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-750'}"
+					>
+						{#if section.svgIcon}
+							<SvgIcon name={section.svgIcon} size="w-[20px] h-[20px]" />
+						{:else if section.icon}
+							<section.icon size={20} strokeWidth={2} />
+						{/if}
+						<span class="{activeSection === section.key ? 'font-semibold' : 'font-medium'}">{section.name}</span>
+					</button>
+				</li>
+			{/each}
+
+			<!-- Divider between sections and nav actions -->
+			{#if unimportantSections.length > 0 && navActions.length > 0}
+				<li class="py-1"><hr class="border-gray-200 dark:border-zinc-700" /></li>
+			{/if}
+
+			<!-- Nav action buttons -->
+			{#each navActions as action}
+				<li>
+					<button
+						class="cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start font-medium text-azure-700 transition-colors hover:bg-gray-100 dark:text-azure-400 dark:hover:bg-zinc-750"
+						onclick={() => { action.onclick?.(); overflowMenuOpen = false; }}
+					>
+						<action.icon size={20} />
+						<span>{action.label}</span>
+					</button>
+				</li>
+			{/each}
+		</ul>
+	</div>
+</Modal>

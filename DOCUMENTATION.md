@@ -1666,6 +1666,7 @@ The loading bar appears below the header and shows progress:
 | `loading`         | `boolean`  | `false`    | Show loading state           |
 | `error`           | `string`   | `''`       | Error message                |
 | `onRetry`         | `function` | `() => {}` | Retry button handler         |
+| `overflowMenuTitle` | `string` | `'More'` | Title for the mobile overflow menu |
 | `header`          | `snippet`  | -          | Header content               |
 | `sidebarSkeleton` | `snippet`  | -          | Loading skeleton for sidebar |
 | `mainSkeleton`    | `snippet`  | -          | Loading skeleton for main    |
@@ -1680,7 +1681,8 @@ The loading bar appears below the header and shows progress:
   icon: User,           // Lucide icon component
   svgIcon: 'custom',    // OR custom SVG icon name
   shortcut: 'I',        // Alt+Shift+{key} shortcut
-  advanced: false       // Show "advanced" label
+  advanced: false,      // Show "advanced" label
+  unimportant: false    // When true, hidden from mobile bottom bar and tucked into overflow menu
 }
 ```
 
@@ -1732,7 +1734,8 @@ The `sectionContent` snippet receives a context object with:
 
 	const sections = [
 		{ key: 'info', name: 'Information', icon: User, shortcut: 'I' },
-		{ key: 'settings', name: 'Settings', icon: Settings, shortcut: 'S' }
+		{ key: 'settings', name: 'Settings', icon: Settings, shortcut: 'S' },
+		{ key: 'advanced', name: 'Advanced', icon: Star, shortcut: 'A', unimportant: true }
 	];
 
 	const navActions = [{ label: 'Presets', icon: Star, onclick: openPresets }];
@@ -1780,6 +1783,16 @@ The template includes a "magic search" that searches across all elements with `d
 	<Island title="Settings">...</Island>
 </div>
 ```
+
+**Mobile Overflow Menu:**
+
+On small screens (`< sm:`), the bottom navigation bar only shows "important" section tabs (those without `unimportant: true`). Section names appear under each icon, with the active section name bolded.
+
+An ellipsis (`...`) button appears at the end of the bottom bar when there are overflow items. Tapping it opens a bottom-sheet Modal listing:
+- **Unimportant sections** — section tabs marked with `unimportant: true`
+- **Nav actions** — all `navActions` buttons (these are always hidden from the mobile bottom bar)
+
+On `sm:` and above, the sidebar shows all sections and nav actions as normal — the overflow menu is mobile-only.
 
 ---
 
