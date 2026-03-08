@@ -36,22 +36,26 @@
 		selectedText = 'selected', // "selected" text for bulk mode
 		pageText = 'Page', // "Page" label for pagination
 		prevText = 'Previous', // aria-label for previous button
-		nextText = 'Next' // aria-label for next button
+		nextText = 'Next', // aria-label for next button
+		showAllText = 'Show all', // label for the show-all link
+		paginateText = 'Paginate' // label to return to paginated view
 	} = $props();
 
 	let searchQuery = $state('');
 	let activeFilter = $state(filterTabs.length > 0 ? filterTabs[0].key : null);
 	let currentPage = $state(1);
+	let showAll = $state(false);
 
 	// Effective query: externalQuery takes priority over the built-in search
 	const effectiveQuery = $derived(externalQuery.trim() || searchQuery);
 
-	// Reset to page 1 when search or filter changes
+	// Reset to page 1 and collapse show-all when search or filter changes
 	$effect(() => {
 		// track dependencies
 		void effectiveQuery;
 		void activeFilter;
 		currentPage = 1;
+		showAll = false;
 	});
 
 	const totalPages = $derived(pageSize > 0 ? Math.max(1, Math.ceil(filteredItems.length / pageSize)) : 1);
@@ -62,7 +66,7 @@
 	});
 
 	const paginatedItems = $derived.by(() => {
-		if (pageSize <= 0) return filteredItems;
+		if (pageSize <= 0 || showAll) return filteredItems;
 		const start = (currentPage - 1) * pageSize;
 		return filteredItems.slice(start, start + pageSize);
 	});
@@ -285,29 +289,49 @@
 	<!-- Pagination Controls -->
 	{#if pageSize > 0 && totalPages > 1}
 		<div class="flex items-center justify-center gap-2 pt-2">
-			<CircleButton
-				icon={ChevronLeft}
-				title={prevText}
-				disabled={currentPage <= 1}
-				onclick={() => (currentPage = Math.max(1, currentPage - 1))}
-				color="ghost2"
-				size="sm"
-				className="rtl:rotate-180"
-			/>
+			{#if showAll}
+				<button
+					type="button"
+					onclick={() => (showAll = false)}
+					class="cursor-pointer text-sm text-azure-700 hover:underline"
+				>
+					{paginateText}
+				</button>
+			{:else}
+				<CircleButton
+					icon={ChevronLeft}
+					title={prevText}
+					disabled={currentPage <= 1}
+					onclick={() => (currentPage = Math.max(1, currentPage - 1))}
+					color="ghost2"
+					size="sm"
+					className="rtl:rotate-180"
+				/>
 
-			<span class="text-sm text-gray-600 dark:text-gray-300">
-				{pageText} {currentPage} {ofText} {totalPages}
-			</span>
+				<span class="text-sm text-gray-600 dark:text-gray-300">
+					{pageText} {currentPage} {ofText} {totalPages}
+				</span>
 
-			<CircleButton
-				icon={ChevronRight}
-				title={nextText}
-				disabled={currentPage >= totalPages}
-				onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
-				color="ghost2"
-				size="sm"
-				className="rtl:rotate-180"
-			/>
+				<CircleButton
+					icon={ChevronRight}
+					title={nextText}
+					disabled={currentPage >= totalPages}
+					onclick={() => (currentPage = Math.min(totalPages, currentPage + 1))}
+					color="ghost2"
+					size="sm"
+					className="rtl:rotate-180"
+				/>
+
+				<span class="text-gray-300 dark:text-gray-600">|</span>
+
+				<button
+					type="button"
+					onclick={() => (showAll = true)}
+					class="cursor-pointer text-sm text-azure-700 hover:underline"
+				>
+					{showAllText}
+				</button>
+			{/if}
 		</div>
 	{/if}
 </div>
