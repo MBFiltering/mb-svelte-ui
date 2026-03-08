@@ -1369,6 +1369,14 @@ Searchable, filterable list with optional bulk selection.
 | `pageText`          | `string`  | `'Page'`           | i18n "Page" label                |
 | `prevText`          | `string`  | `'Previous'`       | i18n aria-label for prev button  |
 | `nextText`          | `string`  | `'Next'`           | i18n aria-label for next button  |
+| `showAllText`       | `string`  | `'Show all'`       | i18n label for the "show all" link that bypasses pagination |
+| `paginateText`      | `string`  | `'Paginate'`       | i18n label for the button that returns to paginated view when all items are shown |
+
+**Show-all behavior:**
+
+- The pagination controls include a `Show all` link (controlled by `showAllText`) that, when clicked, bypasses pagination and displays all currently filtered items.
+- While showing all items the pagination controls collapse to a single button labeled by `paginateText` which returns the list to the paginated view.
+- The `showAll` state resets to `false` whenever the search query or active filter changes, so pagination is the default on navigation/hydration.
 
 **filterTabs Format:**
 
