@@ -381,7 +381,7 @@
 									{/if}
 								</button>
 								<!-- Mobile label (absolute, outside button, no layout impact) -->
-								<p class="sm:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {activeSection === section.key ? 'font-bold' : 'font-medium'} {activeSection === section.key ? 'text-azure-700 dark:text-azure-200' : 'text-gray-500 dark:text-gray-400'}">{section.name}</p>
+								<p class="sm:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : activeSection === section.key ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{section.name}</p>
 							</li>
 						{/each}
 
@@ -392,14 +392,17 @@
 									type="button"
 									onclick={() => (overflowMenuOpen = true)}
 									title={overflowMenuTitle}
-									class="flex w-full items-center justify-center rounded-lg border px-2 py-2 transition-colors cursor-pointer {unimportantSectionActive
-										? 'border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
-										: 'border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
+									class="flex w-full items-center justify-center rounded-lg border px-2 py-2 transition-colors {magicSearchActive
+										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
+										: unimportantSectionActive
+											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
+											: 'cursor-pointer border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
+									disabled={magicSearchActive}
 								>
 									<Ellipsis size={18} strokeWidth={2} />
 								</button>
 								<!-- Mobile label (absolute, outside button, no layout impact) -->
-								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{overflowMenuTitle}</p>
+								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{overflowMenuTitle}</p>
 							</li>
 						{/if}
 					</ul>
@@ -442,7 +445,7 @@
 								bind:this={magicSearchInput}
 								bind:value={magicSearchQuery}
 								placeholder={magicSearchPlaceholder}
-								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 pe-28 ps-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
+								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 sm:pe-28 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
 							/>
 							{#if !magicSearchActive}
 								<div
@@ -513,9 +516,12 @@
 					<button
 						type="button"
 						onclick={() => { selectSection(section.key); overflowMenuOpen = false; }}
-						class="cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start transition-colors {activeSection === section.key
-							? 'bg-azure-50 text-azure-700 dark:bg-azure-900/30 dark:text-azure-200'
-							: 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-750'}"
+						disabled={magicSearchActive}
+						class="{magicSearchActive
+							? 'cursor-not-allowed opacity-50 text-gray-400 dark:text-gray-500'
+							: activeSection === section.key
+								? 'cursor-pointer bg-azure-50 text-azure-700 dark:bg-azure-900/30 dark:text-azure-200'
+								: 'cursor-pointer text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-750'} flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start transition-colors"
 					>
 						{#if section.svgIcon}
 							<SvgIcon name={section.svgIcon} size="w-[20px] h-[20px]" />
