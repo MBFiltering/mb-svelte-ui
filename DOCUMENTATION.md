@@ -531,6 +531,7 @@ Segmented button selector for choosing one option from a list.
 | `onChange` | `function` | `() => {}` | Callback with new value                        |
 | `onSelect` | `function` | `() => {}` | Alias for `onChange`                           |
 | `disabled` | `boolean`  | `false`    | Disables all options                           |
+| `visibleCount` | `number` | `2` | How many options render as visible buttons; when `options.length > visibleCount` the last visible slot becomes a dropdown containing the remaining options. Values `<= 1` render a single fully clickable dropdown control |
 
 **Usage:**
 
@@ -549,8 +550,9 @@ Segmented button selector for choosing one option from a list.
 
 **Behavior:**
 
-- First option is always shown as a button
-- Additional options appear in a dropdown
+- Shows up to `visibleCount` options as visible controls (default `2`)
+- When `options.length > visibleCount` the last visible slot becomes a dropdown containing the remaining options
+- When `visibleCount <= 1`, the component renders as a single fully clickable dropdown control
 - Remembers last dropdown selection for toggle behavior
 
 ---
