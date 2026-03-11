@@ -973,6 +973,8 @@ Toggle switch with default and icon variants.
 | `iconOn`      | `component` | `null`           | Lucide icon when on (icon variant)  |
 | `iconOff`     | `component` | `null`           | Lucide icon when off (icon variant) |
 | `iconSize`    | `number`    | `18`             | Icon size (icon variant)            |
+| `onText`      | `string`    | `'On'`           | i18n "On" text                      |
+| `offText`     | `string`    | `'Off'`          | i18n "Off" text                     |
 
 **Usage:**
 

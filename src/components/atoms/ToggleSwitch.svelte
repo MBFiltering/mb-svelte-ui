@@ -11,7 +11,9 @@
 		variant = 'default',
 		iconOn = null,
 		iconOff = null,
-		iconSize = 18
+		iconSize = 18,
+		onText = 'On',
+		offText = 'Off',
 	} = $props();
 </script>
 
@@ -39,7 +41,7 @@
 {:else}
 	<div class="flex gap-2 items-center">
 		<p class="text-sm font-medium text-gray-700 dark:text-gray-200">
-			{checked ? 'On' : 'Off'}
+			{checked ? onText : offText}
 		</p>
 		<button
 			type="button"
