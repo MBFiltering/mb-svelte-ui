@@ -2,7 +2,7 @@
 	import { ChevronDown } from '@lucide/svelte';
 
 	let {
-		options = [], // Array of { value, label, color }
+		options = [], // Array of { value, label, color, textColor }
 		selected = '',
 		value = '', // Support both selected and value for backwards compatibility
 		onChange = () => {}, // Primary callback
@@ -60,6 +60,12 @@
 			: 'bg-gray-100 dark:bg-zinc-750';
 	}
 
+	// Get the text color for a selected option (defaults to white)
+	function getTextColor(option, isSelected) {
+		if (!isSelected) return 'text-gray-700 dark:text-gray-200';
+		return option?.textColor || 'text-white';
+	}
+
 	// Handle clicking a fixed option
 	function handleFixedClick(optionValue) {
 		if (disabled) return;
@@ -97,10 +103,10 @@
 				? 'rounded-s-lg'
 				: ''} {!hasDropdown && i === fixedOptions.length - 1
 				? 'rounded-e-lg'
-				: ''} {getButtonColor(option, currentValue === option?.value)} {currentValue ===
+				: ''} {getButtonColor(option, currentValue === option?.value)} {getTextColor(option, currentValue === option?.value)} {currentValue ===
 			option?.value
-				? 'text-white opacity-100'
-				: 'text-gray-700 opacity-100 hover:opacity-80 dark:text-gray-200'} disabled:cursor-default disabled:opacity-40"
+				? 'opacity-100'
+				: 'opacity-100 hover:opacity-80'} disabled:cursor-default disabled:opacity-40"
 		>
 			{option?.label || `Option ${i + 1}`}
 		</button>
@@ -123,18 +129,14 @@
 				class="flex cursor-pointer items-center gap-1 px-3 py-1.5 transition-all disabled:cursor-default disabled:opacity-40"
 			>
 				<span
-					class="text-sm font-medium {currentValue === displayedDropdownOption?.value
-						? 'text-white'
-						: 'text-gray-700 dark:text-gray-200'}"
+					class="text-sm font-medium {getTextColor(displayedDropdownOption, currentValue === displayedDropdownOption?.value)}"
 				>
 					{displayedDropdownOption?.label || 'Select'}
 				</span>
 				<ChevronDown
 					size={14}
 					strokeWidth={2}
-					class={currentValue === displayedDropdownOption?.value
-						? 'text-white'
-						: 'text-gray-700 dark:text-gray-200'}
+					class={getTextColor(displayedDropdownOption, currentValue === displayedDropdownOption?.value)}
 				/>
 			</button>
 

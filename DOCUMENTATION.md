@@ -319,7 +319,7 @@ Styled button with color and size variants.
 | ----------- | ---------- | ---------- | ------------------------------------------------------------------ |
 | `onclick`   | `function` | `() => {}` | Click handler                                                      |
 | `disabled`  | `boolean`  | `false`    | Disables the button                                                |
-| `color`     | `string`   | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'`, `'gray'` |
+| `color`     | `string`   | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'`, `'gray'`, `'black'`, `'transparent'` |
 | `size`      | `string`   | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                               |
 | `type`      | `string`   | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                     |
 | `className` | `string`   | `''`       | Additional CSS classes                                             |
@@ -525,7 +525,7 @@ Segmented button selector for choosing one option from a list.
 
 | Prop       | Type       | Default    | Description                                    |
 | ---------- | ---------- | ---------- | ---------------------------------------------- |
-| `options`  | `array`    | `[]`       | Array of `{ value, label, color }` objects     |
+| `options`  | `array`    | `[]`       | Array of `{ value, label, color, textColor }` objects. `textColor` defaults to `'text-white'` when selected |
 | `selected` | `string`   | `''`       | Currently selected value                       |
 | `value`    | `string`   | `''`       | Alias for `selected` (backwards compatibility) |
 | `onChange` | `function` | `() => {}` | Callback with new value                        |
@@ -541,7 +541,7 @@ Segmented button selector for choosing one option from a list.
 
 	const options = [
 		{ value: 'blocked', label: 'Blocked', color: 'bg-red-alt-500' },
-		{ value: 'allowed', label: 'Allowed', color: 'bg-green-alt-500' }
+		{ value: 'allowed', label: 'Allowed', color: 'bg-green-alt-500', textColor: 'text-white' }
 	];
 </script>
 

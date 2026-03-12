@@ -12,12 +12,14 @@
 
 	// Color variants
 	const colorClasses = {
-		azure: 'bg-azure-500 hover:bg-azure-700',
-		mulberry: 'bg-mulberry-500 hover:bg-mulberry-700',
-		green: 'bg-green-alt-500 hover:bg-green-alt-600',
-		orange: 'bg-orange-alt-500 hover:bg-orange-alt-600',
-		red: 'bg-red-alt-500 hover:bg-red-alt-600',
-		gray: 'bg-gray-500 hover:bg-neutral-600'
+		azure: 'bg-azure-500 hover:bg-azure-700 disabled:bg-gray-400 text-white',
+		mulberry: 'bg-mulberry-500 hover:bg-mulberry-700 disabled:bg-gray-400 text-white',
+		green: 'bg-green-alt-500 hover:bg-green-alt-600 disabled:bg-gray-400 text-white',
+		orange: 'bg-orange-alt-500 hover:bg-orange-alt-600 disabled:bg-gray-400 text-white',
+		red: 'bg-red-alt-500 hover:bg-red-alt-600 disabled:bg-gray-400 text-white',
+		gray: 'bg-gray-500 hover:bg-neutral-600 disabled:bg-gray-400 text-white',
+		black: 'bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 text-white',
+		transparent: 'bg-transparent hover:bg-gray-100 disabled:bg-gray-50 text-gray-700'
 	};
 
 	// Size variants
@@ -35,7 +37,7 @@
 	{onclick}
 	{disabled}
 	{type}
-	class="cursor-pointer rounded-lg font-medium text-white transition-colors disabled:cursor-default disabled:bg-gray-400 {colorClass} {sizeClass} {className}"
+	class="cursor-pointer rounded-lg font-medium transition-colors disabled:cursor-default {colorClass} {sizeClass} {className}"
 >
 	{@render children()}
 </button>
