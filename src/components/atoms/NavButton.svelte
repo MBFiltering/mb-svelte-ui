@@ -25,7 +25,7 @@
 		gray: 'border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'
 	};
 
-	const baseClasses = `flex items-center gap-2 rounded-lg border px-2 py-2 font-medium transition-colors lg:px-4 ${colorClasses[color] || colorClasses.azure} ${className}`;
+	const baseClasses = `flex items-center gap-2 rounded-lg border px-2 py-2 font-medium transition-colors xl:px-4 ${colorClasses[color] || colorClasses.azure} ${className}`;
 	const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
 </script>
 
@@ -42,7 +42,7 @@
 			<IconComponent size={18} strokeWidth={2} />
 		{/if}
 		{#if label}
-			<span class="hidden text-sm lg:inline">{label}</span>
+			<span class="hidden text-sm xl:inline">{label}</span>
 		{/if}
 	</a>
 {:else}
@@ -60,7 +60,7 @@
 			<IconComponent size={18} strokeWidth={2} />
 		{/if}
 		{#if label}
-			<span class="hidden text-sm lg:inline">{label}</span>
+			<span class="hidden text-sm xl:inline">{label}</span>
 		{/if}
 	</button>
 {/if}
