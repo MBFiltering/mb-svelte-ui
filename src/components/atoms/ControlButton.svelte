@@ -19,7 +19,8 @@
 		red: 'bg-red-alt-500 hover:bg-red-alt-600 disabled:bg-gray-400 text-white',
 		gray: 'bg-gray-500 hover:bg-neutral-600 disabled:bg-gray-400 text-white',
 		black: 'bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 text-white',
-		transparent: 'bg-transparent hover:bg-gray-100 disabled:bg-gray-50 text-gray-700'
+		transparent: 'bg-transparent hover:bg-gray-100 disabled:bg-gray-50 text-gray-700',
+		white: 'bg-white hover:bg-gray-100 disabled:bg-gray-50 text-gray-700'
 	};
 
 	// Size variants
