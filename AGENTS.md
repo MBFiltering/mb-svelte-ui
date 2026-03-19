@@ -71,7 +71,7 @@ src/
 ├── styles.css            # Global styles and Tailwind config
 ├── components/
 │   ├── index.js          # Barrel export for all components
-│   ├── atoms/            # Basic building blocks (Button, Badge, Input, etc.)
+│   ├── atoms/            # Basic building blocks (Button, Badge, Input, NavDropdown, etc.)
 │   ├── molecules/        # Composite components (Grid, Island, NamedControl)
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
@@ -83,7 +83,7 @@ src/
 
 | Layer       | Purpose                              | Examples                          |
 |-------------|--------------------------------------|-----------------------------------|
-| **Atoms**   | Single-purpose, primitive UI         | Badge, CheckBox, Spinner, TextInput |
+| **Atoms**   | Single-purpose, primitive UI         | Badge, CheckBox, NavDropdown, Spinner, TextInput |
 | **Molecules** | Composed of atoms, reusable groups | Grid, Island, MultiInput          |
 | **Organisms** | Complex, self-contained features   | Modal, SearchableList, ToastContainer |
 | **Templates** | Page layouts and shells            | AppShell, SectionedPage           |

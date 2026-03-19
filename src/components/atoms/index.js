@@ -10,6 +10,7 @@ export { default as Info } from './Info.svelte';
 export { default as JSONPrint } from './JSONPrint.svelte';
 export { default as Kbd } from './Kbd.svelte';
 export { default as NavButton } from './NavButton.svelte';
+export { default as NavDropdown } from './NavDropdown.svelte';
 export { default as OneFromMany } from './OneFromMany.svelte';
 export { default as RadioButton } from './RadioButton.svelte';
 export { default as SafetyBadge } from './SafetyBadge.svelte';

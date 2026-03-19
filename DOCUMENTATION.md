@@ -23,6 +23,7 @@
    - [JSONPrint](#jsonprint)
    - [Kbd](#kbd)
    - [NavButton](#navbutton)
+	- [NavDropdown](#navdropdown)
    - [OneFromMany](#onefrommany)
    - [RadioButton](#radiobutton)
    - [SafetyBadge](#safetybadge)
@@ -510,6 +511,58 @@ Navigation button or link for headers, toolbars, and navigation actions. Support
 - Responsive: label is hidden on small screens, shown on `lg` and up.
 - Always use Lucide icons for consistency.
 - Use for navigation actions in headers, toolbars, and page layouts.
+
+### NavDropdown
+
+Dropdown group of navigation actions. The trigger matches `NavButton` styling and opens a menu of button or link entries using the same config shape as `NavButton`.
+
+**Import:**
+
+```svelte
+<script>
+	import { NavDropdown } from '@mbsmart/ui/atoms';
+	import { Folder, LogOut, Settings, UserRoundPlus } from '@lucide/svelte';
+</script>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `config` | `array` | `[]` | Array of nav items using the `NavButton` prop shape: `{ href, onclick, icon, label, title, color, disabled, className }` |
+| `icon` | `component` | `null` | Lucide icon component shown in the trigger |
+| `label` | `string` | `''` | Trigger label text |
+| `title` | `string` | `''` | Trigger tooltip and accessible label |
+| `color` | `string` | `'azure'` | Trigger color variant: `azure`, `red`, `green`, `gray` |
+| `disabled` | `boolean` | `false` | Disables the trigger |
+| `className` | `string` | `''` | Additional CSS classes for the trigger |
+| `dropdownClassName` | `string` | `''` | Additional CSS classes for the dropdown container |
+
+**Usage:**
+
+```svelte
+<script>
+	const navItems = [
+		{ href: '/dashboard/device/new', icon: UserRoundPlus, label: 'New Device', color: 'green' },
+		{ href: '/dashboard/settings', icon: Settings, label: 'Settings', color: 'azure' },
+		{ onclick: logout, icon: LogOut, label: 'Logout', color: 'red' }
+	];
+</script>
+
+<NavDropdown
+	icon={Folder}
+	label="Actions"
+	title="Open navigation actions"
+	color="azure"
+	config={navItems}
+/>
+```
+
+**Notes:**
+
+- The trigger uses the same visual language and responsive label behavior as `NavButton`.
+- Each dropdown item can be a link or button, based on the same `href` and `onclick` rules as `NavButton`.
+- The dropdown closes on item selection, outside click, or `Escape`.
 
 Segmented button selector for choosing one option from a list.
 
