@@ -98,7 +98,7 @@
 
 	{#if isOpen}
 		<div
-			class="absolute right-0 z-50 mt-2 min-w-56 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 {dropdownClassName}"
+			class="absolute right-0 z-50 mt-2 min-w-56 rounded-xl border border-gray-200 bg-white p-1.5 gap-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 {dropdownClassName}"
 			role="menu"
 			aria-label={title || label}
 		>
