@@ -345,7 +345,7 @@
 											</div>
 										</button>
 										<!-- Sidebar label (sm to lg only) -->
-										<p class="hidden sm:block lg:hidden absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-center text-[10px] leading-tight truncate pointer-events-none font-medium text-azure-600 dark:text-azure-400">{action.label}</p>
+										<p class="hidden sm:block lg:hidden absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-center text-[10px] leading-tight truncate pointer-events-none font-medium text-azure-600 dark:text-azure-400 w-full">{action.label}</p>
 									</li>
 								{/each}
 							</div>
@@ -383,7 +383,7 @@
 									{/if}
 								</button>
 								<!-- Label under button (mobile + sm-to-lg sidebar, hidden at lg+) -->
-								<p class="lg:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 sm:translate-y-0 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : activeSection === section.key ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{section.name}</p>
+								<p class="lg:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 sm:translate-y-0 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap w-full truncate {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : activeSection === section.key ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{section.name}</p>
 							</li>
 						{/each}
 
