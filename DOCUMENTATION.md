@@ -36,8 +36,10 @@
    - [ToggleSwitch](#toggleswitch)
    - [VisibilityToggle](#visibilitytoggle)
 3. [Molecules (Composite Components)](#molecules)
+	- [DeviceCard](#devicecard)
    - [Grid](#grid)
    - [Island](#island)
+	- [ListCard](#listcard)
    - [MultiInput](#multiinput)
    - [NamedControl](#namedcontrol)
 4. [Organisms (Complex Components)](#organisms)
@@ -1088,6 +1090,121 @@ Eye icon button for showing/hiding sensitive content.
 
 Composite components built from atoms.
 
+### DeviceCard
+
+Device-focused list item built on top of `ListCard`, with plan and payment badges, device metadata, and optional sync and custom action slots.
+
+**Import:**
+
+```svelte
+<script>
+	import { DeviceCard } from '@mbsmart/ui/molecules';
+</script>
+```
+
+**Props:**
+
+| Prop                 | Type       | Default        | Description                                                        |
+| -------------------- | ---------- | -------------- | ------------------------------------------------------------------ |
+| `device`             | `object`   | -              | Device record used to derive labels and metadata                   |
+| `href`               | `string`   | `'#'`          | Card link target                                                   |
+| `onclick`            | `function` | `null`         | Optional click handler passed to the underlying anchor             |
+| `disabled`           | `boolean`  | `false`        | Forces disabled display                                            |
+| `disabledTitle`      | `string`   | `''`           | Tooltip text shown when disabled                                   |
+| `variant`            | `string`   | `'default'`    | Visual/behavior variant. `'disabled'` also disables the card       |
+| `static`             | `boolean`  | `false`        | Renders a non-link row while keeping actions visible               |
+| `showArrow`          | `boolean`  | `true`         | Show the trailing chevron on linked cards                          |
+| `showOpenInNewTab`   | `boolean`  | `true`         | Show the open-in-new-tab button                                    |
+| `openInNewTabHref`   | `string`   | `''`           | Overrides the URL opened by the new-tab button                     |
+| `showSyncButton`     | `boolean`  | `false`        | Show the sync action button                                        |
+| `showIcon`           | `boolean`  | `true`         | Show the inferred device platform icon                             |
+| `showPlanBadge`      | `boolean`  | `true`         | Show the Pro/Basic badge                                           |
+| `showPaymentStatus`  | `boolean`  | `true`         | Show the Paid/Unpaid badge when payment status exists              |
+| `showDeviceInfo`     | `boolean`  | `true`         | Show the derived device model/info line                            |
+| `showNote`           | `boolean`  | `false`        | Show the device note in italic text                                |
+| `syncing`            | `boolean`  | `false`        | External loading state for the sync button                         |
+| `onSync`             | `function` | `null`         | Async sync handler. Receives the full `device` object              |
+| `onSyncStart`        | `function` | `null`         | Called with the derived device id when sync begins                 |
+| `onSyncEnd`          | `function` | `null`         | Called with the derived device id when sync finishes               |
+| `labels`             | `object`   | `{}`           | Label overrides for built-in copy                                  |
+| `actions`            | `snippet`  | -              | Optional trailing actions snippet, rendered before the sync button |
+
+**Recognized device fields:**
+
+- `id` for the secondary identifier line and sync callbacks
+- `name` for the main title
+- `device_type` or `deviceType` for platform icon selection
+- `device_info`, `deviceInfo`, or `deviceModel` for the metadata line
+- `is_pro` or `isPro` for the plan badge
+- `payment_status` or `paymentStatus` for the payment badge
+- `account` for the extra link code line
+- `notes` or `note` for the optional note line
+
+**Default labels:**
+
+```javascript
+{
+	unknownDevice: 'Unknown device',
+	pro: 'Pro',
+	basic: 'Basic',
+	paid: 'Paid',
+	unpaid: 'Unpaid',
+	syncDevice: 'Sync device',
+	notYetSupportedInPortal: 'Not yet supported in portal'
+}
+```
+
+**Device icons:**
+
+`device_type` values map to these built-in SVG names: `ios` -> `apple-logo`, `android` -> `android-logo`, `mac` -> `mac-logo`, `chrome` -> `chrome-logo`, `windows` -> `windows-logo`. Unknown values fall back to `squircle-dashed`.
+
+**Usage:**
+
+```svelte
+<script>
+	import { DeviceCard } from '@mbsmart/ui/molecules';
+
+	let device = {
+		id: 'A1B2C3',
+		name: 'John\'s iPhone',
+		device_type: 'ios',
+		device_info: 'iPhone 15 Pro',
+		is_pro: true,
+		payment_status: 'payed',
+		account: 'portal--customer-001',
+		notes: 'Waiting for next sync'
+	};
+
+	async function syncDevice(currentDevice) {
+		await refreshDevice(currentDevice.id);
+	}
+</script>
+
+<DeviceCard
+	{device}
+	href={`/devices/${device.id}`}
+	showNote={true}
+	showSyncButton={true}
+	onSync={syncDevice}
+	labels={{ unpaid: 'Payment due' }}
+/>
+
+<!-- Static row with custom actions -->
+<DeviceCard
+	{device}
+	static={true}
+	showArrow={false}
+	showOpenInNewTab={false}
+	actions={() => toolbarSnippet}
+/>
+```
+
+**Behavior notes:**
+
+- The component derives its disabled state from either `disabled={true}` or `variant="disabled"`.
+- The sync button prevents link navigation, manages an internal loading state, and disables itself while syncing.
+- The payment badge treats `payment_status === 'payed'` as paid; any other non-empty value is rendered as unpaid.
+
 ### Grid
 
 Responsive grid with row-first or column-first flow.
@@ -1190,6 +1307,81 @@ Collapsible card container with optional title and icon.
 	<p>Device content</p>
 </Island>
 ```
+
+---
+
+### ListCard
+
+Reusable list-row primitive for linked, static, or disabled cards with optional icon, actions, trailing arrow, and open-in-new-tab button.
+
+**Import:**
+
+```svelte
+<script>
+	import { ListCard } from '@mbsmart/ui/molecules';
+</script>
+```
+
+**Props:**
+
+| Prop               | Type       | Default   | Description                                                    |
+| ------------------ | ---------- | --------- | -------------------------------------------------------------- |
+| `href`             | `string`   | `'#'`     | Link destination when the card is interactive                  |
+| `onclick`          | `function` | `null`    | Optional click handler for the interactive anchor              |
+| `disabled`         | `boolean`  | `false`   | Render a muted, non-interactive row                            |
+| `disabledTitle`    | `string`   | `''`      | Tooltip shown on disabled rows                                 |
+| `static`           | `boolean`  | `false`   | Render a non-link row while keeping actions visible            |
+| `showArrow`        | `boolean`  | `true`    | Show the trailing chevron on interactive rows                  |
+| `showOpenInNewTab` | `boolean`  | `true`    | Show the open-in-new-tab button on static and interactive rows |
+| `openInNewTabHref` | `string`   | `''`      | Optional override for the URL opened in a new tab              |
+| `icon`             | `snippet`  | -         | Leading visual snippet                                         |
+| `actions`          | `snippet`  | -         | Trailing action snippet                                        |
+| `children`         | `snippet`  | -         | Main row content                                               |
+
+**Render modes:**
+
+- `disabled={true}` renders a `<div>` with reduced opacity and no actions or new-tab button.
+- `static={true}` renders a non-link `<div>` with optional actions and new-tab button.
+- The default mode renders an `<a>` with hover styles, optional actions, new-tab button, and optional chevron.
+
+**Usage:**
+
+```svelte
+<script>
+	import { ListCard } from '@mbsmart/ui/molecules';
+	import { Badge } from '@mbsmart/ui/atoms';
+</script>
+
+<ListCard href="/devices/A1B2C3">
+	{#snippet icon()}
+		<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
+			D
+		</div>
+	{/snippet}
+
+	{#snippet children()}
+		<p class="font-medium text-gray-900">Device A1B2C3</p>
+		<p class="text-sm text-gray-500">Last synced 2 minutes ago</p>
+	{/snippet}
+
+	{#snippet actions()}
+		<Badge color="green" size="tiny">Active</Badge>
+	{/snippet}
+</ListCard>
+
+<!-- Disabled row -->
+<ListCard disabled={true} disabledTitle="Not available in this portal">
+	{#snippet children()}
+		<p class="font-medium text-gray-900">Unavailable device</p>
+	{/snippet}
+</ListCard>
+```
+
+**Behavior notes:**
+
+- The new-tab button calls `window.open(resolvedUrl, '_blank')` and stops the row click from firing.
+- `openInNewTabHref` falls back to `href` when not provided.
+- Interactive rows include `data-sveltekit-reload={true}` on the anchor.
 
 ---
 
