@@ -240,16 +240,20 @@ Copy-to-clipboard button with visual feedback.
 
 **Props:**
 
-| Prop       | Type      | Default | Description                |
-| ---------- | --------- | ------- | -------------------------- |
-| `content`  | `string`  | `''`    | Text to copy to clipboard  |
-| `children` | `snippet` | -       | Optional clickable content |
+| Prop       | Type      | Default    | Description                                             |
+| ---------- | --------- | ---------- | ------------------------------------------------------- |
+| `content`  | `string`  | `''`       | Text to copy to clipboard                               |
+| `color`    | `string`  | `'ghost2'` | Passed through to the internal `CircleButton` color prop |
+| `children` | `snippet` | -          | Optional clickable content                              |
 
 **Usage:**
 
 ```svelte
 <!-- Icon button only -->
 <Clipboard content="Text to copy" />
+
+<!-- Override the internal CircleButton color variant -->
+<Clipboard content="Text to copy" color="azure" />
 
 <!-- With clickable content -->
 <Clipboard content={device.id}>

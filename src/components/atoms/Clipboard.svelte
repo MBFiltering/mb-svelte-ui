@@ -3,7 +3,13 @@
 	import CircleButton from './CircleButton.svelte';
 
 	// Props - Svelte 5 style
-	let { content = '', title = 'Copy to clipboard', ariaLabel = 'Copy to clipboard', children } = $props();
+	let {
+		content = '',
+		title = 'Copy to clipboard',
+		ariaLabel = 'Copy to clipboard',
+		color = 'ghost2',
+		children
+	} = $props();
 
 	let copied = $state(false);
 	let timeout;
@@ -33,17 +39,19 @@
 	icon={copied ? Check : Copy}
 	iconSize={14}
 	size="sm"
-	color="ghost2"
+	{color}
 	{title}
 	className="[&>svg]:stroke-2"
 />
 
 {#if children}
-	<span
+	<button
+		type="button"
 		onclick={handleCopy}
 		class="inline cursor-pointer border-none bg-transparent p-0"
-		aria-label="Copy content"
+		aria-label={ariaLabel}
+		title={title}
 	>
 		{@render children()}
-	</span>
+	</button>
 {/if}
