@@ -64,6 +64,9 @@
 		advancedText = 'advanced',
 		overflowMenuTitle = 'More',
 
+		// Default expanded state for all Islands (used on initial render)
+		defaultIslandsExpanded = true,
+
 		// Snippets (sidebarSkeleton and mainSkeleton are required for loading states)
 		header,
 		sidebarSkeleton,
@@ -73,7 +76,7 @@
 
 	// Internal state
 	let activeSection = $state('');
-	let allIslandsExpanded = $state(true);
+	let allIslandsExpanded = $state(defaultIslandsExpanded);
 	let islandResetKey = $state(0);
 	let magicSearchQuery = $state('');
 	let magicSearchInput = $state(null);
