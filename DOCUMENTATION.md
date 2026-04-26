@@ -1920,6 +1920,7 @@ The loading bar appears below the header and shows progress:
 | `error`           | `string`   | `''`       | Error message                |
 | `onRetry`         | `function` | `() => {}` | Retry button handler         |
 | `overflowMenuTitle` | `string` | `'More'` | Title for the mobile overflow menu |
+| `defaultIslandsExpanded` | `boolean` | `true` | Initial expanded state for all Islands rendered via `ctx.islandProps`. Captured on mount; users can still toggle expand/collapse all afterwards. |
 | `header`          | `snippet`  | -          | Header content               |
 | `sidebarSkeleton` | `snippet`  | -          | Loading skeleton for sidebar |
 | `mainSkeleton`    | `snippet`  | -          | Loading skeleton for main    |
