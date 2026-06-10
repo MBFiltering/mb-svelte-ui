@@ -43,6 +43,7 @@
 		basic: 'Basic',
 		paid: 'Paid',
 		unpaid: 'Unpaid',
+		blockAll: 'Block All',
 		syncDevice: 'Sync device',
 		notYetSupportedInPortal: 'Not yet supported in portal',
 		...labels
@@ -54,6 +55,7 @@
 	const deviceInfo = $derived(device?.device_info ?? device?.deviceInfo ?? device?.deviceModel ?? '');
 	const isPro = $derived(Boolean(device?.is_pro ?? device?.isPro ?? false));
 	const paymentStatus = $derived(String(device?.payment_status ?? device?.paymentStatus ?? ''));
+	const isBlockAll = $derived(String(device?.account ?? '') === '-tag--tagblockall-');
 	const linkcode = $derived(device?.account ? String(device.account).replaceAll('--', '/').replaceAll('-', '') : '');
 	const note = $derived(device?.notes ?? device?.note ?? '');
 	const resolvedDisabled = $derived(disabled || variant === 'disabled');
@@ -120,6 +122,11 @@
 			{#if showPaymentStatus && paymentStatus}
 				<Badge color={paymentStatus === 'payed' ? 'green' : 'red'} size="tiny">
 					{paymentStatus === 'payed' ? mergedLabels.paid : mergedLabels.unpaid}
+				</Badge>
+			{/if}
+			{#if isBlockAll}
+				<Badge color="red" size="tiny">
+					{mergedLabels.blockAll}
 				</Badge>
 			{/if}
 		</p>
