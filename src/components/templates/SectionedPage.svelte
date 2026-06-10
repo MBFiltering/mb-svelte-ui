@@ -80,6 +80,7 @@
 	let islandResetKey = $state(0);
 	let magicSearchQuery = $state('');
 	let magicSearchInput = $state(null);
+	let magicSearchFocused = $state(false);
 	let magicSearchNoMatches = $state(false);
 	let overflowMenuOpen = $state(false);
 
@@ -493,16 +494,30 @@
 								bind:this={magicSearchInput}
 								bind:value={magicSearchQuery}
 								placeholder={magicSearchPlaceholder}
+								onfocus={() => (magicSearchFocused = true)}
+								onblur={() => (magicSearchFocused = false)}
+								onkeydown={(e) => {
+									if (e.key === 'Escape') {
+										e.preventDefault();
+										magicSearchInput?.blur();
+									}
+								}}
 								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 sm:pe-28 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
 							/>
-							{#if !magicSearchActive}
+							{#if magicSearchFocused}
 								<div
-									class="helper pointer-events-none absolute top-1/2 rtl:left-2 ltr:right-2 -translate-y-4 peer-focus:hidden"
+									class="helper pointer-events-none absolute top-1/2 rtl:left-2 ltr:right-2 -translate-y-4"
+								>
+									<Kbd>Esc</Kbd>
+								</div>
+							{:else if !magicSearchActive}
+								<div
+									class="helper pointer-events-none absolute top-1/2 rtl:left-2 ltr:right-2 -translate-y-4"
 								>
 									<Kbd>Alt+Shift+M</Kbd>
 								</div>
 							{/if}
-							{#if magicSearchActive}
+							{#if magicSearchActive && !magicSearchFocused}
 								<button
 									type="button"
 									onclick={clearMagicSearch}
