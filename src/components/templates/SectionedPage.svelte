@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import SvgIcon from '../atoms/SvgIcon.svelte';
 	import Kbd from '../atoms/Kbd.svelte';
 	import ControlButton from '../atoms/ControlButton.svelte';
@@ -92,9 +92,12 @@
 	let hasOverflowItems = $derived(unimportantSections.length > 0 || navActions.length > 0);
 	let unimportantSectionActive = $derived(unimportantSections.some((s) => s.key === activeSection));
 
-	// Double-tap "C" detection for collapse/expand all shortcut
-	let lastCPressTime = 0;
-	const doubleTapThreshold = 300; // milliseconds
+	// Typing-vs-hotkey disambiguation.
+	// "c" is the only no-modifier hotkey (double-tap C = collapse/expand all),
+	// so a lone "c" is buffered for a short window to tell typing from the
+	// shortcut. Any other bare printable key is treated as typing immediately.
+	let cBufferTimer = null;
+	const typingHotkeyDelay = 150; // milliseconds
 
 	// Initialize active section from first available section
 	$effect(() => {
@@ -205,6 +208,27 @@
 		magicSearchQuery = '';
 	}
 
+	// Focus the magic search input and append typed text, placing the caret at the end.
+	async function typeIntoMagicSearch(text) {
+		magicSearchQuery = (magicSearchQuery || '') + text;
+		await tick();
+		magicSearchInput?.focus();
+		const len = magicSearchInput?.value.length ?? 0;
+		magicSearchInput?.setSelectionRange?.(len, len);
+	}
+
+	// Is this a bare printable character keystroke (typing), not a command/shortcut?
+	// Space is excluded so it keeps its native page-scroll behavior.
+	function isTypingKey(event) {
+		return (
+			event.key.length === 1 &&
+			event.key !== ' ' &&
+			!event.ctrlKey &&
+			!event.metaKey &&
+			!event.altKey
+		);
+	}
+
 	// Keyboard shortcut handler
 	function handleKeyDown(event) {
 		// Ignore if user is typing in an input or textarea
@@ -221,42 +245,63 @@
 			return;
 		}
 
-		// Check for double-tap "C" to toggle collapse/expand all islands (disabled during magic search)
-		if (
-			!magicSearchActive &&
-			event.key.toLowerCase() === 'c' &&
-			!event.altKey &&
-			!event.shiftKey &&
-			!event.ctrlKey &&
-			!event.metaKey
-		) {
-			const now = Date.now();
-			if (now - lastCPressTime < doubleTapThreshold) {
-				event.preventDefault();
-				toggleAllIslands();
-				lastCPressTime = 0; // Reset to prevent triple-tap triggering again
-			} else {
-				lastCPressTime = now;
-			}
-			return;
-		}
-
-		// Alt+Shift+M to focus magic search
+		// Alt+Shift+M to focus magic search (definite shortcut — bypass typing delay)
 		if (event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
 			event.preventDefault();
 			magicSearchInput?.focus();
 			return;
 		}
 
-		// Check for Alt + Shift + letter shortcuts for section navigation
+		// Alt + Shift + letter section navigation (definite shortcut — bypass typing delay)
 		if (event.altKey && event.shiftKey) {
 			const key = event.key.toUpperCase();
 			const section = sections.find((s) => s.shortcut === key);
-
 			if (section) {
 				event.preventDefault();
 				selectSection(section.key);
 			}
+			return;
+		}
+
+		// Anything else with a command/control modifier is a browser/OS shortcut — leave it alone
+		if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+		// Typing-vs-hotkey disambiguation for bare keys
+		if (isTypingKey(event)) {
+			const char = event.key;
+			const isC = char.toLowerCase() === 'c';
+
+			// A buffered "c" is pending and a second keystroke arrived within the window
+			if (cBufferTimer !== null) {
+				clearTimeout(cBufferTimer);
+				cBufferTimer = null;
+				event.preventDefault();
+				if (isC) {
+					// Double-tap C → toggle collapse/expand all (recognized shortcut)
+					toggleAllIslands();
+				} else {
+					// Different key → the user is typing "c" followed by this char
+					typeIntoMagicSearch('c' + char);
+				}
+				return;
+			}
+
+			// First "c" while not searching is ambiguous (could be double-tap C).
+			// Hold it for a short window to see whether a shortcut or typing follows.
+			if (isC && !magicSearchActive) {
+				event.preventDefault();
+				cBufferTimer = setTimeout(() => {
+					cBufferTimer = null;
+					// No follow-up within the window → treat the lone "c" as typing
+					typeIntoMagicSearch('c');
+				}, typingHotkeyDelay);
+				return;
+			}
+
+			// Any other bare printable key → start/continue typing into magic search
+			event.preventDefault();
+			typeIntoMagicSearch(char);
+			return;
 		}
 	}
 
@@ -269,6 +314,7 @@
 		return () => {
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('hashchange', handleHashChange);
+			if (cBufferTimer !== null) clearTimeout(cBufferTimer);
 		};
 	});
 
