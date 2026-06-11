@@ -18,7 +18,7 @@
 		itemNamePlural = '', // Optional plural form (if not provided, will auto-pluralize itemName)
 		filterTabs = [], // Array of { key, label, filterFn }
 		columns = 1, // Number of columns for calculating rows
-		columnsXl = 1, // Number of columns for calculating rows
+		columnsXl = 2, // Number of columns for calculating rows
 		columns2Xl = 2, // Number of columns for calculating rows
 		disableGrid = false, // When true, items display in normal flow instead of grid
 		searchActions,
