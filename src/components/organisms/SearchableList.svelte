@@ -18,6 +18,7 @@
 		itemNamePlural = '', // Optional plural form (if not provided, will auto-pluralize itemName)
 		filterTabs = [], // Array of { key, label, filterFn }
 		columns = 1, // Number of columns for calculating rows
+		columnsXl = 1, // Number of columns for calculating rows
 		columns2Xl = 2, // Number of columns for calculating rows
 		disableGrid = false, // When true, items display in normal flow instead of grid
 		searchActions,
@@ -265,7 +266,7 @@
 	</div>
 
 	<!-- List Container -->
-	<Grid flow="col" itemCount={paginatedItems.length} {columns} {columns2Xl} disabled={disableGrid}>
+	<Grid flow="col" itemCount={paginatedItems.length} {columns} {columnsXl} {columns2Xl} disabled={disableGrid}>
 		{#if paginatedItems.length === 0}
 			<div class="rounded-lg py-8 text-center text-gray-500 dark:text-gray-400">
 				{emptyMessage}
