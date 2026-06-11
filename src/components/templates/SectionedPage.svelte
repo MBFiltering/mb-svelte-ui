@@ -93,12 +93,16 @@
 	let hasOverflowItems = $derived(unimportantSections.length > 0 || navActions.length > 0);
 	let unimportantSectionActive = $derived(unimportantSections.some((s) => s.key === activeSection));
 
-	// Typing-vs-hotkey disambiguation.
-	// "c" is the only no-modifier hotkey (double-tap C = collapse/expand all),
-	// so a lone "c" is buffered for a short window to tell typing from the
-	// shortcut. Any other bare printable key is treated as typing immediately.
-	let cBufferTimer = null;
-	const typingHotkeyDelay = 150; // milliseconds
+	// Typing-vs-hotkey disambiguation. Bare printable keys are buffered briefly
+	// so a double-tap shortcut combo (the same key twice — e.g. CC to collapse
+	// all, or host-page combos like QQ/AA/SS) can be told apart from the start
+	// of typing into magic search. A *different* follow-up key flushes the
+	// buffer immediately, so real typing stays responsive; the full delay only
+	// applies to a lone key followed by a pause. The window matches the common
+	// double-tap threshold so a combo is never split partway through.
+	let bufferedKey = null;
+	let keyBufferTimer = null;
+	const typingHotkeyDelay = 300; // milliseconds (matches double-tap threshold)
 
 	// Initialize active section from first available section
 	$effect(() => {
@@ -270,36 +274,50 @@
 		// Typing-vs-hotkey disambiguation for bare keys
 		if (isTypingKey(event)) {
 			const char = event.key;
-			const isC = char.toLowerCase() === 'c';
 
-			// A buffered "c" is pending and a second keystroke arrived within the window
-			if (cBufferTimer !== null) {
-				clearTimeout(cBufferTimer);
-				cBufferTimer = null;
-				event.preventDefault();
-				if (isC) {
-					// Double-tap C → toggle collapse/expand all (recognized shortcut)
-					toggleAllIslands();
-				} else {
-					// Different key → the user is typing "c" followed by this char
-					typeIntoMagicSearch('c' + char);
+			// A bare key is already buffered and a second keystroke arrived in time.
+			if (bufferedKey !== null) {
+				clearTimeout(keyBufferTimer);
+				const prev = bufferedKey;
+				bufferedKey = null;
+				keyBufferTimer = null;
+
+				if (char.toLowerCase() === prev.toLowerCase()) {
+					// Same key twice = a double-tap shortcut combo, not typing.
+					// "c" (collapse/expand all) is owned here; any other combo
+					// (e.g. QQ/AA/SS) is owned by the host page, whose own keydown
+					// listener tracked both presses independently — so we just step
+					// aside and let it fire.
+					if (prev.toLowerCase() === 'c') {
+						event.preventDefault();
+						toggleAllIslands();
+					}
+					return;
 				}
+
+				// Different key = the user is typing.
+				event.preventDefault();
+				typeIntoMagicSearch(prev + char);
 				return;
 			}
 
-			// First "c" while not searching is ambiguous (could be double-tap C).
-			// Hold it for a short window to see whether a shortcut or typing follows.
-			if (isC && !magicSearchActive) {
+			// First bare key while not already searching: buffer it briefly so a
+			// double-tap shortcut can be told apart from the start of typing.
+			if (!magicSearchActive) {
 				event.preventDefault();
-				cBufferTimer = setTimeout(() => {
-					cBufferTimer = null;
-					// No follow-up within the window → treat the lone "c" as typing
-					typeIntoMagicSearch('c');
+				bufferedKey = char;
+				keyBufferTimer = setTimeout(() => {
+					const pending = bufferedKey;
+					bufferedKey = null;
+					keyBufferTimer = null;
+					// No follow-up within the window → treat the lone key as typing.
+					if (pending !== null) typeIntoMagicSearch(pending);
 				}, typingHotkeyDelay);
 				return;
 			}
 
-			// Any other bare printable key → start/continue typing into magic search
+			// Magic search is already active but the input isn't focused →
+			// continue typing into it.
 			event.preventDefault();
 			typeIntoMagicSearch(char);
 			return;
@@ -315,7 +333,7 @@
 		return () => {
 			window.removeEventListener('keydown', handleKeyDown);
 			window.removeEventListener('hashchange', handleHashChange);
-			if (cBufferTimer !== null) clearTimeout(cBufferTimer);
+			if (keyBufferTimer !== null) clearTimeout(keyBufferTimer);
 		};
 	});
 
