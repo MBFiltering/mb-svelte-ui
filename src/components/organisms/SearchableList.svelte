@@ -19,8 +19,8 @@
 		filterTabs = [], // Array of { key, label, filterFn }
 		columns = 1, // Number of columns for calculating rows
 		columnsXl = 1, // 1280px+ column count
-		columnsXl2 = 1, // Number of columns for calculating rows
-		columns2Xl = 2, // Number of columns for calculating rows
+		columnsXl2 = 1, // 1440px+ column count
+		columns2Xl = 2, // 1536px+ column count
 		disableGrid = false, // When true, items display in normal flow instead of grid
 		searchActions,
 		children,

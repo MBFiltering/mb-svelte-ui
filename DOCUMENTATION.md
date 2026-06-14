@@ -1607,7 +1607,8 @@ Searchable, filterable list with optional bulk selection.
 | `itemName`          | `string`  | `'item'`           | Singular item name               |
 | `filterTabs`        | `array`   | `[]`               | Tab filter definitions           |
 | `columns`           | `number`  | `1`                | Grid columns                     |
-| `columnsXl2`        | `number`  | `2`                | Columns at xl2 breakpoint        |
+| `columnsXl`         | `number`  | `1`                | Columns at xl breakpoint         |
+| `columnsXl2`        | `number`  | `1`                | Columns at xl2 breakpoint        |
 | `columns2Xl`        | `number`  | `2`                | Columns at 2xl breakpoint        |
 | `disableGrid`       | `boolean` | `false`            | Use normal flow                  |
 | `searchActions`     | `snippet` | -                  | Actions next to search           |
