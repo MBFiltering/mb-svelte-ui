@@ -1229,11 +1229,15 @@ Responsive grid with row-first or column-first flow.
 | `itemCount`  | `number`  | `0`     | Required for `'col'` flow                    |
 | `columns`    | `number`  | `1`     | Base column count                            |
 | `columnsSm`  | `number`  | `null`  | Columns at 640px+                            |
+| `columnsSm2` | `number`  | `null`  | Columns at 700px+                            |
 | `columnsMd`  | `number`  | `null`  | Columns at 768px+                            |
+| `columnsMd2` | `number`  | `null`  | Columns at 850px+                            |
 | `columnsLg`  | `number`  | `null`  | Columns at 1024px+                           |
+| `columnsLg2` | `number`  | `null`  | Columns at 1150px+                           |
 | `columnsXl`  | `number`  | `null`  | Columns at 1280px+                           |
-| `columnsXl2` | `number`  | `null`  | Columns at 1400px+                           |
+| `columnsXl2` | `number`  | `null`  | Columns at 1440px+                           |
 | `columns2Xl` | `number`  | `null`  | Columns at 1536px+                           |
+| `columns2Xl2` | `number` | `null`  | Columns at 1650px+                           |
 | `gapX`       | `number`  | `2`     | Horizontal gap in rem                        |
 | `gapY`       | `number`  | `0`     | Vertical gap in rem                          |
 | `disabled`   | `boolean` | `false` | Disable grid (normal flow)                   |
