@@ -1232,6 +1232,7 @@ Responsive grid with row-first or column-first flow.
 | `columnsMd`  | `number`  | `null`  | Columns at 768px+                            |
 | `columnsLg`  | `number`  | `null`  | Columns at 1024px+                           |
 | `columnsXl`  | `number`  | `null`  | Columns at 1280px+                           |
+| `columnsXl2` | `number`  | `null`  | Columns at 1400px+                           |
 | `columns2Xl` | `number`  | `null`  | Columns at 1536px+                           |
 | `gapX`       | `number`  | `2`     | Horizontal gap in rem                        |
 | `gapY`       | `number`  | `0`     | Vertical gap in rem                          |
@@ -1606,7 +1607,7 @@ Searchable, filterable list with optional bulk selection.
 | `itemName`          | `string`  | `'item'`           | Singular item name               |
 | `filterTabs`        | `array`   | `[]`               | Tab filter definitions           |
 | `columns`           | `number`  | `1`                | Grid columns                     |
-| `columnsXl`         | `number`  | `2`                | Columns at xl breakpoint         |
+| `columnsXl2`        | `number`  | `2`                | Columns at xl2 breakpoint        |
 | `columns2Xl`        | `number`  | `2`                | Columns at 2xl breakpoint        |
 | `disableGrid`       | `boolean` | `false`            | Use normal flow                  |
 | `searchActions`     | `snippet` | -                  | Actions next to search           |

@@ -169,6 +169,22 @@
 /* Horizontal breakpoint for extra small screens (not in default Tailwind) */
 @custom-variant xs (@media (min-width: 475px));
 
+/* sm2: between sm and md */
+@custom-variant sm2 (@media (min-width: 700px));
+
+/* md2: between md and lg */
+@custom-variant md2 (@media (min-width: 850px));
+
+/* lg2: between lg and xl */
+@custom-variant lg2 (@media (min-width: 1150px));
+
+/* xl2: between xl and 2xl */
+@custom-variant xl2 (@media (min-width: 1440px));
+
+/* optional: 2xl2 if you want one more between 2xl and larger desktops */
+@custom-variant 2xl2 (@media (min-width: 1650px));
+
+
 /* Small viewport (combines horizontal sm and vertical short) */
 @custom-variant smv (@media (min-width: 640px) and (min-height: 500px));
 

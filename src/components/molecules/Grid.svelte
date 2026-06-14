@@ -17,10 +17,15 @@
 		// Column counts at different breakpoints (default = base/mobile)
 		columns = 1,
 		columnsSm = null, // 640px+
+		columnsSm2 = null, // 700px+
 		columnsMd = null, // 768px+
+		columnsMd2 = null, // 850px+
 		columnsLg = null, // 1024px+
+		columnsLg2 = null, // 1150px+
 		columnsXl = null, // 1280px+
+		columnsXl2 = null, // 1440px+
 		columns2Xl = null, // 1536px+
+		columns2Xl2 = null, // 1650px+
 		// Gap between items (in rem, e.g., 1 = 1rem = 16px)
 		gapX = 2, // Override horizontal gap
 		gapY = 0, // Override vertical gap
