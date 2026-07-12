@@ -67,6 +67,10 @@
 		// Default expanded state for all Islands (used on initial render)
 		defaultIslandsExpanded = true,
 
+		// Keyboard shortcuts (Alt+Shift+M, Alt+Shift+<letter>, double-tap CC) and their
+		// Kbd hints — on by default, some host apps opt out entirely.
+		hotkeysEnabled = true,
+
 		// Snippets (sidebarSkeleton and mainSkeleton are required for loading states)
 		header,
 		sidebarSkeleton,
@@ -243,29 +247,31 @@
 			event.target.isContentEditable
 		) {
 			// Exception: Allow Alt+Shift+M even in inputs
-			if (event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
+			if (hotkeysEnabled && event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
 				event.preventDefault();
 				magicSearchInput?.focus();
 			}
 			return;
 		}
 
-		// Alt+Shift+M to focus magic search (definite shortcut — bypass typing delay)
-		if (event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
-			event.preventDefault();
-			magicSearchInput?.focus();
-			return;
-		}
-
-		// Alt + Shift + letter section navigation (definite shortcut — bypass typing delay)
-		if (event.altKey && event.shiftKey) {
-			const key = event.key.toUpperCase();
-			const section = sections.find((s) => s.shortcut === key);
-			if (section) {
+		if (hotkeysEnabled) {
+			// Alt+Shift+M to focus magic search (definite shortcut — bypass typing delay)
+			if (event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
 				event.preventDefault();
-				selectSection(section.key);
+				magicSearchInput?.focus();
+				return;
 			}
-			return;
+
+			// Alt + Shift + letter section navigation (definite shortcut — bypass typing delay)
+			if (event.altKey && event.shiftKey) {
+				const key = event.key.toUpperCase();
+				const section = sections.find((s) => s.shortcut === key);
+				if (section) {
+					event.preventDefault();
+					selectSection(section.key);
+				}
+				return;
+			}
 		}
 
 		// Anything else with a command/control modifier is a browser/OS shortcut — leave it alone
@@ -274,6 +280,14 @@
 		// Typing-vs-hotkey disambiguation for bare keys
 		if (isTypingKey(event)) {
 			const char = event.key;
+
+			// With hotkeys off there are no double-tap combos to disambiguate from —
+			// every bare key is typing, so route it straight into magic search.
+			if (!hotkeysEnabled) {
+				event.preventDefault();
+				typeIntoMagicSearch(char);
+				return;
+			}
 
 			// A bare key is already buffered and a second keystroke arrived in time.
 			if (bufferedKey !== null) {
@@ -528,7 +542,7 @@
 								>
 									<Kbd>Esc</Kbd>
 								</div>
-							{:else if !magicSearchActive}
+							{:else if !magicSearchActive && hotkeysEnabled}
 								<div
 									class="helper pointer-events-none absolute top-1/2 rtl:left-2 ltr:right-2 -translate-y-4"
 								>
@@ -554,8 +568,8 @@
 						title={magicSearchActive
 							? disabledDuringSearchTitle
 							: allIslandsExpanded
-								? `${collapseAllSectionsTitle} (CC)`
-								: `${expandAllSectionsTitle} (CC)`}
+								? `${collapseAllSectionsTitle}${hotkeysEnabled ? ' (CC)' : ''}`
+								: `${expandAllSectionsTitle}${hotkeysEnabled ? ' (CC)' : ''}`}
 						onclick={toggleAllIslands}
 						disabled={magicSearchActive}
 					>

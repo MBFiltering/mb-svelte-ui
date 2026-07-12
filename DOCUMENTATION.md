@@ -1928,6 +1928,7 @@ The loading bar appears below the header and shows progress:
 | `onRetry`         | `function` | `() => {}` | Retry button handler         |
 | `overflowMenuTitle` | `string` | `'More'` | Title for the mobile overflow menu |
 | `defaultIslandsExpanded` | `boolean` | `true` | Initial expanded state for all Islands rendered via `ctx.islandProps`. Captured on mount; users can still toggle expand/collapse all afterwards. |
+| `hotkeysEnabled`  | `boolean`  | `true`     | Master switch for the keyboard shortcuts (`Alt+Shift+M`, `Alt+Shift+{letter}` section nav, double-tap `CC`) and their `Kbd` hint badges. Set `false` to disable all shortcuts and hide the hints — magic search still works by clicking/typing into the input, and per-section `shortcut` badges are suppressed. |
 | `header`          | `snippet`  | -          | Header content               |
 | `sidebarSkeleton` | `snippet`  | -          | Loading skeleton for sidebar |
 | `mainSkeleton`    | `snippet`  | -          | Loading skeleton for main    |
@@ -1978,12 +1979,14 @@ The `sectionContent` snippet receives a context object with:
 }
 ```
 
-**Keyboard Shortcuts:**
+**Keyboard Shortcuts:** (all gated behind `hotkeysEnabled`, which defaults to `true`)
 
 - `Alt+Shift+{letter}`: Navigate to section
 - `Alt+Shift+M`: Focus magic search
 - `CC` (double-tap C): Toggle expand/collapse all
-- `ESC`: Clear magic search (when focused)
+- `ESC`: Clear magic search (when focused — always available, independent of `hotkeysEnabled`)
+
+Pass `hotkeysEnabled={false}` to disable all of the above and hide their `Kbd` hint badges. Magic search remains fully usable via clicking or typing into the search input; only the shortcut affordances are removed.
 
 **Usage:**
 
