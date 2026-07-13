@@ -1929,6 +1929,7 @@ The loading bar appears below the header and shows progress:
 | `overflowMenuTitle` | `string` | `'More'` | Title for the mobile overflow menu |
 | `defaultIslandsExpanded` | `boolean` | `true` | Initial expanded state for all Islands rendered via `ctx.islandProps`. Captured on mount; users can still toggle expand/collapse all afterwards. |
 | `hotkeysEnabled`  | `boolean`  | `true`     | Master switch for the keyboard shortcuts (`Alt+Shift+M`, `Alt+Shift+{letter}` section nav, double-tap `CC`) and their `Kbd` hint badges. Set `false` to disable all shortcuts and hide the hints — magic search still works by clicking/typing into the input, and per-section `shortcut` badges are suppressed. |
+| `magicSearchEnabled` | `boolean` | `true`  | Master switch for magic search. Set `false` to hide the search input, its `Kbd`/clear hints and the no-results message, and to stop bare-key typing and `Alt+Shift+M` from feeding the search. Section tabs and the collapse/expand-all control stay, and the collapse control right-aligns in place of the input. Independent of `hotkeysEnabled` (double-tap `CC` still toggles all islands). |
 | `header`          | `snippet`  | -          | Header content               |
 | `sidebarSkeleton` | `snippet`  | -          | Loading skeleton for sidebar |
 | `mainSkeleton`    | `snippet`  | -          | Loading skeleton for main    |
@@ -1987,6 +1988,8 @@ The `sectionContent` snippet receives a context object with:
 - `ESC`: Clear magic search (when focused — always available, independent of `hotkeysEnabled`)
 
 Pass `hotkeysEnabled={false}` to disable all of the above and hide their `Kbd` hint badges. Magic search remains fully usable via clicking or typing into the search input; only the shortcut affordances are removed.
+
+**Disabling magic search:** Pass `magicSearchEnabled={false}` to remove the search entirely — the input, its hints, and the no-results message are hidden, and typing (bare keys / `Alt+Shift+M`) no longer feeds the search. The section tabs and the collapse/expand-all control remain fully functional. The magic-search text props (`magicSearchPlaceholder`, `magicSearchNoResultsPrefix`, `magicSearchNoResultsSuffix`, `disabledDuringSearchTitle`) become unused and can be omitted.
 
 **Usage:**
 

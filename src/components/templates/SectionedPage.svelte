@@ -71,6 +71,11 @@
 		// Kbd hints — on by default, some host apps opt out entirely.
 		hotkeysEnabled = true,
 
+		// Master switch for magic search — on by default. Set false to hide the search
+		// input, its no-results message and hints, and stop bare-key typing / Alt+Shift+M
+		// from feeding the search. Section tabs and the collapse/expand-all control remain.
+		magicSearchEnabled = true,
+
 		// Snippets (sidebarSkeleton and mainSkeleton are required for loading states)
 		header,
 		sidebarSkeleton,
@@ -89,7 +94,7 @@
 	let overflowMenuOpen = $state(false);
 
 	// Derived state
-	let magicSearchActive = $derived(magicSearchQuery.trim().length > 0);
+	let magicSearchActive = $derived(magicSearchEnabled && magicSearchQuery.trim().length > 0);
 
 	// Split sections into important (shown on bottom bar) and unimportant (tucked into overflow)
 	let importantSections = $derived(sections.filter((s) => !s.unimportant));
@@ -219,6 +224,7 @@
 
 	// Focus the magic search input and append typed text, placing the caret at the end.
 	async function typeIntoMagicSearch(text) {
+		if (!magicSearchEnabled) return; // Search disabled — swallow the keystroke.
 		magicSearchQuery = (magicSearchQuery || '') + text;
 		await tick();
 		magicSearchInput?.focus();
@@ -247,7 +253,13 @@
 			event.target.isContentEditable
 		) {
 			// Exception: Allow Alt+Shift+M even in inputs
-			if (hotkeysEnabled && event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
+			if (
+				hotkeysEnabled &&
+				magicSearchEnabled &&
+				event.altKey &&
+				event.shiftKey &&
+				event.key.toUpperCase() === 'M'
+			) {
 				event.preventDefault();
 				magicSearchInput?.focus();
 			}
@@ -256,7 +268,7 @@
 
 		if (hotkeysEnabled) {
 			// Alt+Shift+M to focus magic search (definite shortcut — bypass typing delay)
-			if (event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
+			if (magicSearchEnabled && event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
 				event.preventDefault();
 				magicSearchInput?.focus();
 				return;
@@ -514,6 +526,7 @@
 
 				<!-- Magic Search Bar -->
 				<div class="flex gap-1 px-4">
+					{#if magicSearchEnabled}
 					<div class="lg:px-0 relative flex-1">
 						<div class="relative">
 							<div
@@ -560,9 +573,12 @@
 							{/if}
 						</div>
 					</div>
+					{/if}
 					<!-- Collapse/Expand All -->
 					<button
-						class="h-full rounded-full p-2 transition-colors {magicSearchActive
+						class="h-full rounded-full p-2 transition-colors {magicSearchEnabled
+							? ''
+							: 'ms-auto'} {magicSearchActive
 							? 'cursor-not-allowed text-gray-400 opacity-50 dark:text-gray-500'
 							: 'cursor-pointer text-gray-700 hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10'}"
 						title={magicSearchActive
@@ -581,6 +597,7 @@
 				</div>
 
 				<!-- Magic search: No results message -->
+				{#if magicSearchEnabled}
 				<div class="magicsearch-noresults p-8 text-center">
 					<p class="text-gray-900/50 dark:text-gray-50/50">
 						{magicSearchNoResultsPrefix} <span class="font-medium text-gray-700 dark:text-gray-200"
@@ -589,6 +606,7 @@
 						{magicSearchNoResultsSuffix}
 					</p>
 				</div>
+				{/if}
 
 				<!-- Section content -->
 				{#key islandResetKey}
