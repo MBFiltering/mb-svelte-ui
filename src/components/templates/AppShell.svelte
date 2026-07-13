@@ -52,7 +52,7 @@
 						<h1
 							class="text-center text-sm leading-none font-semibold whitespace-nowrap text-azure-700 lg:text-xl dark:text-azure-500"
 						>
-							/ {title}
+							{title}
 						</h1>
 					{/if}
 					{#if versionString}
