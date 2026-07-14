@@ -43,6 +43,7 @@
 	- [ListCard](#listcard)
    - [MultiInput](#multiinput)
    - [NamedControl](#namedcontrol)
+   - [Tabs](#tabs)
 4. [Organisms (Complex Components)](#organisms)
    - [Modal](#modal)
    - [QuickLinks](#quicklinks)
@@ -1533,6 +1534,51 @@ Label wrapper for form controls with optional description and info tooltip.
 <NamedControl label="Device Protection" info={true}>
   <ToggleSwitch checked={protected} onChange={handleProtectionChange} />
 </NamedControl>
+```
+
+---
+
+### Tabs
+
+Horizontal tab strip with an active underline and optional per-tab icons. Wraps
+onto additional rows when there isn't enough horizontal room, so it degrades
+gracefully on narrow / mobile screens.
+
+**Import:**
+
+```svelte
+<script>
+	import { Tabs } from '@mbsmart/ui/molecules';
+</script>
+```
+
+**Props:**
+
+| Prop       | Type       | Default | Description                                                        |
+| ---------- | ---------- | ------- | ------------------------------------------------------------------ |
+| `tabs`     | `Array`    | `[]`    | Tabs to render: `{ id, label, icon? }`. `icon` is a Lucide component |
+| `active`   | `string`   | -       | Active tab id. Bindable (`bind:active`)                            |
+| `onChange` | `function` | `()=>{}`| Called with the selected tab id                                   |
+
+**Usage:**
+
+```svelte
+<script>
+	import { Tabs } from '@mbsmart/ui/molecules';
+	import { KeyRound, UserPen } from '@lucide/svelte';
+
+	let active = $state('account');
+	const tabs = [
+		{ id: 'account', label: 'Account', icon: UserPen },
+		{ id: 'password', label: 'Password', icon: KeyRound }
+	];
+</script>
+
+<Tabs {tabs} bind:active />
+
+{#if active === 'account'}
+	<!-- account panel -->
+{/if}
 ```
 
 ---
