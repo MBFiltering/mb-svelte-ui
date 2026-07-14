@@ -19,6 +19,7 @@ export { default as Skeleton } from './Skeleton.svelte';
 export { default as Spinner } from './Spinner.svelte';
 export { default as SvgIcon } from './SvgIcon.svelte';
 export { default as TextInput } from './TextInput.svelte';
+export { default as TextLink } from './TextLink.svelte';
 export { default as Toast } from './Toast.svelte';
 export { default as ToggleSwitch } from './ToggleSwitch.svelte';
 export { default as VisibilityToggle } from './VisibilityToggle.svelte';
