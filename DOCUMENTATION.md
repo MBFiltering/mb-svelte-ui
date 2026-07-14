@@ -32,6 +32,7 @@
    - [Spinner](#spinner)
    - [SvgIcon](#svgicon)
    - [TextInput](#textinput)
+   - [TextLink](#textlink)
    - [Toast](#toast)
    - [ToggleSwitch](#toggleswitch)
    - [VisibilityToggle](#visibilitytoggle)
@@ -970,6 +971,39 @@ When `type="password"`, a built-in eye icon button appears that toggles between 
 **Search Icon:**
 
 When `showSearchIcon` is true, a magnifying glass icon appears on the left side of the input. The icon color changes to azure on focus.
+
+---
+
+### TextLink
+
+Inline text link/button for secondary actions ("Log in", "Back to login", "Forgot password?"). Renders an `<a>` when `href` is set, otherwise a `<button>` (use `onclick`).
+
+**Import:**
+
+```svelte
+<script>
+	import { TextLink } from '@mbsmart/ui/atoms';
+</script>
+```
+
+**Props:**
+
+| Prop        | Type                  | Default     | Description                                          |
+| ----------- | --------------------- | ----------- | ---------------------------------------------------- |
+| `href`      | `string`              | `''`        | Link URL. When set, renders an `<a>`.                |
+| `onclick`   | `function \| null`    | `null`      | Click handler for button mode.                       |
+| `color`     | `'azure' \| 'muted'`  | `'azure'`   | `azure` for accent links, `muted` for subtle grays.  |
+| `type`      | `string`              | `'button'`  | Button type (button mode only).                      |
+| `disabled`  | `boolean`             | `false`     | Disables the button.                                 |
+| `className` | `string`              | `''`        | Extra classes (e.g. `text-sm`, `w-full`).            |
+
+**Usage:**
+
+```svelte
+<TextLink onclick={() => goto('/auth/login')}>Log in</TextLink>
+<TextLink href="/terms">Terms</TextLink>
+<TextLink color="muted" className="text-sm" onclick={goBack}>Back to login</TextLink>
+```
 
 ---
 
