@@ -12,6 +12,7 @@
 		items = [],
 		searchKeys = [],
 		searchPlaceholder = 'Search...',
+		searchThreshold = 0, // Only show the search input once items.length reaches this count (0 = always show)
 		specialFilters = {},
 		emptyMessage = 'No items found',
 		itemName = 'item',
@@ -47,6 +48,9 @@
 	let activeFilter = $state(filterTabs.length > 0 ? filterTabs[0].key : null);
 	let currentPage = $state(1);
 	let showAll = $state(false);
+
+	// Only surface the search input once the list is long enough to warrant it.
+	const showSearch = $derived(searchThreshold <= 0 || items.length >= searchThreshold);
 
 	// Effective query: externalQuery takes priority over the built-in search
 	const effectiveQuery = $derived(externalQuery.trim() || searchQuery);
@@ -233,32 +237,36 @@
 	{/if}
 
 	<!-- Search Bar with Actions -->
-	<div class="magicsearch-item flex flex-col items-center gap-3 md:flex-row">
-		<div class="relative flex w-full flex-1 gap-1 md:w-auto">
-			{#if bulk}
-				<div class="me-2 flex items-center">
-					<Checkbox
-						checked={allVisibleSelected}
-						indeterminate={someVisibleSelected && !allVisibleSelected}
-						onclick={toggleSelectAllVisible}
-						ariaLabel="Select all visible"
+	{#if showSearch || searchActions}
+		<div class="magicsearch-item flex flex-col items-center gap-3 md:flex-row">
+			{#if showSearch}
+				<div class="relative flex w-full flex-1 gap-1 md:w-auto">
+					{#if bulk}
+						<div class="me-2 flex items-center">
+							<Checkbox
+								checked={allVisibleSelected}
+								indeterminate={someVisibleSelected && !allVisibleSelected}
+								onclick={toggleSelectAllVisible}
+								ariaLabel="Select all visible"
+							/>
+						</div>
+					{/if}
+					<TextInput
+						bind:value={searchQuery}
+						placeholder={searchPlaceholder}
+						size="sm"
+						showSearchIcon
 					/>
 				</div>
 			{/if}
-			<TextInput
-				bind:value={searchQuery}
-				placeholder={searchPlaceholder}
-				size="sm"
-				showSearchIcon
-			/>
+			<!-- Optional actions slot -->
+			{#if searchActions}
+				<div class="flex w-full shrink-0 gap-2 sm:w-auto">
+					{@render searchActions?.(activeFilter)}
+				</div>
+			{/if}
 		</div>
-		<!-- Optional actions slot -->
-		{#if searchActions}
-			<div class="flex w-full shrink-0 gap-2 sm:w-auto">
-				{@render searchActions?.(activeFilter)}
-			</div>
-		{/if}
-	</div>
+	{/if}
 
 	<!-- Results Count -->
 	<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">

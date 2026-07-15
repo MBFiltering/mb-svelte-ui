@@ -1686,6 +1686,7 @@ Searchable, filterable list with optional bulk selection.
 | `items`             | `array`   | `[]`               | Array of items                   |
 | `searchKeys`        | `array`   | `[]`               | Object paths to search in        |
 | `searchPlaceholder` | `string`  | `'Search...'`      | Placeholder text                 |
+| `searchThreshold`   | `number`  | `0`                | Hide search input until `items.length` reaches this count (`0` = always show) |
 | `specialFilters`    | `object`  | `{}`               | Special keyword filters          |
 | `emptyMessage`      | `string`  | `'No items found'` | Empty state message              |
 | `itemName`          | `string`  | `'item'`           | Singular item name               |
