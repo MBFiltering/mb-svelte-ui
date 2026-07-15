@@ -1713,6 +1713,11 @@ Searchable, filterable list with optional bulk selection.
 | `showAllText`       | `string`  | `'Show all'`       | i18n label for the "show all" link that bypasses pagination |
 | `paginateText`      | `string`  | `'Paginate'`       | i18n label for the button that returns to paginated view when all items are shown |
 
+**Results count behavior:**
+
+- The count line shows the `X of Y` form (e.g. `10 of 42 Devices`) only while the current page hides some of the filtered results.
+- When every filtered item fits on the current page, the `of` clause is dropped and it reads `Y Devices` (e.g. `1 Device`), since `1 of 1` carries no extra information.
+
 **Show-all behavior:**
 
 - The pagination controls include a `Show all` link (controlled by `showAllText`) that, when clicked, bypasses pagination and displays all currently filtered items.

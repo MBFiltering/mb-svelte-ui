@@ -77,6 +77,10 @@
 		return filteredItems.slice(start, start + pageSize);
 	});
 
+	// Only show the "X of Y" form when the current page hides some results.
+	// When everything fits on one page, "Y items" is clearer than "Y of Y items".
+	const isPartialView = $derived(paginatedItems.length < filteredItems.length);
+
 	// Get plural form of item name with proper pluralization rules
 	const pluralItemName = $derived.by(() => {
 		// If explicit plural provided, use it
@@ -270,7 +274,7 @@
 
 	<!-- Results Count -->
 	<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
-		{paginatedItems.length} {ofText} {filteredItems.length}
+		{#if isPartialView}{paginatedItems.length} {ofText} {filteredItems.length}{:else}{filteredItems.length}{/if}
 		{pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
 	</div>
 
