@@ -76,6 +76,11 @@
 		// from feeding the search. Section tabs and the collapse/expand-all control remain.
 		magicSearchEnabled = true,
 
+		// Master switch for the collapse/expand-all control — on by default. Set false to
+		// hide the collapse-all button and stop the double-tap CC hotkey from toggling all
+		// islands. Individual islands can still collapse via their own headers.
+		collapseAllEnabled = true,
+
 		// Snippets (sidebarSkeleton and mainSkeleton are required for loading states)
 		header,
 		sidebarSkeleton,
@@ -310,11 +315,11 @@
 
 				if (char.toLowerCase() === prev.toLowerCase()) {
 					// Same key twice = a double-tap shortcut combo, not typing.
-					// "c" (collapse/expand all) is owned here; any other combo
-					// (e.g. QQ/AA/SS) is owned by the host page, whose own keydown
-					// listener tracked both presses independently — so we just step
-					// aside and let it fire.
-					if (prev.toLowerCase() === 'c') {
+					// "c" (collapse/expand all) is owned here when the control is
+					// enabled; any other combo (e.g. QQ/AA/SS) is owned by the host
+					// page, whose own keydown listener tracked both presses
+					// independently — so we just step aside and let it fire.
+					if (collapseAllEnabled && prev.toLowerCase() === 'c') {
 						event.preventDefault();
 						toggleAllIslands();
 					}
@@ -575,6 +580,7 @@
 					</div>
 					{/if}
 					<!-- Collapse/Expand All -->
+					{#if collapseAllEnabled}
 					<button
 						class="h-full rounded-full p-2 transition-colors {magicSearchEnabled
 							? ''
@@ -594,6 +600,7 @@
 							class="transition-transform {allIslandsExpanded ? '' : 'rotate-180'}"
 						/>
 					</button>
+					{/if}
 				</div>
 
 				<!-- Magic search: No results message -->
