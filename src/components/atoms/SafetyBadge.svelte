@@ -13,6 +13,12 @@
 		deriveColorKeyFromLabel,
 		getRiskLabel
 	} from '../../utils/categoryColors.js';
+	import { registerTranslations, t } from '../../utils/i18n/i18n.js';
+	import { safetyTranslations, colorKeyToSafetyKey } from '../../utils/i18n/safetyTranslations.js';
+
+	// Register the shared safety vocabulary so the badge is localized out of the
+	// box. Runs once on module load; consumer overrides still win via deepMerge.
+	registerTranslations(safetyTranslations);
 
 	let {
 		colorKey = '', // Direct color key: 'green', 'yellow', 'orange', 'red', 'gray'
@@ -43,7 +49,13 @@
 
 	// Computed values
 	const resolvedColorKey = $derived(resolveColorKey(colorKey, label));
-	const riskLabel = $derived(riskLabelOverride || getRiskLabel(resolvedColorKey));
+	// Localized risk label via the shared i18n engine; an explicit override still
+	// wins, and if the key is somehow unregistered we fall back to the English map.
+	const riskLabel = $derived(
+		riskLabelOverride ||
+			$t(`safety.${colorKeyToSafetyKey[resolvedColorKey] || 'unknown'}`) ||
+			getRiskLabel(resolvedColorKey)
+	);
 	const badgeClasses = $derived(
 		`rounded-lg border font-semibold ${colorClasses[resolvedColorKey] || colorClasses.gray} ${sizeClasses[size] || sizeClasses.sm} ${className}`
 	);
