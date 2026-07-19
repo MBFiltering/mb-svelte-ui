@@ -44,8 +44,12 @@
 		paginateText = 'Paginate', // label to return to paginated view
 		// When every filtered item fits on one page, call this to format the
 		// count line (e.g. "You have 3 devices"). Return null/undefined to
-		// fall back to the default "{count} {itemName}" form.
-		formatAllCount = null // (count: number) => string | null | undefined
+		// fall back to the default "{count} {itemName}" form. Only applied
+		// when the view is not partial (X of Y).
+		formatAllCount = null, // (count: number) => string | null | undefined
+		// Set false when the parent renders its own count line (e.g. account
+		// device lists that always show "You have N devices").
+		showResultsCount = true
 	} = $props();
 
 	let searchQuery = $state('');
@@ -284,15 +288,17 @@
 	{/if}
 
 	<!-- Results Count -->
-	<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
-		{#if isPartialView}
-			{paginatedItems.length} {ofText} {filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
-		{:else if allCountLabel}
-			{allCountLabel}{bulk ? `, ${selected.length} ${selectedText}` : ''}
-		{:else}
-			{filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
-		{/if}
-	</div>
+	{#if showResultsCount}
+		<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
+			{#if isPartialView}
+				{paginatedItems.length} {ofText} {filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+			{:else if allCountLabel}
+				{allCountLabel}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+			{:else}
+				{filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+			{/if}
+		</div>
+	{/if}
 
 	<!-- List Container -->
 	<Grid flow="col" itemCount={paginatedItems.length} {columns} {columnsXl} {columnsXl2} {columns2Xl} disabled={disableGrid}>
