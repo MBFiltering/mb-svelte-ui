@@ -19,6 +19,7 @@
 		showPlanBadge = true,
 		showPaymentStatus = true,
 		showDeviceInfo = true,
+		showLinkcode = true,
 		showNote = false,
 		syncing = false,
 		onSync = null,
@@ -131,7 +132,7 @@
 			{/if}
 		</p>
 		<p class="truncate text-sm text-gray-900/75 dark:text-gray-50/75">{deviceId}</p>
-		{#if linkcode}
+		{#if showLinkcode && linkcode}
 			<p class="truncate text-xs text-gray-500 dark:text-gray-400">{linkcode}</p>
 		{/if}
 		{#if showDeviceInfo && deviceInfo && deviceInfo !== ' :'}

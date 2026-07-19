@@ -1160,6 +1160,7 @@ Device-focused list item built on top of `ListCard`, with plan and payment badge
 | `showPlanBadge`      | `boolean`  | `true`         | Show the Pro/Basic badge                                           |
 | `showPaymentStatus`  | `boolean`  | `true`         | Show the Paid/Unpaid badge when payment status exists              |
 | `showDeviceInfo`     | `boolean`  | `true`         | Show the derived device model/info line                            |
+| `showLinkcode`       | `boolean`  | `true`         | Show the association/linkcode line derived from `account`          |
 | `showNote`           | `boolean`  | `false`        | Show the device note in italic text                                |
 | `syncing`            | `boolean`  | `false`        | External loading state for the sync button                         |
 | `onSync`             | `function` | `null`         | Async sync handler. Receives the full `device` object              |
