@@ -33,35 +33,37 @@
 	<!-- Sticky Header -->
 	<header class="sticky top-0 z-20 h-14 bg-white px-4 py-2 shadow-lg dark:bg-zinc-800">
 		<div class="flex items-center justify-between gap-4">
-			<!-- Logo and Title Section -->
-			<div class="flex gap-4">
-				<a
-					href={logoHref}
-					class="group h-8 w-10 cursor-pointer"
-					aria-label="Home"
-					data-sveltekit-reload
-				>
+			<!-- Logo and Title Section (single link: logo + title + version) -->
+			<a
+				href={logoHref}
+				class="group flex cursor-pointer gap-4"
+				aria-label="Home"
+				data-sveltekit-reload
+			>
+				<div class="h-8 w-10">
 					<SvgIcon
 						name={logoIcon}
 						size="w-8 h-8"
 						className="text-azure-700 dark:text-azure-500 group-hover:text-azure-900 dark:group-hover:text-azure-700 transition-colors"
 					/>
-				</a>
-				<div class="group hidden items-center justify-center gap-2 xs:flex">
+				</div>
+				<div class="hidden items-center justify-center gap-2 xs:flex">
 					{#if title}
 						<h1
-							class="text-center text-sm leading-none font-semibold whitespace-nowrap text-azure-700 lg:text-xl dark:text-azure-500"
+							class="text-center text-sm leading-none font-semibold whitespace-nowrap text-azure-700 transition-colors group-hover:text-azure-900 lg:text-xl dark:text-azure-500 dark:group-hover:text-azure-700"
 						>
 							{title}
 						</h1>
 					{/if}
 					{#if versionString}
-						<p class="p-0.5 px-1 text-[10px] font-semibold text-gray-700 dark:text-gray-200">
+						<p
+							class="p-0.5 px-1 text-[10px] font-semibold text-gray-700 transition-colors group-hover:text-gray-900 dark:text-gray-200 dark:group-hover:text-white"
+						>
 							{versionString}
 						</p>
 					{/if}
 				</div>
-			</div>
+			</a>
 
 			<!-- Header Content Section (search, buttons, etc.) -->
 			<div class="flex max-w-7xl flex-1 items-center gap-2 sm:gap-4">

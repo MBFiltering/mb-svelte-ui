@@ -1979,7 +1979,7 @@ Full page layout template with sticky header, loading progress bar, and main con
 | `title`           | string  | `''`           | Main title (e.g. userId, page name)       |
 | `versionString`   | string  | `''`           | Version badge (e.g. `VERSION_STRING`)     |
 | `logoIcon`        | string  | `mbsmart-logo` | Custom logo icon name for SvgIcon         |
-| `logoHref`        | string  | `/dashboard`   | Logo link destination                     |
+| `logoHref`        | string  | `/dashboard`   | Logo, title, and version link destination |
 | `loadingProgress` | number  | `0`            | Loading bar progress percentage (0-100)   |
 | `isFullyLoaded`   | boolean | `true`         | When true, hides the loading bar          |
 | `className`       | string  | `''`           | Additional CSS classes for wrapper        |
@@ -2011,8 +2011,8 @@ Full page layout template with sticky header, loading progress bar, and main con
 
 - Full page layout with `min-h-screen` and neutral background
 - Sticky header (`sticky top-0 z-40`) with shadow
-- Built-in MB logo and `/ {title}` display
-- Version badge (right of title)
+- Built-in MB logo and title display (one clickable unit with shared hover)
+- Version badge (right of title; included in the logo/title link)
 - Loading progress bar below header (sticky, animates)
 - Main content area with proper padding for mobile nav
 - Responsive and accessible
@@ -2030,6 +2030,7 @@ The loading bar appears below the header and shows progress:
 - Use `headerContent` snippet for header actions (search, NavButtons)
 - Use `children` for main page content
 - Logo defaults to MB logo, can be overridden with `logoIcon` prop
+- Logo, title, and version share one `logoHref` link with coordinated hover colors
 - Loading bar automatically hides when `isFullyLoaded` is true
 
 ---
