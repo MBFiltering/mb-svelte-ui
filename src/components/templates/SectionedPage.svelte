@@ -422,7 +422,8 @@
 				<div
 					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
-					<ul class="flex justify-evenly space-y-6 lg:space-y-2 sm:inline sm:w-auto sm:justify-normal">
+					<!-- space-y only from sm up (vertical sidebar). On mobile the bar is horizontal — space-y would stagger tabs and clip the last labels (e.g. Billing). -->
+					<ul class="flex justify-evenly sm:space-y-6 lg:space-y-2 sm:inline sm:w-auto sm:justify-normal">
 					<!-- Nav action buttons (hidden on mobile, shown on sm+ sidebar) -->
 					{#if navActions.length > 0}
 						<div
@@ -499,8 +500,8 @@
 								>
 									<Ellipsis size={18} strokeWidth={2} />
 								</button>
-								<!-- Mobile label (absolute, outside button, no layout impact) -->
-								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap {unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{overflowMenuTitle}</p>
+								<!-- Mobile label: show active overflow section name (e.g. Billing) when one is selected -->
+								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap {unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{unimportantSectionActive ? (unimportantSections.find((s) => s.key === activeSection)?.name || overflowMenuTitle) : overflowMenuTitle}</p>
 							</li>
 						{/if}
 					</ul>
