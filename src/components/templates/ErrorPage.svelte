@@ -1,6 +1,6 @@
 <script>
-	import defaultDarkImage from '../../assets/error-dark.png';
-	import defaultLightImage from '../../assets/error-light.png';
+	import defaultDarkImage from '../../assets/error-dark.webp';
+	import defaultLightImage from '../../assets/error-light.webp';
 
 	/**
 	 * ErrorPage - Full-screen error page template
