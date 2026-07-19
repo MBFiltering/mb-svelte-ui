@@ -41,7 +41,11 @@
 		prevText = 'Previous', // aria-label for previous button
 		nextText = 'Next', // aria-label for next button
 		showAllText = 'Show all', // label for the show-all link
-		paginateText = 'Paginate' // label to return to paginated view
+		paginateText = 'Paginate', // label to return to paginated view
+		// When every filtered item fits on one page, call this to format the
+		// count line (e.g. "You have 3 devices"). Return null/undefined to
+		// fall back to the default "{count} {itemName}" form.
+		formatAllCount = null // (count: number) => string | null | undefined
 	} = $props();
 
 	let searchQuery = $state('');
@@ -80,6 +84,13 @@
 	// Only show the "X of Y" form when the current page hides some results.
 	// When everything fits on one page, "Y items" is clearer than "Y of Y items".
 	const isPartialView = $derived(paginatedItems.length < filteredItems.length);
+
+	// Optional full-list count label (e.g. "You have 3 devices"). Null → default form.
+	const allCountLabel = $derived(
+		!isPartialView && typeof formatAllCount === 'function'
+			? formatAllCount(filteredItems.length)
+			: null
+	);
 
 	// Get plural form of item name with proper pluralization rules
 	const pluralItemName = $derived.by(() => {
@@ -274,8 +285,13 @@
 
 	<!-- Results Count -->
 	<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
-		{#if isPartialView}{paginatedItems.length} {ofText} {filteredItems.length}{:else}{filteredItems.length}{/if}
-		{pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+		{#if isPartialView}
+			{paginatedItems.length} {ofText} {filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+		{:else if allCountLabel}
+			{allCountLabel}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+		{:else}
+			{filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+		{/if}
 	</div>
 
 	<!-- List Container -->
