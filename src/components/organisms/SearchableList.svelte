@@ -42,13 +42,11 @@
 		nextText = 'Next', // aria-label for next button
 		showAllText = 'Show all', // label for the show-all link
 		paginateText = 'Paginate', // label to return to paginated view
-		// When every filtered item fits on one page, call this to format the
-		// count line (e.g. "You have 3 devices"). Return null/undefined to
-		// fall back to the default "{count} {itemName}" form. Only applied
-		// when the view is not partial (X of Y).
+		// Optional full count-line override (e.g. "You have 3 devices").
+		// A non-empty string replaces both "X of Y" and "Y items". Return
+		// null/undefined/'' to keep the default forms.
 		formatAllCount = null, // (count: number) => string | null | undefined
-		// Set false when the parent renders its own count line (e.g. account
-		// device lists that always show "You have N devices").
+		// Set false when the parent renders its own count line.
 		showResultsCount = true
 	} = $props();
 
@@ -89,11 +87,10 @@
 	// When everything fits on one page, "Y items" is clearer than "Y of Y items".
 	const isPartialView = $derived(paginatedItems.length < filteredItems.length);
 
-	// Optional full-list count label (e.g. "You have 3 devices"). Null → default form.
-	const allCountLabel = $derived(
-		!isPartialView && typeof formatAllCount === 'function'
-			? formatAllCount(filteredItems.length)
-			: null
+	// Optional count override (e.g. "You have 3 devices"). When non-null, replaces
+	// both the partial "X of Y" and the default "Y items" forms entirely.
+	const customCountLabel = $derived(
+		typeof formatAllCount === 'function' ? formatAllCount(filteredItems.length) : null
 	);
 
 	// Get plural form of item name with proper pluralization rules
@@ -290,10 +287,10 @@
 	<!-- Results Count -->
 	{#if showResultsCount}
 		<div class="magicsearch-item text-sm text-gray-600 dark:text-gray-300">
-			{#if isPartialView}
+			{#if customCountLabel != null && customCountLabel !== ''}
+				{customCountLabel}{bulk ? `, ${selected.length} ${selectedText}` : ''}
+			{:else if isPartialView}
 				{paginatedItems.length} {ofText} {filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
-			{:else if allCountLabel}
-				{allCountLabel}{bulk ? `, ${selected.length} ${selectedText}` : ''}
 			{:else}
 				{filteredItems.length} {pluralItemName}{bulk ? `, ${selected.length} ${selectedText}` : ''}
 			{/if}

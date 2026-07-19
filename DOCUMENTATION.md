@@ -1741,14 +1741,14 @@ Searchable, filterable list with optional bulk selection.
 | `nextText`          | `string`  | `'Next'`           | i18n aria-label for next button  |
 | `showAllText`       | `string`  | `'Show all'`       | i18n label for the "show all" link that bypasses pagination |
 | `paginateText`      | `string`  | `'Paginate'`       | i18n label for the button that returns to paginated view when all items are shown |
-| `formatAllCount`    | `function`| `null`             | Optional `(count) => string \| null`. When every filtered item fits on one page, used as the full count line (e.g. `"You have 3 devices"`). Return null/undefined to keep the default `"{count} {itemName}"` form. Ignored while the view is partial (`X of Y`). |
+| `formatAllCount`    | `function`| `null`             | Optional `(count) => string \| null`. When it returns a non-empty string, that becomes the entire count line (replaces both `X of Y` and `Y items`). Return null/undefined/'' to keep the default forms. |
 | `showResultsCount`  | `boolean` | `true`             | When `false`, the built-in results count line is omitted (parent can render its own). |
 
 **Results count behavior:**
 
 - The count line shows the `X of Y` form (e.g. `10 of 42 Devices`) only while the current page hides some of the filtered results.
 - When every filtered item fits on the current page, the `of` clause is dropped and it reads `Y Devices` (e.g. `1 Device`), since `1 of 1` carries no extra information.
-- Pass `formatAllCount` to override that full-list label with a custom phrase (handy for i18n strings like "You have {count} devices").
+- Pass `formatAllCount` to replace the whole count line with a custom phrase (e.g. `"You have {count} devices"`). A non-null return wins over both default forms.
 - Pass `showResultsCount={false}` when the parent owns the count line entirely.
 
 **Show-all behavior:**
