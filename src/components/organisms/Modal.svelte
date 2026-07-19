@@ -9,6 +9,7 @@
 		closeOnBackdrop = true,
 		closeOnEscape = true,
 		verticalAlign = 'center', // 'top', 'center', or 'bottom'
+		overflowVisible = false,
 		children
 	} = $props();
 
@@ -16,7 +17,7 @@
 	let dragY = $state(0);
 	let isDragging = $state(false);
 	let startY = 0;
-	let modalHeight = 0;
+	let modalHeight = $state(0);
 
 	const DISMISS_THRESHOLD_RATIO = 0.4; // 40% of modal height
 
@@ -77,7 +78,9 @@
 		<!-- Modal Content Container -->
 		<div
 			bind:clientHeight={modalHeight}
-			class="relative max-h-[90dvh] w-full max-w-3xl overflow-auto {isDragging ? '' : 'transition-transform duration-200'}"
+			class="relative max-h-[90dvh] w-full max-w-3xl {overflowVisible
+				? 'overflow-visible'
+				: 'overflow-auto'} {isDragging ? '' : 'transition-transform duration-200'}"
 			style="transform: translateY({dragY}px)"
 		>
 			<!-- Close Button -->

@@ -586,13 +586,24 @@ Segmented button selector for choosing one option from a list.
 
 | Prop       | Type       | Default    | Description                                    |
 | ---------- | ---------- | ---------- | ---------------------------------------------- |
-| `options`  | `array`    | `[]`       | Array of `{ value, label, color, textColor }` objects. `textColor` defaults to `'text-white'` when selected |
+| `options`  | `array`    | `[]`       | Array of option objects (see below)            |
 | `selected` | `string`   | `''`       | Currently selected value                       |
 | `value`    | `string`   | `''`       | Alias for `selected` (backwards compatibility) |
 | `onChange` | `function` | `() => {}` | Callback with new value                        |
 | `onSelect` | `function` | `() => {}` | Alias for `onChange`                           |
 | `disabled` | `boolean`  | `false`    | Disables all options                           |
 | `visibleCount` | `number` | `2` | How many options render as visible buttons; when `options.length > visibleCount` the last visible slot becomes a dropdown containing the remaining options. Values `<= 1` render a single fully clickable dropdown control |
+
+**Option object:**
+
+| Field        | Type      | Description |
+| ------------ | --------- | ----------- |
+| `value`      | `string`  | Option value (required) |
+| `label`      | `string`  | Display label |
+| `color`      | `string`  | Tailwind bg class when selected |
+| `textColor`  | `string`  | Text color when selected (defaults to `'text-white'`) |
+| `disabled`   | `boolean` | When true, this option cannot be selected (permission-gating, etc.) |
+| `cursor`     | `string`  | Optional Tailwind cursor class when the option is interactive |
 
 **Usage:**
 
@@ -601,8 +612,9 @@ Segmented button selector for choosing one option from a list.
 	let status = 'blocked';
 
 	const options = [
-		{ value: 'blocked', label: 'Blocked', color: 'bg-red-alt-500' },
-		{ value: 'allowed', label: 'Allowed', color: 'bg-green-alt-500', textColor: 'text-white' }
+		{ value: 'blocked', label: 'Blocked', color: 'bg-red-alt-500', disabled: true },
+		{ value: 'allowed', label: 'Allowed', color: 'bg-green-alt-500', textColor: 'text-white' },
+		{ value: 'filtered', label: 'Filtered', color: 'bg-azure-500', disabled: !canFilter }
 	];
 </script>
 
@@ -615,6 +627,7 @@ Segmented button selector for choosing one option from a list.
 - When `options.length > visibleCount` the last visible slot becomes a dropdown containing the remaining options
 - When `visibleCount <= 1`, the component renders as a single fully clickable dropdown control
 - Remembers last dropdown selection for toggle behavior
+- Per-option `disabled` greys out that choice and blocks selection; global `disabled` still disables the whole control
 
 ---
 
@@ -715,16 +728,23 @@ Inline editable field with Edit/Save/Cancel functionality.
 
 **Props:**
 
-| Prop          | Type       | Default            | Description                             |
-| ------------- | ---------- | ------------------ | --------------------------------------- |
-| `label`       | `string`   | `'Field'`          | Field label                             |
-| `hideLabel`   | `boolean`  | `false`            | Hide the label text                     |
-| `value`       | `string`   | `''`               | Current value                           |
-| `placeholder` | `string`   | `'Enter value...'` | Input placeholder                       |
-| `rows`        | `number`   | `3`                | Rows for textarea                       |
-| `type`        | `string`   | `'textarea'`       | `'textarea'` or `'text'`                |
-| `onSave`      | `function` | `async () => {}`   | Async save function, receives new value |
-| `onUpdate`    | `function` | `() => {}`         | Callback after successful save          |
+| Prop               | Type       | Default               | Description                             |
+| ------------------ | ---------- | --------------------- | --------------------------------------- |
+| `label`            | `string`   | `'Field'`             | Field label                             |
+| `hideLabel`        | `boolean`  | `false`               | Hide the label text                     |
+| `value`            | `string`   | `''`                  | Current value                           |
+| `placeholder`      | `string`   | `'Enter value...'`    | Input placeholder                       |
+| `rows`             | `number`   | `3`                   | Rows for textarea                       |
+| `type`             | `string`   | `'textarea'`          | `'textarea'` or `'text'`                |
+| `onSave`           | `function` | `async () => {}`      | Async save function, receives new value |
+| `onUpdate`         | `function` | `() => {}`            | Callback after successful save          |
+| `editTitle`        | `string`   | `'Edit'`              | Tooltip for the edit button             |
+| `saveTitle`        | `string`   | `'Save'`              | Tooltip for the save button             |
+| `savingTitle`      | `string`   | `'Saving...'`         | Tooltip while save is in progress       |
+| `cancelTitle`      | `string`   | `'Cancel'`            | Tooltip for the cancel button           |
+| `noChangesMessage` | `string`   | `'No changes to save'`| Toast when save is clicked with no change |
+| `emptyMessage`     | `string`   | `''`                  | Empty-state copy (defaults from label)  |
+| `disabled`         | `boolean`  | `false`               | Disables edit/save/cancel and the input |
 
 **onSave Contract:**
 Must return `{ ok: true }` for success or `{ error: 'message' }` for failure.
@@ -1515,14 +1535,15 @@ Label wrapper for form controls with optional description and info tooltip.
 
 **Props:**
 
-| Prop          | Type      | Default | Description                  |
-| ------------- | --------- | ------- | ---------------------------- |
-| `label`       | `string`  | `''`    | Main label text              |
-| `description` | `string`  | `''`    | Description text below label |
-| `info`        | `boolean` | `false` | Show info tooltip            |
-| `infoLabel`   | `string`  | `''`    | Custom label for info lookup |
-| `prefix`      | `snippet` | -       | Content before label         |
-| `children`    | `snippet` | -       | Control to render            |
+| Prop            | Type      | Default     | Description                  |
+| --------------- | --------- | ----------- | ---------------------------- |
+| `label`         | `string`  | `''`        | Main label text              |
+| `description`   | `string`  | `''`        | Description text below label |
+| `info`          | `boolean` | `false`     | Show info tooltip            |
+| `infoLabel`     | `string`  | `''`        | Custom label for info lookup |
+| `infoDirectory` | `any`     | `null`      | Custom info directory for i18n |
+| `prefix`        | `snippet` | `undefined` | Optional content before label |
+| `children`      | `snippet` | `undefined` | Control to render            |
 
 **Usage:**
 
@@ -1602,14 +1623,16 @@ Full-screen modal overlay with backdrop.
 
 **Props:**
 
-| Prop              | Type       | Default    | Description                  |
-| ----------------- | ---------- | ---------- | ---------------------------- |
-| `isOpen`          | `boolean`  | `false`    | Controls visibility          |
-| `onClose`         | `function` | `() => {}` | Close callback               |
-| `showCloseButton` | `boolean`  | `true`     | Show X button                |
-| `closeOnBackdrop` | `boolean`  | `true`     | Close when clicking backdrop |
-| `closeOnEscape`   | `boolean`  | `true`     | Close on ESC key             |
-| `children`        | `snippet`  | -          | Modal content                |
+| Prop              | Type                         | Default    | Description                  |
+| ----------------- | ---------------------------- | ---------- | ---------------------------- |
+| `isOpen`          | `boolean`                    | `false`    | Controls visibility          |
+| `onClose`         | `function`                   | `() => {}` | Close callback               |
+| `showCloseButton` | `boolean`                    | `true`     | Show X button                |
+| `closeOnBackdrop` | `boolean`                    | `true`     | Close when clicking backdrop |
+| `closeOnEscape`   | `boolean`                    | `true`     | Close on ESC key             |
+| `verticalAlign`   | `'top' \| 'center' \| 'bottom'` | `'center'` | Vertical placement of the modal |
+| `overflowVisible` | `boolean`                    | `false`    | When true, content uses `overflow-visible` so absolutely-positioned dropdowns are not clipped |
+| `children`        | `snippet`                    | -          | Modal content                |
 
 **Usage:**
 
@@ -1625,6 +1648,11 @@ Full-screen modal overlay with backdrop.
 		<p>Modal content here</p>
 		<ControlButton onclick={() => (isOpen = false)}>Close</ControlButton>
 	</Island>
+</Modal>
+
+<!-- Dropdowns that escape the modal box -->
+<Modal {isOpen} onClose={() => (isOpen = false)} overflowVisible>
+	<!-- custom select / absolute menus -->
 </Modal>
 ```
 

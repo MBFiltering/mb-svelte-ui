@@ -21,13 +21,16 @@
 		savingTitle = 'Saving...',
 		cancelTitle = 'Cancel',
 		noChangesMessage = 'No changes to save',
-		emptyMessage = '' // Full message for empty state (overrides default)
+		emptyMessage = '', // Full message for empty state (overrides default)
+		disabled = false
 	} = $props();
 
 	// Compute the message to show when empty
 	const emptyText = $derived(emptyMessage || `No ${label.toLowerCase()} added yet.`);
 
 	let isEditing = $state(false);
+	// Initial value only by design — the $effect below keeps it in sync with the prop
+	// svelte-ignore state_referenced_locally
 	let currentValue = $state(value);
 	let isSaving = $state(false);
 
@@ -37,6 +40,7 @@
 	});
 
 	function startEditing() {
+		if (disabled) return;
 		isEditing = true;
 	}
 
@@ -92,7 +96,7 @@
 			<TextInput
 				{type}
 				bind:value={currentValue}
-				disabled={isSaving}
+				disabled={isSaving || disabled}
 				{rows}
 				{placeholder}
 				size="sm"
@@ -118,12 +122,23 @@
 
 	{#if isEditing}
 		<div class="flex flex-col gap-1">
-			<CircleButton onclick={cancelEditing} disabled={isSaving} title={cancelTitle} icon={X} />
-			<CircleButton onclick={save} disabled={isSaving} title={isSaving ? savingTitle : saveTitle} color="azure" icon={Check} />
+			<CircleButton
+				onclick={cancelEditing}
+				disabled={isSaving || disabled}
+				title={cancelTitle}
+				icon={X}
+			/>
+			<CircleButton
+				onclick={save}
+				disabled={isSaving || disabled}
+				title={isSaving ? savingTitle : saveTitle}
+				color="azure"
+				icon={Check}
+			/>
 		</div>
 	{:else}
 		<div class="flex items-start gap-1">
-			<CircleButton onclick={startEditing} title={editTitle} icon={Pencil} />
+			<CircleButton onclick={startEditing} title={editTitle} icon={Pencil} {disabled} />
 		</div>
 	{/if}
 </div>

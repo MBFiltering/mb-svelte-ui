@@ -8,8 +8,8 @@
 		info = false,
 		infoLabel = '',
 		infoDirectory = null, // Custom info directory for i18n
-		prefix,
-		children
+		prefix = undefined,
+		children = undefined
 	} = $props();
 </script>
 

@@ -1,8 +1,20 @@
 <script>
 	import { ChevronDown } from '@lucide/svelte';
 
+	/**
+	 * @typedef {{
+	 * 	value: string,
+	 * 	label?: string,
+	 * 	color?: string,
+	 * 	textColor?: string,
+	 * 	disabled?: boolean,
+	 * 	cursor?: string
+	 * }} Option
+	 */
+
 	let {
-		options = [], // Array of { value, label, color, textColor }
+		/** @type {Option[]} */
+		options = [], // Array of { value, label, color, textColor, disabled?, cursor? }
 		selected = '',
 		value = '', // Support both selected and value for backwards compatibility
 		onChange = () => {}, // Primary callback
@@ -66,9 +78,21 @@
 		return option?.textColor || 'text-white';
 	}
 
+	/**
+	 * @param {Option | undefined} option
+	 * @param {boolean | undefined} isDisabled
+	 */
+	function getCursorClass(option, isDisabled) {
+		if (option?.disabled || isDisabled) return 'cursor-not-allowed';
+		if (option?.cursor) return option.cursor;
+		return 'cursor-pointer';
+	}
+
 	// Handle clicking a fixed option
 	function handleFixedClick(optionValue) {
 		if (disabled) return;
+		const option = options.find((o) => o.value === optionValue);
+		if (option?.disabled) return;
 		if (onChange) onChange(optionValue);
 		if (onSelect) onSelect(optionValue);
 	}
@@ -76,6 +100,7 @@
 	// Handle clicking the dropdown button (toggle back to remembered selection)
 	function handleDropdownButtonClick() {
 		if (disabled) return;
+		if (displayedDropdownOption?.disabled) return;
 		const targetValue = displayedDropdownOption?.value;
 		lastDropdownSelection = targetValue;
 		if (onChange) onChange(targetValue);
@@ -98,15 +123,22 @@
 		<button
 			type="button"
 			onclick={() => handleFixedClick(option.value)}
-			{disabled}
-			class="cursor-pointer px-3 py-1.5 text-sm font-medium transition-all {i === 0
+			disabled={disabled || option?.disabled}
+			class="px-3 py-1.5 text-sm font-medium transition-all {i === 0
 				? 'rounded-s-lg'
 				: ''} {!hasDropdown && i === fixedOptions.length - 1
 				? 'rounded-e-lg'
-				: ''} {getButtonColor(option, currentValue === option?.value)} {getTextColor(option, currentValue === option?.value)} {currentValue ===
-			option?.value
-				? 'opacity-100'
-				: 'opacity-100 hover:opacity-80'} disabled:cursor-default disabled:opacity-40"
+				: ''} {getButtonColor(option, currentValue === option?.value)} {getTextColor(
+				option,
+				currentValue === option?.value
+			)} {disabled || option?.disabled
+				? 'opacity-40'
+				: currentValue === option?.value
+					? 'opacity-100'
+					: 'opacity-100 hover:opacity-80'} {getCursorClass(
+				option,
+				disabled || option?.disabled
+			)}"
 		>
 			{option?.label || `Option ${i + 1}`}
 		</button>
@@ -125,18 +157,27 @@
 			<button
 				type="button"
 				onclick={isDropdownOnly ? undefined : handleDropdownButtonClick}
-				{disabled}
-				class="flex cursor-pointer items-center gap-1 px-3 py-1.5 transition-all disabled:cursor-default disabled:opacity-40"
+				disabled={disabled || displayedDropdownOption?.disabled}
+				class="flex items-center gap-1 px-3 py-1.5 transition-all {getCursorClass(
+					displayedDropdownOption,
+					disabled || displayedDropdownOption?.disabled
+				)} {disabled || displayedDropdownOption?.disabled ? 'opacity-40' : ''}"
 			>
 				<span
-					class="text-sm font-medium {getTextColor(displayedDropdownOption, currentValue === displayedDropdownOption?.value)}"
+					class="text-sm font-medium {getTextColor(
+						displayedDropdownOption,
+						currentValue === displayedDropdownOption?.value
+					)}"
 				>
 					{displayedDropdownOption?.label || 'Select'}
 				</span>
 				<ChevronDown
 					size={14}
 					strokeWidth={2}
-					class={getTextColor(displayedDropdownOption, currentValue === displayedDropdownOption?.value)}
+					class={getTextColor(
+						displayedDropdownOption,
+						currentValue === displayedDropdownOption?.value
+					)}
 				/>
 			</button>
 
@@ -146,10 +187,10 @@
 				{disabled}
 				class="absolute top-0 ltr:right-0 rtl:left-0 {isDropdownOnly
 					? 'h-full w-full'
-					: 'h-8 w-8'} cursor-pointer opacity-0 disabled:cursor-default"
+					: 'h-8 w-8'} opacity-0 {disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
 			>
 				{#each toggleableOptions as option}
-					<option value={option.value}>{option.label}</option>
+					<option value={option.value} disabled={option?.disabled}>{option.label}</option>
 				{/each}
 			</select>
 		</div>
