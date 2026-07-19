@@ -42,9 +42,10 @@
 		nextText = 'Next', // aria-label for next button
 		showAllText = 'Show all', // label for the show-all link
 		paginateText = 'Paginate', // label to return to paginated view
-		// Optional full count-line override (e.g. "You have 3 devices").
-		// A non-empty string replaces both "X of Y" and "Y items". Return
-		// null/undefined/'' to keep the default forms.
+		// Optional full count-line override (e.g. "You have 3 devices"), applied
+		// only when every item is visible at a glance — nothing hidden by search,
+		// tabs, or pagination. A non-empty string replaces both "X of Y" and
+		// "Y items"; return null/undefined/'' to keep the default forms.
 		formatAllCount = null, // (count: number) => string | null | undefined
 		// Set false when the parent renders its own count line.
 		showResultsCount = true
@@ -87,10 +88,13 @@
 	// When everything fits on one page, "Y items" is clearer than "Y of Y items".
 	const isPartialView = $derived(paginatedItems.length < filteredItems.length);
 
-	// Optional count override (e.g. "You have 3 devices"). When non-null, replaces
-	// both the partial "X of Y" and the default "Y items" forms entirely.
+	// Optional count override (e.g. "You have 3 devices"), only while the whole
+	// list is on screen — once search, tabs, or pagination hide items, the
+	// default "X of Y" / "Y items" forms describe what's visible instead.
 	const customCountLabel = $derived(
-		typeof formatAllCount === 'function' ? formatAllCount(filteredItems.length) : null
+		typeof formatAllCount === 'function' && paginatedItems.length === items.length
+			? formatAllCount(items.length)
+			: null
 	);
 
 	// Get plural form of item name with proper pluralization rules
