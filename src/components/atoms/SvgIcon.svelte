@@ -16,7 +16,19 @@
 	let loading = $state(true);
 	let error = $state(false);
 
+	// Icons are first-party assets served from /icons. Restrict the name to a
+	// safe slug so a caller-supplied value can never redirect the fetch to an
+	// arbitrary path (traversal) or feed the {@html} sink from an unexpected URL.
+	const SAFE_ICON_NAME = /^[a-zA-Z0-9_-]+$/;
+
 	onMount(async () => {
+		if (!name || !SAFE_ICON_NAME.test(name)) {
+			console.error(`Invalid SVG icon name: ${name}`);
+			error = true;
+			loading = false;
+			return;
+		}
+
 		try {
 			const response = await fetch(`/icons/${name}.svg`);
 			if (!response.ok) {

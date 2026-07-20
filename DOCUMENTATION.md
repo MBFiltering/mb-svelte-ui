@@ -2,7 +2,7 @@
 
 > Complete reference documentation for all components and utilities in the @mbsmart/ui package.
 
-**Package Version**: 0.1.0  
+**Package Version**: 0.1.17  
 **Framework**: Svelte 5 (Runes Mode)  
 **Styling**: TailwindCSS v4
 
@@ -860,7 +860,7 @@ Inline SVG icons from `/static/icons` directory.
 
 | Prop        | Type     | Default     | Description                    |
 | ----------- | -------- | ----------- | ------------------------------ |
-| `name`      | `string` | -           | Icon filename (without `.svg`) |
+| `name`      | `string` | -           | Icon filename (without `.svg`), matching `^[a-zA-Z0-9_-]+$` |
 | `size`      | `string` | `'w-6 h-6'` | Tailwind size classes          |
 | `className` | `string` | `''`        | Additional classes             |
 
@@ -872,7 +872,12 @@ Inline SVG icons from `/static/icons` directory.
 <SvgIcon name="android" className="text-green-500" />
 ```
 
-**Note:** Icons are fetched from `/icons/{name}.svg` and inherit `currentColor`.
+**Note:** Icons are fetched from `/icons/{name}.svg` and inherit `currentColor`. The
+fetched file content is injected with `{@html}`, so only first-party icons under
+`/static/icons` should be served from that path. As a safeguard, `name` is validated
+against `^[a-zA-Z0-9_-]+$`; any value containing slashes, dots, or other characters is
+rejected (renders the error placeholder) rather than fetched — this prevents path
+traversal and keeps the `{@html}` sink from being pointed at an unexpected URL.
 
 ---
 
@@ -1725,7 +1730,7 @@ Searchable, filterable list with optional bulk selection.
 | `columnsXl2`        | `number`  | `1`                | Columns at xl2 breakpoint        |
 | `columns2Xl`        | `number`  | `2`                | Columns at 2xl breakpoint        |
 | `disableGrid`       | `boolean` | `false`            | Use normal flow                  |
-| `searchActions`     | `snippet` | -                  | Actions next to search           |
+| `searchActions`     | `snippet` | `undefined`        | Optional actions next to search  |
 | `children`          | `snippet` | -                  | Item render function             |
 | `bulk`              | `boolean` | `false`            | Enable bulk selection            |
 | `selected`          | `array`   | `[]`               | Selected item IDs (bindable)     |

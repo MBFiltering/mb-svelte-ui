@@ -23,7 +23,7 @@
 		columnsXl2 = 1, // 1440px+ column count
 		columns2Xl = 2, // 1536px+ column count
 		disableGrid = false, // When true, items display in normal flow instead of grid
-		searchActions,
+		searchActions = undefined, // Optional actions rendered beside the search input
 		children,
 		// Bulk selection props
 		bulk = false,
