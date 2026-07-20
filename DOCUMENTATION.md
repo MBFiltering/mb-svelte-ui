@@ -2181,7 +2181,7 @@ The template includes a "magic search" that searches across all elements with `d
 
 **Mobile Overflow Menu:**
 
-On small screens (`< sm:`), the bottom navigation bar only shows "important" section tabs (those without `unimportant: true`). Section names appear under each icon, with the active section name bolded.
+On small screens (`< sm:`), the bottom navigation bar only shows "important" section tabs (those without `unimportant: true`). Section names appear under each icon (in normal document flow so they reserve height and are not clipped), with the active section name bolded. The same under-icon labels appear in the narrow `sm`–`lg` sidebar until the full inline label shows at `lg+`.
 
 An ellipsis (`...`) button appears at the end of the bottom bar when there are overflow items. Tapping it opens a bottom-sheet Modal listing:
 - **Unimportant sections** — section tabs marked with `unimportant: true`

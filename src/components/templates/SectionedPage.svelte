@@ -403,8 +403,10 @@
 <div>
 	<div class="relative flex">
 		<!-- Sidebar -->
+		<!-- Mobile: height fits icon button + in-flow label (not absolute — absolute labels
+		     collapsed to zero layout height and got clipped by overflow/h-18). -->
 		<div
-			class="lg:w-96 fixed bottom-0 left-0 z-10 flex h-18 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:w-24 sm:pt-8"
+			class="lg:w-96 fixed bottom-0 left-0 z-10 flex h-auto min-h-18 w-full shrink-0 flex-col space-y-4 sm:sticky sm:top-14 sm:h-[calc(100%-3.5rem)] sm:min-h-0 sm:w-24 sm:pt-8"
 		>
 			{#if loading}
 				{#if sidebarSkeleton}
@@ -420,17 +422,18 @@
 
 				<!-- Navigation tabs -->
 				<div
-					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-0 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
+					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-1.5 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
-					<!-- space-y only from sm up (vertical sidebar). On mobile the bar is horizontal — space-y would stagger tabs and clip the last labels (e.g. Billing). -->
-					<ul class="flex justify-evenly sm:space-y-6 lg:space-y-2 sm:inline sm:w-auto sm:justify-normal">
+					<!-- space-y only from sm up (vertical sidebar). On mobile the bar is horizontal —
+					     space-y would stagger tabs. Labels are in-flow under icons, so sm gap is modest. -->
+					<ul class="flex items-start justify-evenly sm:space-y-3 lg:space-y-2 sm:inline sm:w-auto sm:justify-normal">
 					<!-- Nav action buttons (hidden on mobile, shown on sm+ sidebar) -->
 					{#if navActions.length > 0}
 						<div
 							class="lg:mt-0 mt-1.5 px-1.5 sm:mt-1 hidden sm:flex flex-row justify-between gap-6 lg:gap-2 sm:flex-col {navActions.length > 2 ? 'lg:grid lg:grid-cols-2 lg:justify-items-stretch' : ''}"
 							>
 								{#each navActions as action}
-									<li class="relative">
+									<li class="flex flex-col items-center">
 										<button
 											class="cursor-pointer text-xs font-medium text-azure-700 hover:text-azure-900 hover:underline dark:text-azure-400 dark:hover:text-azure-600 sm:flex sm:justify-center sm:w-full lgv:block lg:block"
 											title={action.title || action.label}
@@ -444,8 +447,8 @@
 												<action.icon size={24} />
 											</div>
 										</button>
-										<!-- Sidebar label (sm to lg only) -->
-										<p class="hidden sm:block lg:hidden absolute left-1/2 -translate-x-1/2 top-full mt-0.5 text-center text-[10px] leading-tight truncate pointer-events-none font-medium text-azure-600 dark:text-azure-400 w-full">{action.label}</p>
+										<!-- Sidebar label (sm to lg only) — in flow so it reserves height -->
+										<p class="hidden sm:block lg:hidden mt-0.5 max-w-full text-center text-[10px] leading-tight truncate font-medium text-azure-600 dark:text-azure-400">{action.label}</p>
 									</li>
 								{/each}
 							</div>
@@ -453,7 +456,7 @@
 
 					<!-- Section tabs (unimportant ones hidden on mobile) -->
 					{#each sections as section}
-						<li class="relative me-2 sm:me-0 px-0 sm:px-[1.375rem] lgv:px-0 lg:px-0 {section.unimportant ? 'hidden sm:list-item' : ''}">
+						<li class="flex flex-col items-center me-2 sm:me-0 px-0 sm:px-[1.375rem] lgv:px-0 lg:px-0 {section.unimportant ? 'hidden sm:list-item' : ''}">
 								<button
 									type="button"
 									onclick={() => selectSection(section.key)}
@@ -482,14 +485,14 @@
 										<p class="lg:block hidden text-sm truncate">{advancedText}</p>
 									{/if}
 								</button>
-								<!-- Label under button (mobile + sm-to-lg sidebar, hidden at lg+) -->
-								<p class="lg:hidden absolute left-1/2 -translate-x-1/2 top-full translate-y-1 sm:translate-y-0 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap w-full truncate {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : activeSection === section.key ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{section.name}</p>
+								<!-- Label under button (mobile + sm-to-lg sidebar, hidden at lg+) — in flow -->
+								<p class="lg:hidden mt-0.5 max-w-full text-center text-[10px] leading-tight truncate {magicSearchActive ? 'font-medium text-gray-400 dark:text-gray-500' : activeSection === section.key ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{section.name}</p>
 							</li>
 						{/each}
 
 						<!-- Overflow / Ellipsis menu button (mobile only) -->
 						{#if hasOverflowItems}
-							<li class="relative sm:hidden">
+							<li class="flex flex-col items-center sm:hidden">
 								<button
 									type="button"
 									onclick={() => (overflowMenuOpen = true)}
@@ -501,7 +504,7 @@
 									<Ellipsis size={18} strokeWidth={2} />
 								</button>
 								<!-- Mobile label: show active overflow section name (e.g. Billing) when one is selected -->
-								<p class="absolute left-1/2 -translate-x-1/2 translate-y-1 mt-0.5 text-center text-[10px] leading-tight pointer-events-none whitespace-nowrap {unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{unimportantSectionActive ? (unimportantSections.find((s) => s.key === activeSection)?.name || overflowMenuTitle) : overflowMenuTitle}</p>
+								<p class="mt-0.5 max-w-full text-center text-[10px] leading-tight truncate {unimportantSectionActive ? 'font-bold text-azure-700 dark:text-azure-200' : 'font-medium text-gray-500 dark:text-gray-400'}">{unimportantSectionActive ? (unimportantSections.find((s) => s.key === activeSection)?.name || overflowMenuTitle) : overflowMenuTitle}</p>
 							</li>
 						{/if}
 					</ul>
