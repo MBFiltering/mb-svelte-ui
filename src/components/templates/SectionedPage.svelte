@@ -461,7 +461,7 @@
 									type="button"
 									onclick={() => selectSection(section.key)}
 									title={section.name}
-									class="lg:px-4 flex w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 sm:justify-center lgv:justify-between lg:justify-between {magicSearchActive
+									class="lg:px-4 flex items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 sm:justify-center lgv:justify-between lg:justify-between {magicSearchActive
 										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
 										: activeSection === section.key
 											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
