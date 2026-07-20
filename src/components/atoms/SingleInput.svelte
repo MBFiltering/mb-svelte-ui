@@ -13,6 +13,8 @@
 		placeholder = 'Enter value...',
 		rows = 3,
 		type = 'textarea', // 'textarea' or 'text'
+		size = 'sm', // 'sm' | 'lg' — display text size (default sm)
+		showClipboard = true,
 		onSave = async () => {},
 		onUpdate = () => {},
 		// i18n props for button titles
@@ -27,6 +29,8 @@
 
 	// Compute the message to show when empty
 	const emptyText = $derived(emptyMessage || `No ${label.toLowerCase()} added yet.`);
+	const textSizeClass = $derived(size === 'lg' ? 'text-lg' : 'text-sm');
+	const inputSize = $derived(size === 'lg' ? 'lg' : 'sm');
 
 	let isEditing = $state(false);
 	// Initial value only by design — the $effect below keeps it in sync with the prop
@@ -81,7 +85,7 @@
 </script>
 
 <div
-	class="mb-1 flex w-full items-start justify-between gap-1 text-sm font-medium text-gray-700 dark:text-gray-200"
+	class="mb-1 flex w-full items-start justify-between gap-1 {textSizeClass} font-medium text-gray-700 dark:text-gray-200"
 >
 	<div class="mt-[0.4rem] flex w-full items-start gap-1">
 		{#if !hideLabel}
@@ -89,7 +93,7 @@
 				{label}:
 			</span>
 		{/if}
-		{#if value && !isEditing}
+		{#if showClipboard && value && !isEditing}
 			<Clipboard content={value} />
 		{/if}
 		{#if isEditing}
@@ -99,11 +103,11 @@
 				disabled={isSaving || disabled}
 				{rows}
 				{placeholder}
-				size="sm"
+				size={inputSize}
 			/>
 		{:else if type === 'textarea'}
 			<p
-				class="flex-1 text-sm whitespace-pre-wrap {value
+				class="flex-1 {textSizeClass} whitespace-pre-wrap {value
 					? 'text-gray-700 dark:text-gray-200'
 					: 'text-gray-900/50 dark:text-gray-50/50'}"
 			>
@@ -111,7 +115,7 @@
 			</p>
 		{:else}
 			<p
-				class="flex-1 text-sm {value
+				class="flex-1 {textSizeClass} {value
 					? 'text-gray-700 dark:text-gray-200'
 					: 'text-gray-900/50 dark:text-gray-50/50'}"
 			>

@@ -736,6 +736,8 @@ Inline editable field with Edit/Save/Cancel functionality.
 | `placeholder`      | `string`   | `'Enter value...'`    | Input placeholder                       |
 | `rows`             | `number`   | `3`                   | Rows for textarea                       |
 | `type`             | `string`   | `'textarea'`          | `'textarea'` or `'text'`                |
+| `size`             | `string`   | `'sm'`                | Display text size: `'sm'` or `'lg'`     |
+| `showClipboard`    | `boolean`  | `true`                | Show copy-to-clipboard button when value is set |
 | `onSave`           | `function` | `async () => {}`      | Async save function, receives new value |
 | `onUpdate`         | `function` | `() => {}`            | Callback after successful save          |
 | `editTitle`        | `string`   | `'Edit'`              | Tooltip for the edit button             |
