@@ -1663,6 +1663,14 @@ Full-screen modal overlay with backdrop.
 </Modal>
 ```
 
+**Behaviour:**
+
+On small screens the modal renders as a bottom sheet with a grab handle. Dragging
+the handle down (pointer events — touch or mouse, with pointer capture so the drag
+survives leaving the handle) dismisses it when it passes ~28% of the sheet height
+**or** on a fast downward flick; otherwise it snaps back. Dismissal animates the
+sheet off-screen before `onClose` fires, rather than closing instantly.
+
 ---
 
 ### QuickLinks

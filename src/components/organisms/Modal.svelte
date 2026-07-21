@@ -13,16 +13,24 @@
 		children
 	} = $props();
 
-	// Swipe-to-dismiss state
+	// Swipe-to-dismiss state (mobile bottom-sheet)
 	let dragY = $state(0);
 	let isDragging = $state(false);
-	let startY = 0;
+	let dismissing = $state(false);
 	let modalHeight = $state(0);
 
-	const DISMISS_THRESHOLD_RATIO = 0.4; // 40% of modal height
+	let startY = 0;
+	let lastY = 0;
+	let lastT = 0;
+	let velocity = 0; // px/ms, positive = downward
+
+	const DISMISS_THRESHOLD_RATIO = 0.28; // fraction of modal height
+	const DISMISS_VELOCITY = 0.55; // px/ms flick speed
+	const SNAP_MS = 200; // matches transition-transform duration
 
 	// Handle backdrop click
 	function handleBackdropClick(event) {
+		if (dismissing) return;
 		if (closeOnBackdrop && event.target === event.currentTarget) {
 			onClose();
 		}
@@ -30,35 +38,66 @@
 
 	// Handle escape key
 	function handleKeydown(event) {
+		if (!isOpen || dismissing) return;
 		if (closeOnEscape && event.key === 'Escape') {
 			onClose();
 		}
 	}
 
-	// Touch handlers for swipe-to-dismiss
-	function handleTouchStart(event) {
-		startY = event.touches[0].clientY;
+	// Pointer handlers cover both touch and mouse. Pointer capture keeps the
+	// drag alive even when the finger/cursor slides off the small handle.
+	function handlePointerDown(event) {
+		if (dismissing) return;
+		if (event.pointerType === 'mouse' && event.button !== 0) return;
 		isDragging = true;
+		startY = event.clientY;
+		lastY = event.clientY;
+		lastT = performance.now();
+		velocity = 0;
+		try {
+			event.currentTarget.setPointerCapture(event.pointerId);
+		} catch {
+			/* ignore */
+		}
 	}
 
-	function handleTouchMove(event) {
-		if (!isDragging) return;
-		const currentY = event.touches[0].clientY;
-		const diff = currentY - startY;
+	function handlePointerMove(event) {
+		if (!isDragging || dismissing) return;
+		const y = event.clientY;
+		const now = performance.now();
 		// Only allow dragging down (positive diff)
-		dragY = Math.max(0, diff);
+		dragY = Math.max(0, y - startY);
+		const dt = now - lastT;
+		if (dt > 0) velocity = (y - lastY) / dt;
+		lastY = y;
+		lastT = now;
 	}
 
-	function handleTouchEnd() {
-		if (!isDragging) return;
+	function handlePointerUp() {
+		if (!isDragging || dismissing) return;
 		isDragging = false;
 
-		const threshold = modalHeight * DISMISS_THRESHOLD_RATIO;
-		if (dragY >= threshold) {
-			onClose();
+		const shouldDismiss =
+			dragY >= modalHeight * DISMISS_THRESHOLD_RATIO || velocity >= DISMISS_VELOCITY;
+		if (shouldDismiss) {
+			// Animate the sheet off-screen, then close once it's out of view.
+			dismissing = true;
+			dragY = modalHeight + 48;
+			setTimeout(onClose, SNAP_MS);
+		} else {
+			// Snap back to rest.
+			dragY = 0;
 		}
-		dragY = 0;
 	}
+
+	// Reset drag state whenever the modal is closed (externally or by dismiss).
+	$effect(() => {
+		if (!isOpen) {
+			dragY = 0;
+			isDragging = false;
+			dismissing = false;
+		}
+	});
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -97,10 +136,11 @@
 			<!-- Bottom Sheet Handle (swipe to dismiss on mobile) -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
-				class="absolute sm:hidden w-full h-8 top-0 left-0 flex pt-2 justify-center cursor-grab touch-none"
-				ontouchstart={handleTouchStart}
-				ontouchmove={handleTouchMove}
-				ontouchend={handleTouchEnd}
+				class="absolute sm:hidden w-full h-8 top-0 left-0 flex pt-2 justify-center cursor-grab active:cursor-grabbing touch-none select-none"
+				onpointerdown={handlePointerDown}
+				onpointermove={handlePointerMove}
+				onpointerup={handlePointerUp}
+				onpointercancel={handlePointerUp}
 			>
 				<div class="bg-gray-600 dark:bg-gray-300 rounded-full w-1/4 h-1"></div>
 			</div>
