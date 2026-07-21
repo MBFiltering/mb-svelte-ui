@@ -1,3 +1,5 @@
+import '../../version.js';
+
 // Atom components barrel export
 export { default as Badge } from './Badge.svelte';
 export { default as Callout } from './Callout.svelte';

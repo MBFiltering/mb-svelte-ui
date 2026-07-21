@@ -1,3 +1,5 @@
+import '../version.js';
+
 // Utils barrel export
 export * from './categoryColors.js';
 export * from './dateTime.js';

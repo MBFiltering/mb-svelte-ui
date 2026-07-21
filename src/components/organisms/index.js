@@ -1,3 +1,5 @@
+import '../../version.js';
+
 // Organism components barrel export
 export { default as Modal } from './Modal.svelte';
 export { default as QuickLinks } from './QuickLinks.svelte';

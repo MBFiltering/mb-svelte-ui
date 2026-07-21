@@ -1,3 +1,5 @@
+import '../../version.js';
+
 // Molecule components barrel export
 export { default as DeviceCard } from './DeviceCard.svelte';
 export { default as Grid } from './Grid.svelte';
