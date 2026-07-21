@@ -1,5 +1,6 @@
 <script>
 	import { Eye, EyeOff, Search } from '@lucide/svelte';
+	import { onMount } from 'svelte';
 
 	/**
 	 * TextInput component for text, password, number, date inputs, and textareas
@@ -15,6 +16,8 @@
 		name = '',
 		ariaLabel = '',
 		autocomplete = '',
+		inputmode = undefined,
+		autofocus = false,
 		required = false,
 		readonly = false,
 		maxlength = undefined,
@@ -36,6 +39,13 @@
 		onfocus = () => {},
 		onblur = () => {}
 	} = $props();
+
+	// Programmatic autofocus (avoids the native `autofocus` attribute, which
+	// Svelte flags for a11y — focusing on mount is the accepted pattern and
+	// only runs in the browser).
+	onMount(() => {
+		if (autofocus) ref?.focus();
+	});
 
 	// For password visibility toggle
 	let showPassword = $state(false);
@@ -110,6 +120,7 @@
 			{readonly}
 			{maxlength}
 			{minlength}
+			{inputmode}
 			{rows}
 			aria-label={ariaLabel || placeholder || undefined}
 			{onchange}
@@ -138,6 +149,7 @@
 			{min}
 			{max}
 			{step}
+			{inputmode}
 			autocomplete={autocomplete || undefined}
 			aria-label={ariaLabel || placeholder || undefined}
 			{onchange}
@@ -158,7 +170,7 @@
 			{disabled}
 			class="absolute top-1/2 rtl:left-3 ltr:right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-600 dark:hover:text-gray-400"
 			aria-label={showPassword ? 'Hide password' : 'Show password'}
-			tabindex="-1"
+			aria-pressed={showPassword}
 		>
 			{#if showPassword}
 				<EyeOff size={18} />

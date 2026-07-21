@@ -1,8 +1,11 @@
 <script>
+	import { LoaderCircle } from '@lucide/svelte';
+
 	// Props - Svelte 5 style
 	let {
 		onclick = () => {},
 		disabled = false,
+		loading = false,
 		color = 'azure',
 		size = 'md',
 		type = 'button',
@@ -30,15 +33,21 @@
 		lg: 'px-6 py-3 text-base'
 	};
 
+	const spinnerSize = { sm: 14, md: 16, lg: 20 };
+
 	const colorClass = $derived(colorClasses[color] || colorClasses.azure);
 	const sizeClass = $derived(sizeClasses[size] || sizeClasses.md);
 </script>
 
 <button
 	{onclick}
-	{disabled}
+	disabled={disabled || loading}
 	{type}
-	class="cursor-pointer rounded-lg font-medium transition-colors disabled:cursor-default {colorClass} {sizeClass} {className}"
+	aria-busy={loading}
+	class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:cursor-default {colorClass} {sizeClass} {className}"
 >
+	{#if loading}
+		<LoaderCircle size={spinnerSize[size] || 16} class="animate-spin" aria-hidden="true" />
+	{/if}
 	{@render children()}
 </button>
