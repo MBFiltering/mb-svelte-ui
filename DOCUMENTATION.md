@@ -2,7 +2,7 @@
 
 > Complete reference documentation for all components and utilities in the @mbsmart/ui package.
 
-**Package Version**: 0.1.17  
+**Package Version**: 0.1.18  
 **Framework**: Svelte 5 (Runes Mode)  
 **Styling**: TailwindCSS v4
 
