@@ -187,10 +187,18 @@
 				{disabled}
 				class="absolute top-0 ltr:right-0 rtl:left-0 {isDropdownOnly
 					? 'h-full w-full'
-					: 'h-8 w-8'} opacity-0 {disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
+					: 'h-8 w-8'} bg-white text-gray-900 opacity-0 dark:bg-zinc-800 dark:text-gray-100 {disabled
+					? 'cursor-not-allowed'
+					: 'cursor-pointer'}"
 			>
 				{#each toggleableOptions as option}
-					<option value={option.value} disabled={option?.disabled}>{option.label}</option>
+					<option
+						value={option.value}
+						disabled={option?.disabled}
+						class="bg-white text-gray-900 dark:bg-zinc-800 dark:text-gray-100"
+					>
+						{option.label}
+					</option>
 				{/each}
 			</select>
 		</div>
