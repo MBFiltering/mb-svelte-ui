@@ -41,7 +41,7 @@
 			<button
 				type="button"
 				onclick={handleNewTab}
-				class="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-azure-100 text-azure-700 transition-colors hover:bg-azure-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-750 dark:text-azure-200 dark:hover:bg-zinc-700"
+				class="hidden xs:flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-azure-100 text-azure-700 transition-colors hover:bg-azure-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-750 dark:text-azure-200 dark:hover:bg-zinc-700"
 				title="Open in new tab"
 			>
 				<SquareArrowOutUpRight size="16" strokeWidth="2" />
@@ -62,7 +62,7 @@
 			<button
 				type="button"
 				onclick={handleNewTab}
-				class="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-azure-100 text-azure-700 transition-colors hover:bg-azure-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-750 dark:text-azure-200 dark:hover:bg-zinc-700"
+				class="hidden xs:flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-azure-100 text-azure-700 transition-colors hover:bg-azure-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-750 dark:text-azure-200 dark:hover:bg-zinc-700"
 				title="Open in new tab"
 			>
 				<SquareArrowOutUpRight size="16" strokeWidth="2" />
