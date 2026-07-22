@@ -422,7 +422,7 @@
 
 				<!-- Navigation tabs -->
 				<div
-					class="no-scrollbar h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-1.5 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
+					class="no-scrollbar h-18 sm:h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-1.5 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
 					<!-- space-y only from sm up (vertical sidebar). On mobile the bar is horizontal —
 					     space-y would stagger tabs. Labels are in-flow under icons, so sm gap is modest. -->
