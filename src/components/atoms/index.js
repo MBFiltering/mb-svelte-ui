@@ -1,6 +1,7 @@
 import '../../version.js';
 
 // Atom components barrel export
+export { default as BackButton } from './BackButton.svelte';
 export { default as Badge } from './Badge.svelte';
 export { default as Callout } from './Callout.svelte';
 export { default as CheckBox } from './CheckBox.svelte';

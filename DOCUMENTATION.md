@@ -12,6 +12,7 @@
 
 1. [Installation & Setup](#installation--setup)
 2. [Atoms (Basic Components)](#atoms)
+   - [BackButton](#backbutton)
    - [Badge](#badge)
    - [Callout](#callout)
    - [CheckBox](#checkbox)
@@ -101,6 +102,52 @@ npm install svelte@^5.0.0 @lucide/svelte@>=0.400.0
 ## Atoms
 
 Basic building blocks - simple, single-purpose components.
+
+### BackButton
+
+Back navigation control. Renders an icon-only `CircleButton` by default; passing `label` opts into a labelled inline variant (arrow + text). The arrow flips automatically in RTL.
+
+Navigation is left to the host app — the library does not depend on a router. Pass `onclick` (e.g. SvelteKit's `goto`), or `href` on the labelled variant to render a real anchor. With neither, the button calls `history.back()`.
+
+**Import:**
+
+```svelte
+<script>
+	import { BackButton } from '@mbsmart/ui/atoms';
+</script>
+```
+
+**Props:**
+
+| Prop        | Type        | Default     | Description                                                                    |
+| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------ |
+| `label`     | `string`    | `''`        | Empty renders the icon-only button; a value switches to the labelled variant   |
+| `href`      | `string`    | `''`        | Renders an `<a>` instead of a `<button>` (labelled variant only)               |
+| `onclick`   | `function`  | -           | Click handler; falls back to `history.back()` when omitted                     |
+| `title`     | `string`    | `''`        | Tooltip text                                                                   |
+| `icon`      | `Component` | `ArrowLeft` | Lucide icon component                                                          |
+| `iconSize`  | `number`    | `20`        | Size of the icon in pixels                                                     |
+| `color`     | `string`    | `'ghost'`   | Passed through to the internal `CircleButton` (icon-only variant)              |
+| `size`      | `string`    | `'md'`      | Passed through to the internal `CircleButton` (icon-only variant)              |
+| `className` | `string`    | `''`        | Additional CSS classes                                                         |
+
+**Usage:**
+
+```svelte
+<!-- Icon-only (default) - goes back in history -->
+<BackButton title={$t('common.goBack')} />
+
+<!-- Icon-only with explicit destination -->
+<BackButton onclick={() => goto('/dashboard')} />
+
+<!-- Labelled variant -->
+<BackButton label="Back to my devices" onclick={() => goto('/customer/home')} />
+
+<!-- Labelled variant as a real link -->
+<BackButton label="Back to my devices" href="/customer/home" />
+```
+
+---
 
 ### Badge
 
