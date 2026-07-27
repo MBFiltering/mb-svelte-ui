@@ -73,7 +73,8 @@ src/
 │   ├── molecules/        # Composite components (Grid, Island, NamedControl, Tabs)
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
-├── fonts/                # Custom fonts (JetBrains Mono)
+├── fonts/                # Poppins (OFL) — WOFF2 subsets, declared in styles.css
+│                         #   See "Fonts" below before adding or removing a face.
 └── utils/                # Helper functions (dateTime, stringUtils, toastStore, etc.)
 ```
 
@@ -85,6 +86,31 @@ src/
 | **Molecules** | Composed of atoms, reusable groups | Grid, Island, MultiInput          |
 | **Organisms** | Complex, self-contained features   | Modal, SearchableList, ToastContainer |
 | **Templates** | Page layouts and shells            | AppShell, SectionedPage           |
+
+---
+
+## Fonts
+
+Poppins is the UI face (`font-sans`) and ships **with this package** — consumers get it
+from `@import '@mbsmart/ui/styles.css'` and must never re-declare it or copy it into their
+own `static/fonts`.
+
+`src/fonts/` holds **WOFF2 only**, and only the six faces the portals actually render:
+400/500/600/700 upright plus 400 and 600 italic. Each is split into the two Google Fonts
+subsets Poppins covers and our locales need — latin and latin-ext — with matching
+`unicode-range`, so a page downloads only the subsets it renders. Twelve files, ~86 KB
+total; a typical English page pulls three or four latin faces (~26–35 KB).
+
+Before changing this:
+
+- **Do not add a face back without a real usage.** CSS font matching resolves an
+  unavailable weight to the nearest available one — `font-extrabold` (one usage, in
+  device-portal) correctly renders as 700. That is the intended degradation.
+- **Do not ship TTF.** WOFF2 is ~70% smaller and universally supported. Regenerate with
+  `pyftsubset SRC.ttf --unicodes=<range> --layout-features='*' --flavor=woff2`.
+- **Poppins has no Cyrillic and no Hebrew glyphs**, so ru/he/yi fall through to
+  `system-ui` for body text. That predates the subsetting; dropping the Devanagari block
+  (no locale uses it) is the only coverage actually removed.
 
 ---
 

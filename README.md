@@ -87,36 +87,22 @@ Make sure to install them in your project:
 npm install svelte @lucide/svelte
 ```
 
-**For consuming projects**, you need to copy the fonts to your static folder:
+**Fonts need no setup in consuming projects.** Poppins (`font-sans`) ships inside this
+package as WOFF2 subsets and is declared by `styles.css` with relative `./fonts/…` URLs,
+so your bundler resolves and fingerprints them for you. Do not copy them into
+`static/fonts` and do not re-declare `@font-face` for Poppins — a second declaration with
+absolute paths just downloads the family twice.
 
-```bash
-# Copy fonts from package to your static folder
-cp -r node_modules/@mbsmart/ui/dist/fonts/* static/fonts/
-```
-
-Then create a `fonts.css` in your `src/` with absolute paths:
-
-```css
-/* src/fonts.css */
-@font-face {
-	font-family: 'Poppins';
-	src: url('/fonts/Poppins-Regular.ttf') format('truetype');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-/* ... repeat for other weights */
-```
-
-And import it in your `app.css`:
+Importing the stylesheet is the whole of it:
 
 ```css
 @import '@mbsmart/ui/styles.css';
-@import './fonts.css'; /* Override package font paths */
 @import 'tailwindcss';
 
 @source "../node_modules/@mbsmart/ui/dist"; /* use your actual path to node_modules */
 ```
+
+See the "Fonts" section of `AGENTS.md` for which faces ship and why.
 
 ## Development
 
