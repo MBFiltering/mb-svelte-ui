@@ -30,6 +30,30 @@ When working on this codebase, adhere to these principles:
 - **Snippets for children** — Use Svelte 5 snippets (`{@render children?.()}`) for slot-like content.
 - **JS over TS** — Use Javascript with JSDocs instead of Typescript.
 
+### Accessibility
+
+Consuming apps cannot fix a primitive that is inaccessible, so semantics belong
+here, in the component:
+
+- **Every interactive primitive carries its role and state.** Toggles are
+  `role="switch"` + `aria-checked`; button groups are `role="group"` with
+  `aria-pressed` per option; disclosures pair `aria-expanded` with
+  `aria-controls` and an `id` on the panel; `Modal` is `role="dialog"` +
+  `aria-modal`.
+- **Take the name as a prop, never hard-code English.** The convention is an
+  `ariaLabel` prop (plus specific ones such as `closeLabel`, `collapseLabel`,
+  `expandLabel`) defaulting to sensible English, so host apps can pass a
+  translated string. Do not build a name by string-concatenating in the template.
+- **When the visible label is a plain element, tie it to the control.**
+  `NamedControl` does this by wrapping the row in `role="group"` with
+  `aria-labelledby` pointing at the label span — that one association names
+  every toggle, selector and input dropped into its slot.
+- **Generate ids with `$props.id()`**, assigned as the *entire* initializer of
+  its own `const` (Svelte rejects it inside a template literal), then
+  interpolate that variable. `Math.random()` is not SSR-safe.
+- **Pointer-only affordances** (drag handles, decorative overlays) get
+  `aria-hidden="true"` so they never reach the a11y tree.
+
 ### Naming Conventions
 
 - **Components**: PascalCase (e.g., `ToggleSwitch.svelte`)

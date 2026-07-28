@@ -10,6 +10,8 @@
 		closeOnEscape = true,
 		verticalAlign = 'center', // 'top', 'center', or 'bottom'
 		overflowVisible = false,
+		ariaLabel = '', // Names the dialog for screen readers — pass the modal's own title
+		closeLabel = 'Close modal', // aria-label/title for the close button
 		children
 	} = $props();
 
@@ -117,6 +119,9 @@
 		<!-- Modal Content Container -->
 		<div
 			bind:clientHeight={modalHeight}
+			role="dialog"
+			aria-modal="true"
+			aria-label={ariaLabel || undefined}
 			class="relative max-h-[90dvh] w-full max-w-3xl {overflowVisible
 				? 'overflow-visible'
 				: 'overflow-auto'} {isDragging ? '' : 'transition-transform duration-200'}"
@@ -128,14 +133,18 @@
 					type="button"
 					onclick={onClose}
 					class="hidden sm:block sm:absolute top-1 rtl:left-1 ltr:right-1 z-10 cursor-pointer rounded-lg p-2 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 sm:top-2 ltr:sm:right-2 rtl:sm:left-2 dark:text-gray-200 dark:hover:bg-zinc-750 dark:hover:text-white"
-					aria-label="Close modal"
+					aria-label={closeLabel}
+					title={closeLabel}
 				>
-					<X size={20} />
+					<X size={20} aria-hidden="true" />
 				</button>
 			{/if}
 			<!-- Bottom Sheet Handle (swipe to dismiss on mobile) -->
+			<!-- Pointer-only affordance: Escape and the close button already cover
+			     keyboard and assistive tech, so it stays out of the a11y tree. -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
+				aria-hidden="true"
 				class="absolute sm:hidden w-full h-8 top-0 left-0 flex pt-2 justify-center cursor-grab active:cursor-grabbing touch-none select-none"
 				onpointerdown={handlePointerDown}
 				onpointermove={handlePointerMove}

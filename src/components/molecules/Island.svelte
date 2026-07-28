@@ -11,11 +11,19 @@
 		forceExpanded = false, // When true, island is always expanded and cannot be collapsed
 		className = '',
 		collapsible = true,
+		collapseLabel = 'Collapse', // Tooltip text when expanded
+		expandLabel = 'Expand', // Tooltip text when collapsed
 		children
 	} = $props();
 
 	// State
 	let internalExpanded = $state(defaultExpanded);
+
+	// Ties the header button to the panel it controls via aria-controls. Islands
+	// are rendered in long lists, so the id has to be unique per instance.
+	// ($props.id() has to be the whole initializer — it cannot be interpolated.)
+	const uid = $props.id();
+	const panelId = `island-panel-${uid}`;
 
 	// Use forceExpanded if set, otherwise use internal state
 	let isExpanded = $derived(forceExpanded ? true : internalExpanded);
@@ -39,8 +47,9 @@
 				? 'border-b'
 				: ''} border-neutral-100 px-3 py-2 transition-colors sm:px-6 sm:py-4 dark:border-zinc-750"
 			onclick={toggleExpanded}
-			aria-label={isExpanded ? 'Collapse' : 'Expand'}
-			title={isExpanded ? 'Collapse' : 'Expand'}
+			aria-expanded={isExpanded}
+			aria-controls={panelId}
+			title={isExpanded ? collapseLabel : expandLabel}
 		>
 			<!-- Title with Icon -->
 			<div class="flex items-center gap-2">
@@ -77,7 +86,7 @@
 		</div>
 	{/if}
 	<!-- No header, just content -->
-	<div class="p-3 sm:p-6 {isExpanded || forceExpanded ? 'block' : 'hidden'}">
+	<div id={panelId} class="p-3 sm:p-6 {isExpanded || forceExpanded ? 'block' : 'hidden'}">
 		{@render children?.()}
 	</div>
 </div>

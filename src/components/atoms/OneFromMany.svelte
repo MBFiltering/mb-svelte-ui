@@ -20,7 +20,9 @@
 		onChange = () => {}, // Primary callback
 		onSelect = () => {}, // Backwards compatibility
 		disabled = false,
-		visibleCount = 2
+		visibleCount = 2,
+		ariaLabel = '' // Names the group, e.g. "App status" — without it the
+		// buttons announce as loose "Open"/"Closed" with nothing tying them together
 	} = $props();
 
 	const currentValue = $derived(selected ?? value);
@@ -117,13 +119,14 @@
 	}
 </script>
 
-<div class="inline-flex items-center gap-0">
+<div class="inline-flex items-center gap-0" role="group" aria-label={ariaLabel || undefined}>
 	<!-- Fixed Option Buttons -->
 	{#each fixedOptions as option, i}
 		<button
 			type="button"
 			onclick={() => handleFixedClick(option.value)}
 			disabled={disabled || option?.disabled}
+			aria-pressed={currentValue === option?.value}
 			class="px-3 py-1.5 text-sm font-medium transition-all {i === 0
 				? 'rounded-s-lg'
 				: ''} {!hasDropdown && i === fixedOptions.length - 1
@@ -158,6 +161,11 @@
 				type="button"
 				onclick={isDropdownOnly ? undefined : handleDropdownButtonClick}
 				disabled={disabled || displayedDropdownOption?.disabled}
+				aria-pressed={isDropdownOnly
+					? undefined
+					: currentValue === displayedDropdownOption?.value}
+				aria-hidden={isDropdownOnly ? 'true' : undefined}
+				tabindex={isDropdownOnly ? -1 : undefined}
 				class="flex items-center gap-1 px-3 py-1.5 transition-all {getCursorClass(
 					displayedDropdownOption,
 					disabled || displayedDropdownOption?.disabled
@@ -181,10 +189,12 @@
 				/>
 			</button>
 
+			<!-- Visually transparent but the real control: it must carry the name. -->
 			<select
 				onchange={handleDropdownSelect}
 				value={currentValue}
 				{disabled}
+				aria-label={ariaLabel || undefined}
 				class="absolute top-0 ltr:right-0 rtl:left-0 {isDropdownOnly
 					? 'h-full w-full'
 					: 'h-8 w-8'} bg-white text-gray-900 opacity-0 dark:bg-zinc-800 dark:text-gray-100 {disabled

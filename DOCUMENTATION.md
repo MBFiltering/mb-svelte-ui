@@ -640,6 +640,7 @@ Segmented button selector for choosing one option from a list.
 | `onSelect` | `function` | `() => {}` | Alias for `onChange`                           |
 | `disabled` | `boolean`  | `false`    | Disables all options                           |
 | `visibleCount` | `number` | `2` | How many options render as visible buttons; when `options.length > visibleCount` the last visible slot becomes a dropdown containing the remaining options. Values `<= 1` render a single fully clickable dropdown control |
+| `ariaLabel` | `string` | `''` | Names the group, e.g. `"App status: WhatsApp"` |
 
 **Option object:**
 
@@ -665,8 +666,16 @@ Segmented button selector for choosing one option from a list.
 	];
 </script>
 
-<OneFromMany {options} selected={status} onChange={(val) => (status = val)} />
+<OneFromMany {options} selected={status} onChange={(val) => (status = val)} ariaLabel="Site status" />
 ```
+
+**Accessibility:** the wrapper is a `role="group"` named by `ariaLabel` and each
+visible option carries `aria-pressed`. **Always pass `ariaLabel`** — without it
+the options announce as loose "Blocked"/"Allowed" buttons with nothing tying
+them together, which is useless in the repeated rows this component is built
+for. The transparent `<select>` behind the dropdown slot takes the same name; in
+dropdown-only mode (`visibleCount <= 1`) the decorative button is `aria-hidden`
+and untabbable so the `<select>` is the single control.
 
 **Behavior:**
 
@@ -1396,8 +1405,14 @@ Collapsible card container with optional title and icon.
 | `defaultExpanded` | `boolean`   | `true`  | Initial expanded state           |
 | `forceExpanded`   | `boolean`   | `false` | Always expanded, no toggle       |
 | `collapsible`     | `boolean`   | `true`  | Enable collapse functionality    |
+| `collapseLabel`   | `string`    | `'Collapse'` | Header tooltip when expanded |
+| `expandLabel`     | `string`    | `'Expand'`   | Header tooltip when collapsed |
 | `className`       | `string`    | `''`    | Additional classes               |
 | `children`        | `snippet`   | -       | Island content                   |
+
+**Accessibility:** the header is a real button carrying `aria-expanded` and
+`aria-controls` pointing at the content panel; its accessible name is the
+`title` text. Pass `collapseLabel`/`expandLabel` to translate the tooltip.
 
 **Usage:**
 
@@ -1599,6 +1614,12 @@ Label wrapper for form controls with optional description and info tooltip.
 | `prefix`        | `snippet` | `undefined` | Optional content before label |
 | `children`      | `snippet` | `undefined` | Control to render            |
 
+**Accessibility:** the row is a `role="group"` labelled by the visible label
+text, so whatever control you drop into the slot inherits that name — a bare
+`<ToggleSwitch>` inside a `NamedControl` no longer announces anonymously. Pass a
+control-specific `ariaLabel`/`customLabel` as well when the same control repeats
+down a list and needs to name its own row (e.g. per-app or per-category rows).
+
 **Usage:**
 
 ```svelte
@@ -1686,7 +1707,15 @@ Full-screen modal overlay with backdrop.
 | `closeOnEscape`   | `boolean`                    | `true`     | Close on ESC key             |
 | `verticalAlign`   | `'top' \| 'center' \| 'bottom'` | `'center'` | Vertical placement of the modal |
 | `overflowVisible` | `boolean`                    | `false`    | When true, content uses `overflow-visible` so absolutely-positioned dropdowns are not clipped |
+| `ariaLabel`       | `string`                     | `''`       | Names the dialog for screen readers — pass the modal's own title |
+| `closeLabel`      | `string`                     | `'Close modal'` | Accessible name and tooltip for the X button |
 | `children`        | `snippet`                    | -          | Modal content                |
+
+**Accessibility:** the content container is `role="dialog"` + `aria-modal="true"`,
+named by `ariaLabel`. Always pass `ariaLabel` (and a translated `closeLabel`);
+give the button that opens the modal `aria-haspopup="dialog"`. The mobile
+swipe-to-dismiss handle is `aria-hidden` — Escape and the close button cover
+keyboard and assistive tech.
 
 **Usage:**
 
@@ -1695,9 +1724,9 @@ Full-screen modal overlay with backdrop.
 	let isOpen = false;
 </script>
 
-<button onclick={() => (isOpen = true)}>Open Modal</button>
+<button onclick={() => (isOpen = true)} aria-haspopup="dialog">Open Modal</button>
 
-<Modal {isOpen} onClose={() => (isOpen = false)}>
+<Modal {isOpen} onClose={() => (isOpen = false)} ariaLabel="Modal Title">
 	<Island title="Modal Title">
 		<p>Modal content here</p>
 		<ControlButton onclick={() => (isOpen = false)}>Close</ControlButton>

@@ -11,9 +11,19 @@
 		prefix = undefined,
 		children = undefined
 	} = $props();
+
+	// The visible label is the only thing naming the control(s) in the slot, and
+	// a plain span names nothing. Grouping the row and pointing at that span
+	// gives every wrapped toggle, selector and input an accessible name without
+	// each call site having to repeat the label.
+	// ($props.id() has to be the whole initializer — it cannot be interpolated.)
+	const uid = $props.id();
+	const labelId = `named-control-${uid}`;
 </script>
 
 <div
+	role="group"
+	aria-labelledby={labelId}
 	class="my-3 flex w-full flex-col justify-between gap-2 rounded-xl border border-neutral-100 p-3 sm:my-0 sm:flex-row sm:items-center sm:rounded-none sm:border-t-0 sm:border-r-0 sm:border-l-0 sm:px-0 dark:border-zinc-750"
 >
 	<div class="w-full sm:w-auto sm:flex-1">
@@ -21,7 +31,7 @@
 			{#if prefix}
 				{@render prefix()}
 			{/if}
-			<span class="">{label}</span>
+			<span id={labelId} class="">{label}</span>
 			<span class="hidden h-5 sm:inline-block">
 				{#if info}
 					<Info label={infoLabel || label} {infoDirectory} />
