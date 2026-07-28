@@ -138,6 +138,43 @@ Before changing this:
 
 ---
 
+## i18n — two data shapes, one engine
+
+`src/utils/i18n/` is the shared translation engine. Consumers register their own strings;
+this package ships only the `safety.*` namespace (`safetyTranslations.js`, used by
+`SafetyBadge`). Both shapes below resolve through the same `t` / `tr` / `getTranslation`.
+
+**key-first** — `{ ns: { key: { en, es, fr, he, ru, yi } } }`, registered eagerly with
+`registerTranslations()`. Pleasant to author (all six languages side by side) but it is
+one module carrying every language, so every visitor downloads all of them. Fine for a
+handful of shared strings; that is why `safetyTranslations` still uses it.
+
+**locale-first** — `{ ns: { key: 'value' } }`, one module per language, registered as lazy
+loaders with `registerLocaleLoaders({ en: () => import(…), … })` and pulled in with
+`await loadLanguage(lang)`. This is what an app's full dictionary should use. See
+`localeRegistry.js`.
+
+When both define a key, locale-first wins, so an app can migrate a namespace at a time.
+
+Things worth knowing before touching this:
+
+- **`await loadLanguage()` in the layout `load`**, not in a component. The first frame
+  renders against whatever is in memory; awaiting in `load` is what makes the split
+  invisible. `setLanguage()` also kicks off the fetch on its own (fire-and-forget) for
+  callers with no route to hang it off, such as a picker on an unprefixed SPA route.
+- **`t` derives from `i18nVersion` as well as `language`.** Chunks arrive asynchronously;
+  a store derived from the language alone would never re-run for one that lands after the
+  switch. Any new registration path must call `bumpI18nVersion()`.
+- **Fallback order** is requested language → key-first → English → any other loaded
+  locale. The last step is deliberate: during the tick between a language switch and its
+  chunk arriving, the page keeps the language it was already showing instead of a wall of
+  raw dotted keys.
+- **`getAvailableLanguages()` reports what is in memory**, which with locale-first data is
+  only the loaded chunks. Use `SUPPORTED_LANGUAGES` (or `getRegisteredLocales()`) to
+  enumerate what an app offers.
+
+---
+
 ## For LLMs: How to Learn More
 
 **Do not rely on this file for component details.** Instead:

@@ -16,6 +16,7 @@
 
 import { writable, get } from 'svelte/store';
 import Cookies from 'js-cookie';
+import { loadLanguage } from './localeRegistry.js';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -32,7 +33,7 @@ export const SUPPORTED_LANGUAGES = [
 	{ code: 'fr', name: 'French', nativeName: 'Français', dir: 'ltr' },
 	{ code: 'he', name: 'Hebrew', nativeName: 'עברית', dir: 'rtl' },
 	{ code: 'ru', name: 'Russian', nativeName: 'Русский', dir: 'ltr' },
-	{ code: 'yi', name: 'Yiddish', nativeName: 'ייִדיש', dir: 'rtl' }
+	{ code: 'yi', name: 'Yiddish', nativeName: 'ייִדיש', dir: 'rtl' },
 ];
 
 /**
@@ -71,13 +72,21 @@ export function setLanguage(langCode) {
 		return;
 	}
 
+	// Kick off the locale chunk without waiting for it, so callers that switch
+	// language outside a SvelteKit `load` (a picker on an unprefixed SPA route,
+	// say) still get their translations. Until it lands `getTranslation` falls
+	// back to a loaded locale; the registry bump re-renders on arrival. Apps
+	// that route by language should still `await loadLanguage()` in the layout
+	// load, which renders the right text on the first frame.
+	loadLanguage(langCode);
+
 	language.set(langCode);
 
 	if (isBrowser) {
 		Cookies.set(LANGUAGE_COOKIE, langCode, {
 			expires: 365,
 			secure: false,
-			sameSite: 'lax'
+			sameSite: 'lax',
 		});
 
 		const langInfo = SUPPORTED_LANGUAGES.find((l) => l.code === langCode);
