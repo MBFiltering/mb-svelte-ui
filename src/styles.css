@@ -9,19 +9,32 @@
  */
 
 /* =============================================================================
-   POPPINS FONT FAMILY (`font-sans`)
-   Self-hosted from src/fonts (OFL, see src/fonts/OFL.txt). WOFF2 only, and only
-   the six faces the portals actually render: 400/500/600/700 upright plus 400
-   and 600 italic. Anything heavier (`font-extrabold`) resolves to 700 by CSS
-   font matching, which is the intended graceful degradation — do not add faces
-   back without a real usage.
+   UI FONT STACK (`font-sans`) — one typeface per script
+   Self-hosted from src/fonts (all OFL, see src/fonts/OFL.txt). WOFF2 only.
 
-   Each face is split into the two Google Fonts subsets Poppins covers and our
-   locales need: latin (en/es/fr) and latin-ext, with matching `unicode-range`
-   so a page downloads only the subsets it renders. Poppins has no Cyrillic and
-   no Hebrew glyphs at all, so ru/he/yi fall through to system-ui here — that is
-   pre-existing behaviour, not a regression from subsetting. Its Devanagari
-   block is dropped; no locale uses it.
+     Poppins     latin, latin-ext   en/es/fr and all Latin text
+     Montserrat  cyrillic           ru
+     Rubik       hebrew             he/yi
+
+   Poppins has no Cyrillic and no Hebrew glyphs at all, so ru/he/yi used to fall
+   through to system-ui. Montserrat and Rubik are the closest geometric sans
+   matches for those scripts, and both carry real italics — Heebo, the obvious
+   Hebrew candidate, ships no italic face at any weight, so `<em>` would have
+   been synthesised (obliqued) there.
+
+   Selection is per glyph, not per locale: every face carries a `unicode-range`,
+   so the browser picks the family that actually covers each character and
+   downloads nothing else. A Hebrew page with an English product name in it gets
+   Rubik and Poppins on the same line, with no i18n wiring in the host app.
+
+   Poppins ships as six static faces per subset — 400/500/600/700 upright plus
+   400 and 600 italic, the only ones the portals render. Montserrat and Rubik
+   ship as variable fonts clamped to `font-weight: 400 700`, which is both
+   smaller and fewer files than the equivalent statics (four files, ~67 KB, and
+   only on pages that render those scripts). Anything heavier than 700
+   (`font-extrabold`) resolves to 700 in all three by CSS font matching, which
+   is the intended graceful degradation — do not add faces or widen the weight
+   range without a real usage.
    ============================================================================= */
 
 @font-face {
@@ -156,6 +169,49 @@
 		U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* Montserrat — Cyrillic (ru). Variable weight axis, clamped to the 400-700 the
+   portals use. The cyrillic-ext subset (archaic Slavonic, Caucasian and Central
+   Asian letters) is deliberately not shipped: Russian is our only Cyrillic
+   locale and it lives entirely in the base range below, as does Ukrainian. */
+@font-face {
+	font-family: 'Montserrat';
+	src: url('./fonts/Montserrat-cyrillic.woff2') format('woff2');
+	font-weight: 400 700;
+	font-style: normal;
+	font-display: swap;
+	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+	font-family: 'Montserrat';
+	src: url('./fonts/Montserrat-italic-cyrillic.woff2') format('woff2');
+	font-weight: 400 700;
+	font-style: italic;
+	font-display: swap;
+	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+/* Rubik — Hebrew (he, and yi which is written in the same script). The range
+   covers the Hebrew block plus the FB1D-FB4F presentation forms, which is where
+   the Yiddish digraphs and pointed forms live. */
+@font-face {
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-hebrew.woff2') format('woff2');
+	font-weight: 400 700;
+	font-style: normal;
+	font-display: swap;
+	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-italic-hebrew.woff2') format('woff2');
+	font-weight: 400 700;
+	font-style: italic;
+	font-display: swap;
+	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
 /* =============================================================================
    DARK MODE - Class-based (requires .dark on html/body ancestor)
    ============================================================================= */
@@ -206,10 +262,13 @@
 	--breakpoint-xl2: 90rem; /* 1440px — between xl and 2xl */
 	--breakpoint-2xl2: 103.125rem; /* 1650px — above 2xl */
 
-	/* Font Family */
+	/* Font Family — Poppins (latin), Montserrat (cyrillic), Rubik (hebrew).
+	   Order matters: each family is declared with a `unicode-range` covering only
+	   its script, so the browser walks the list per character and lands on the one
+	   that actually has the glyph. See the font-face block at the top of this file. */
 	--font-sans:
-		'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-		Arial, sans-serif;
+		'Poppins', 'Montserrat', 'Rubik', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		Roboto, 'Helvetica Neue', Arial, sans-serif;
 
 	/* Using: https://oklch.com/#0.322,0.0095,285.919,100 */
 	/* Tailwind Extended Colors */

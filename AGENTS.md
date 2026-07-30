@@ -115,26 +115,42 @@ src/
 
 ## Fonts
 
-Poppins is the UI face (`font-sans`) and ships **with this package** — consumers get it
-from `@import '@mbsmart/ui/styles.css'` and must never re-declare it or copy it into their
-own `static/fonts`.
+`font-sans` is **three typefaces, one per script**, and they ship **with this package** —
+consumers get them from `@import '@mbsmart/ui/styles.css'` and must never re-declare one
+or copy it into their own `static/fonts`.
 
-`src/fonts/` holds **WOFF2 only**, and only the six faces the portals actually render:
-400/500/600/700 upright plus 400 and 600 italic. Each is split into the two Google Fonts
-subsets Poppins covers and our locales need — latin and latin-ext — with matching
-`unicode-range`, so a page downloads only the subsets it renders. Twelve files, ~86 KB
-total; a typical English page pulls three or four latin faces (~26–35 KB).
+| Family     | Script / subset  | Locales | Files |
+|------------|------------------|---------|-------|
+| Poppins    | latin, latin-ext | en/es/fr and all Latin text | 12 static, ~86 KB |
+| Montserrat | cyrillic         | ru      | 2 variable, ~48 KB |
+| Rubik      | hebrew           | he, yi  | 2 variable, ~19 KB |
+
+**Selection is per glyph, not per locale.** Every face carries a `unicode-range`, so the
+browser walks `--font-sans` per character and lands on the family that has the glyph — a
+Hebrew page with an English product name in it renders Rubik and Poppins on the same line.
+Host apps need **no i18n wiring for fonts at all**; nothing keys off `$language` or `dir`.
+It also means a page downloads only the scripts it renders: an English page pulls three or
+four latin Poppins faces (~26–35 KB) and never touches Montserrat or Rubik.
+
+`src/fonts/` holds **WOFF2 only**. Poppins is six static faces per subset (400/500/600/700
+upright plus 400 and 600 italic); Montserrat and Rubik are variable fonts declared
+`font-weight: 400 700`, which is smaller and fewer files than the equivalent statics.
 
 Before changing this:
 
-- **Do not add a face back without a real usage.** CSS font matching resolves an
-  unavailable weight to the nearest available one — `font-extrabold` (one usage, in
-  device-portal) correctly renders as 700. That is the intended degradation.
-- **Do not ship TTF.** WOFF2 is ~70% smaller and universally supported. Regenerate with
+- **Do not add a face, subset, or weight without a real usage.** CSS font matching resolves
+  an unavailable weight to the nearest available one — `font-extrabold` (one usage, in
+  device-portal) correctly renders as 700 in all three families. That is the intended
+  degradation. Poppins' Devanagari block and Montserrat's `cyrillic-ext` are dropped for
+  the same reason; Russian (and Ukrainian) live entirely in the base `cyrillic` range.
+- **Do not ship TTF.** WOFF2 is ~70% smaller and universally supported. The per-subset
+  WOFF2 files can be pulled straight from the Google Fonts `css2` API with a modern
+  browser UA — that is where the current files came from, and the `unicode-range` values in
+  `styles.css` are copied verbatim from its output. Otherwise regenerate with
   `pyftsubset SRC.ttf --unicodes=<range> --layout-features='*' --flavor=woff2`.
-- **Poppins has no Cyrillic and no Hebrew glyphs**, so ru/he/yi fall through to
-  `system-ui` for body text. That predates the subsetting; dropping the Devanagari block
-  (no locale uses it) is the only coverage actually removed.
+- **Hebrew needs a family with real italics.** Heebo is the obvious candidate and ships
+  **no italic face at any weight**, so `<em>` would be synthesised (obliqued). Rubik has
+  true italics at the full 400–700 range, which is why it won.
 
 ---
 
