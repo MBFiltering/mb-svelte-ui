@@ -89,7 +89,7 @@ npm install svelte @lucide/svelte
 
 **Fonts need no setup in consuming projects — including for i18n.** `font-sans` covers
 every locale we support: Poppins for Latin (en/es/fr), Montserrat for Cyrillic (ru) and
-Rubik for Hebrew (he/yi). All three ship inside this package as WOFF2 subsets and are
+Heebo for Hebrew (he/yi). All three ship inside this package as WOFF2 subsets and are
 declared by `styles.css` with relative `./fonts/…` URLs, so your bundler resolves and
 fingerprints them for you.
 

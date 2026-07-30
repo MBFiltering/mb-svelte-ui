@@ -14,23 +14,24 @@
 
      Poppins     latin, latin-ext   en/es/fr and all Latin text
      Montserrat  cyrillic           ru
-     Rubik       hebrew             he/yi
+     Heebo       hebrew             he/yi
 
    Poppins has no Cyrillic and no Hebrew glyphs at all, so ru/he/yi used to fall
-   through to system-ui. Montserrat and Rubik are the closest geometric sans
-   matches for those scripts, and both carry real italics — Heebo, the obvious
-   Hebrew candidate, ships no italic face at any weight, so `<em>` would have
-   been synthesised (obliqued) there.
+   through to system-ui. Montserrat and Heebo are the closest geometric sans
+   matches for those scripts.
+
+   Heebo ships no italic face at any weight, so Hebrew `<em>` is a synthesised
+   oblique. Montserrat and Poppins have real italics.
 
    Selection is per glyph, not per locale: every face carries a `unicode-range`,
    so the browser picks the family that actually covers each character and
    downloads nothing else. A Hebrew page with an English product name in it gets
-   Rubik and Poppins on the same line, with no i18n wiring in the host app.
+   Heebo and Poppins on the same line, with no i18n wiring in the host app.
 
    Poppins ships as six static faces per subset — 400/500/600/700 upright plus
-   400 and 600 italic, the only ones the portals render. Montserrat and Rubik
+   400 and 600 italic, the only ones the portals render. Montserrat and Heebo
    ship as variable fonts clamped to `font-weight: 400 700`, which is both
-   smaller and fewer files than the equivalent statics (four files, ~67 KB, and
+   smaller and fewer files than the equivalent statics (three files, ~60 KB, and
    only on pages that render those scripts). Anything heavier than 700
    (`font-extrabold`) resolves to 700 in all three by CSS font matching, which
    is the intended graceful degradation — do not add faces or widen the weight
@@ -191,23 +192,21 @@
 	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
-/* Rubik — Hebrew (he, and yi which is written in the same script). The range
+/* Heebo — Hebrew (he, and yi which is written in the same script). The range
    covers the Hebrew block plus the FB1D-FB4F presentation forms, which is where
-   the Yiddish digraphs and pointed forms live. */
+   the Yiddish digraphs and pointed forms live.
+
+   There is only an upright face because Heebo has no italic at any weight, so
+   `<em>` in Hebrew is a browser-synthesised oblique. That is deliberate: it is
+   left on (the `font-synthesis` default) because suppressing it would render
+   emphasis identically to body text, and no emphasis is worse than a slanted
+   one. Do not add a `font-style: italic` face here — there is no file to point
+   it at. */
 @font-face {
-	font-family: 'Rubik';
-	src: url('./fonts/Rubik-hebrew.woff2') format('woff2');
+	font-family: 'Heebo';
+	src: url('./fonts/Heebo-hebrew.woff2') format('woff2');
 	font-weight: 400 700;
 	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
-}
-
-@font-face {
-	font-family: 'Rubik';
-	src: url('./fonts/Rubik-italic-hebrew.woff2') format('woff2');
-	font-weight: 400 700;
-	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
 }
@@ -262,12 +261,12 @@
 	--breakpoint-xl2: 90rem; /* 1440px — between xl and 2xl */
 	--breakpoint-2xl2: 103.125rem; /* 1650px — above 2xl */
 
-	/* Font Family — Poppins (latin), Montserrat (cyrillic), Rubik (hebrew).
+	/* Font Family — Poppins (latin), Montserrat (cyrillic), Heebo (hebrew).
 	   Order matters: each family is declared with a `unicode-range` covering only
 	   its script, so the browser walks the list per character and lands on the one
 	   that actually has the glyph. See the font-face block at the top of this file. */
 	--font-sans:
-		'Poppins', 'Montserrat', 'Rubik', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+		'Poppins', 'Montserrat', 'Heebo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
 		Roboto, 'Helvetica Neue', Arial, sans-serif;
 
 	/* Using: https://oklch.com/#0.322,0.0095,285.919,100 */

@@ -97,7 +97,8 @@ src/
 │   ├── molecules/        # Composite components (Grid, Island, NamedControl, Tabs)
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
-├── fonts/                # Poppins (OFL) — WOFF2 subsets, declared in styles.css
+├── fonts/                # Poppins + Montserrat + Heebo (OFL) — WOFF2 subsets,
+│                         #   declared in styles.css, one family per script.
 │                         #   See "Fonts" below before adding or removing a face.
 └── utils/                # Helper functions (dateTime, stringUtils, toastStore, etc.)
 ```
@@ -123,17 +124,17 @@ or copy it into their own `static/fonts`.
 |------------|------------------|---------|-------|
 | Poppins    | latin, latin-ext | en/es/fr and all Latin text | 12 static, ~86 KB |
 | Montserrat | cyrillic         | ru      | 2 variable, ~48 KB |
-| Rubik      | hebrew           | he, yi  | 2 variable, ~19 KB |
+| Heebo      | hebrew           | he, yi  | 1 variable, ~12 KB |
 
 **Selection is per glyph, not per locale.** Every face carries a `unicode-range`, so the
 browser walks `--font-sans` per character and lands on the family that has the glyph — a
-Hebrew page with an English product name in it renders Rubik and Poppins on the same line.
+Hebrew page with an English product name in it renders Heebo and Poppins on the same line.
 Host apps need **no i18n wiring for fonts at all**; nothing keys off `$language` or `dir`.
 It also means a page downloads only the scripts it renders: an English page pulls three or
-four latin Poppins faces (~26–35 KB) and never touches Montserrat or Rubik.
+four latin Poppins faces (~26–35 KB) and never touches Montserrat or Heebo.
 
 `src/fonts/` holds **WOFF2 only**. Poppins is six static faces per subset (400/500/600/700
-upright plus 400 and 600 italic); Montserrat and Rubik are variable fonts declared
+upright plus 400 and 600 italic); Montserrat and Heebo are variable fonts declared
 `font-weight: 400 700`, which is smaller and fewer files than the equivalent statics.
 
 Before changing this:
@@ -148,9 +149,13 @@ Before changing this:
   browser UA — that is where the current files came from, and the `unicode-range` values in
   `styles.css` are copied verbatim from its output. Otherwise regenerate with
   `pyftsubset SRC.ttf --unicodes=<range> --layout-features='*' --flavor=woff2`.
-- **Hebrew needs a family with real italics.** Heebo is the obvious candidate and ships
-  **no italic face at any weight**, so `<em>` would be synthesised (obliqued). Rubik has
-  true italics at the full 400–700 range, which is why it won.
+- **Heebo has no italic face at any weight**, so Hebrew `<em>` renders as a
+  browser-synthesised oblique, and only an upright `@font-face` is declared for it. Do not
+  add a `font-style: italic` rule for Heebo — there is no file to point it at. Synthesis is
+  deliberately left on (the `font-synthesis` default): suppressing it would make emphasis
+  indistinguishable from body text, which is worse. Note the oblique slants right, i.e.
+  against the reading direction in RTL. If real Hebrew italics ever matter, Rubik is the
+  closest substitute that has them — this was a considered trade, not an oversight.
 
 ---
 
