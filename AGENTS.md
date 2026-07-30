@@ -122,7 +122,7 @@ or copy it into their own `static/fonts`.
 
 | Family     | Script / subset  | Locales | Files |
 |------------|------------------|---------|-------|
-| Poppins    | latin, latin-ext | en/es/fr and all Latin text | 12 static, ~86 KB |
+| Poppins    | latin, latin-ext | en/es/fr and all Latin text | 14 static, ~101 KB |
 | Montserrat | cyrillic         | ru      | 2 variable, ~48 KB |
 | Heebo      | hebrew           | he, yi  | 1 variable, ~12 KB |
 
@@ -133,8 +133,8 @@ Host apps need **no i18n wiring for fonts at all**; nothing keys off `$language`
 It also means a page downloads only the scripts it renders: an English page pulls three or
 four latin Poppins faces (~26–35 KB) and never touches Montserrat or Heebo.
 
-`src/fonts/` holds **WOFF2 only**. Poppins is six static faces per subset (400/500/600/700
-upright plus 400 and 600 italic); Montserrat and Heebo are variable fonts declared
+`src/fonts/` holds **WOFF2 only**. Poppins is seven static faces per subset (400/500/600/700
+upright plus 400, 600 and 700 italic); Montserrat and Heebo are variable fonts declared
 `font-weight: 400 700`, which is smaller and fewer files than the equivalent statics.
 
 Before changing this:
@@ -144,6 +144,14 @@ Before changing this:
   device-portal) correctly renders as 700 in all three families. That is the intended
   degradation. Poppins' Devanagari block and Montserrat's `cyrillic-ext` are dropped for
   the same reason; Russian (and Ukrainian) live entirely in the base `cyrillic` range.
+- **Mind the italic weight ramp — a missing italic face is a silent bug.** Poppins has
+  400/600/700 italic but **no 500**, so `font-medium` + `italic` resolves *down* to 400 and
+  renders at regular weight. This bit us once already: before 700 italic existed, the
+  customer-portal hero's `italic` accent span resolved down to 600 and read visibly lighter
+  than the upright `font-bold` span next to it in the same `<h1>`. Note the weight is often
+  **inherited** from an ancestor rather than sitting on the italic element, so grepping for
+  `italic` and `font-bold` in one class attribute will not find these — check computed
+  styles, or measure rendered widths per weight in a browser.
 - **Do not ship TTF.** WOFF2 is ~70% smaller and universally supported. The per-subset
   WOFF2 files can be pulled straight from the Google Fonts `css2` API with a modern
   browser UA — that is where the current files came from, and the `unicode-range` values in

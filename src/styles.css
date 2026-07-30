@@ -28,14 +28,25 @@
    downloads nothing else. A Hebrew page with an English product name in it gets
    Heebo and Poppins on the same line, with no i18n wiring in the host app.
 
-   Poppins ships as six static faces per subset — 400/500/600/700 upright plus
-   400 and 600 italic, the only ones the portals render. Montserrat and Heebo
-   ship as variable fonts clamped to `font-weight: 400 700`, which is both
+   Poppins ships as seven static faces per subset — 400/500/600/700 upright plus
+   400, 600 and 700 italic, the only ones the portals render. Montserrat and
+   Heebo ship as variable fonts clamped to `font-weight: 400 700`, which is both
    smaller and fewer files than the equivalent statics (three files, ~60 KB, and
    only on pages that render those scripts). Anything heavier than 700
    (`font-extrabold`) resolves to 700 in all three by CSS font matching, which
    is the intended graceful degradation — do not add faces or widen the weight
    range without a real usage.
+
+   Two notes on italic weights, because the failure is silent and looks like a
+   rendering bug rather than a missing file:
+
+   - 700 italic exists because `italic` + an inherited `font-bold` is real (the
+     customer-portal hero `<h1>`). Without it, CSS font matching resolved bold
+     italic down to the 600 face, so the accent span rendered visibly lighter
+     than the upright bold span beside it in the same heading.
+   - 500 italic does NOT exist, so `font-medium` + `italic` resolves *down* to
+     400 and renders at regular weight. Nothing uses that combination today. If
+     you introduce it, add the face rather than accepting the silent fallback.
    ============================================================================= */
 
 @font-face {
@@ -163,6 +174,28 @@
 	font-family: 'Poppins';
 	src: url('./fonts/Poppins-semibolditalic-latin-ext.woff2') format('woff2');
 	font-weight: 600;
+	font-style: italic;
+	font-display: swap;
+	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+		U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-bolditalic-latin.woff2') format('woff2');
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+		U+FEFF, U+FFFD;
+}
+
+@font-face {
+	font-family: 'Poppins';
+	src: url('./fonts/Poppins-bolditalic-latin-ext.woff2') format('woff2');
+	font-weight: 700;
 	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
