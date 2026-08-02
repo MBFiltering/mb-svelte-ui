@@ -456,7 +456,7 @@
    It is a plain custom property on `:root`, so **a consuming app can override
    it in one line** after importing this file:
 
-       :root { --g2-scale: 1.5; }   /* in the app's own app.css */
+       :root { --g2-scale: 1.5; }   ← in the app's own app.css
 
    That matters because the right value depends on which radii an app actually
    uses. An app built mostly from 8px corners needs more compensation — at that
