@@ -403,6 +403,51 @@
    UTILITY CLASSES
    ============================================================================= */
 
+/* =============================================================================
+   G2 CORNERS (`g2`) — continuous-curvature "squircle" corners
+
+   `border-radius` alone draws a G1 corner: a circular arc spliced onto the
+   straight edge, so curvature jumps from 0 to 1/r at the splice point. The eye
+   reads that discontinuity as a slight kink. `corner-shape: squircle` swaps the
+   arc for a superellipse whose curvature ramps in smoothly — G2 continuity, the
+   same corner Apple's hardware and app icons use. It is the single cheapest
+   change that makes a UI read as "considered" rather than "bootstrapped".
+
+   Usage — pair it with the radius, never alone:
+
+       <div class="g2 rounded-xl">          ← squircle
+       <div class="g2">                     ← no-op; 0 radius has no corner
+       <div class="g2 sm:rounded-none">     ← squircle above sm, square below
+
+   `corner-shape` only reshapes corners that already have a radius, so it is
+   safe on partially rounded elements (`rounded-t-lg`, `rounded-e-xl`): the
+   square corners stay square. It reshapes the whole border box, so borders,
+   backgrounds, shadows, rings and `overflow-hidden` clipping all follow it.
+
+   Where to apply it (the convention this repo follows):
+
+   - YES on radii >= 8px (`rounded-lg` and up) — cards, islands, modals, inputs,
+     buttons, tooltips, toasts, icon tiles. This is where the curve is long
+     enough for the difference to actually register.
+   - NO on `rounded-full`. A 50% radius plus `squircle` is not a circle, it is
+     an app-icon blob — wrong for avatars, toggle knobs, pills and drag handles.
+   - NO on `rounded`/`rounded-sm` (<=4px). The arc is too short to read, so it
+     is pure payload for no visual gain.
+
+   Progressive enhancement, no `@supports` needed: browsers without
+   `corner-shape` (Firefox, older Safari) drop the declaration and render the
+   plain G1 radius. Nothing breaks, nothing shifts — those users just get the
+   old corner.
+
+   Consumers get this from `@import '@mbsmart/ui/styles.css'` and can use `g2`
+   on their own markup exactly like `azure` or `mulberry` — it is a first-class
+   utility, so variants (`sm:g2`, `dark:g2`) and `@apply` work.
+   ============================================================================= */
+
+@utility g2 {
+	corner-shape: squircle;
+}
+
 /* Hide keyboard shortcuts when setting is disabled */
 html.hide-kbd .kbd-helper {
 	display: none !important;

@@ -4,7 +4,9 @@
 	 *
 	 * @prop {string} height - Height class for the skeleton (default: 'h-48')
 	 * @prop {string} width - Width class for the skeleton (default: '')
-	 * @prop {string} rounded - Border radius class (default: 'rounded-xl')
+	 * @prop {string} rounded - Border radius class (default: 'g2 rounded-xl'). Pass a
+	 *   plain radius (e.g. 'rounded-full') to opt out of the g2/squircle corner —
+	 *   a skeleton should trace the shape of whatever it stands in for.
 	 * @prop {string} className - Additional CSS classes
 	 * @prop {Array} rows - Array of row definitions for sub-skeletons inside the main skeleton
 	 *
@@ -24,7 +26,8 @@
 	 * ]} />
 	 */
 
-	let { height = 'h-48', width = '', rounded = 'rounded-xl', className = '', rows = [] } = $props();
+	let { height = 'h-48', width = '', rounded = 'g2 rounded-xl', className = '', rows = [] } =
+		$props();
 
 	// Process rows into a consistent format
 	let processedRows = $derived(

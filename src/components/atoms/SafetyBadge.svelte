@@ -57,7 +57,7 @@
 			getRiskLabel(resolvedColorKey)
 	);
 	const badgeClasses = $derived(
-		`rounded-lg border font-semibold ${colorClasses[resolvedColorKey] || colorClasses.gray} ${sizeClasses[size] || sizeClasses.sm} ${className}`
+		`g2 rounded-lg border font-semibold ${colorClasses[resolvedColorKey] || colorClasses.gray} ${sizeClasses[size] || sizeClasses.sm} ${className}`
 	);
 </script>
 

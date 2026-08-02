@@ -47,7 +47,7 @@
 					></div>
 					<!-- Tooltip Content -->
 					<div
-						class="rounded-lg bg-gray-700 px-3 py-2 text-xs font-normal text-white"
+						class="g2 rounded-lg bg-gray-700 px-3 py-2 text-xs font-normal text-white"
 						style="width: {infoWidth};"
 					>
 						{@html infoText}

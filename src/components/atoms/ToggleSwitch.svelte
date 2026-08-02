@@ -22,7 +22,7 @@
 		type="button"
 		onclick={() => !disabled && onChange(!checked)}
 		{disabled}
-		class="flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors disabled:cursor-default disabled:opacity-50 {checked
+		class="g2 flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors disabled:cursor-default disabled:opacity-50 {checked
 			? colorOn.replace('bg-', 'bg-') + ' text-white dark:text-zinc-750'
 			: colorOff.replace('bg-', 'bg-') + ' text-gray-700 dark:text-gray-200'}"
 		aria-label={customLabel || `Toggle ${label}`}

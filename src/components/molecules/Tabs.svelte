@@ -22,7 +22,7 @@
 		<button
 			type="button"
 			onclick={() => select(tab.id)}
-			class="flex cursor-pointer items-center gap-2 rounded-t-lg px-4 py-2 text-sm font-medium transition-colors {active ===
+			class="g2 flex cursor-pointer items-center gap-2 rounded-t-lg px-4 py-2 text-sm font-medium transition-colors {active ===
 			tab.id
 				? 'border-b-2 border-azure-700 text-azure-700 dark:border-azure-500 dark:text-azure-500'
 				: 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-50'}"

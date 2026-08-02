@@ -61,6 +61,8 @@
    - [stringUtils](#stringutils)
    - [toastStore](#toaststore)
    - [urlUtils](#urlutils)
+7. [CSS Classes Reference](#css-classes-reference)
+   - [`g2` — squircle corners](#g2--continuous-curvature-squircle-corners)
 
 ---
 
@@ -843,7 +845,7 @@ Loading placeholder with configurable rows and columns.
 | ----------- | -------- | -------------- | --------------------------- |
 | `height`    | `string` | `'h-48'`       | Height class                |
 | `width`     | `string` | `''`           | Width class                 |
-| `rounded`   | `string` | `'rounded-xl'` | Border radius class         |
+| `rounded`   | `string` | `'g2 rounded-xl'` | Border radius class. Pass a plain radius (e.g. `'rounded-full'`) to opt out of the [`g2`](#g2--continuous-curvature-squircle-corners) corner — a skeleton should trace the shape of whatever it stands in for. |
 | `className` | `string` | `''`           | Additional classes          |
 | `rows`      | `array`  | `[]`           | Row definitions (see below) |
 
@@ -2715,6 +2717,49 @@ buildUrlUpdates('example.com', 'remove', existingItem);
 ---
 
 ## CSS Classes Reference
+
+### `g2` — continuous-curvature ("squircle") corners
+
+`border-radius` on its own draws a **G1** corner: a circular arc spliced onto the
+straight edge, so curvature jumps from 0 to 1/r at the splice. The eye reads that
+discontinuity as a faint kink. `g2` adds `corner-shape: squircle`, which swaps the arc
+for a superellipse whose curvature ramps in smoothly — **G2** continuity, the corner
+Apple uses on its hardware and app icons.
+
+`g2` is a real Tailwind utility (registered with `@utility` in `styles.css`), so it
+composes with variants and `@apply` exactly like `bg-azure-500` or `text-mulberry-700`.
+Consuming apps get it from `@import '@mbsmart/ui/styles.css'` — no extra config.
+
+```svelte
+<div class="g2 rounded-xl">…</div>        <!-- squircle -->
+<div class="g2">…</div>                   <!-- no-op: 0 radius has no corner to shape -->
+<div class="g2 rounded-t-lg">…</div>      <!-- top corners squircled, bottom stay square -->
+<div class="sm:g2 rounded-lg">…</div>     <!-- variants work -->
+```
+
+**Always pair `g2` with a radius.** `corner-shape` only reshapes corners that already
+have one, which is why it is safe on partially rounded elements — the 0-radius corners
+are left alone. It reshapes the whole border box, so borders, backgrounds, shadows,
+rings and `overflow-hidden` clipping all follow it.
+
+**Where to apply it** — the convention this library follows, and the one consuming apps
+should match:
+
+| | |
+|---|---|
+| ✅ Radii ≥ 8px (`rounded-lg` and up) | Cards, islands, modals, inputs, buttons, tooltips, toasts, icon tiles. The curve is long enough for the difference to register. |
+| ❌ `rounded-full` | A 50% radius plus `squircle` is not a circle, it is an app-icon blob. Wrong for avatars, toggle knobs, pills, drag handles. |
+| ❌ `rounded`/`rounded-sm` (≤ 4px) | The arc is too short to read — payload for no visual gain. |
+
+**Browser support is progressive enhancement, no `@supports` needed.** Browsers without
+`corner-shape` (Firefox, older Safari) drop the declaration and render the plain G1
+radius. Nothing breaks and no layout shifts — those users just get the previous corner.
+
+Components that apply `g2` internally do so on their own markup, so you get it for free:
+`ControlButton`, `NavButton`, `NavDropdown`, `Kbd`, `Toast`, `SafetyBadge`, `TextInput`,
+`Info`, `ToggleSwitch` (the row, not the knob), `OneFromMany`, `Skeleton` (default),
+`Island`, `NamedControl`, `Tabs`, `MultiInput`, `QuickLinks`, `Modal` (close button),
+`SectionedPage`.
 
 ### Helper Visibility Classes
 

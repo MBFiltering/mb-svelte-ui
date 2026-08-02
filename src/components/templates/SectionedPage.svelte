@@ -422,7 +422,7 @@
 
 				<!-- Navigation tabs -->
 				<div
-					class="no-scrollbar h-18 sm:h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-1.5 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
+					class="g2 no-scrollbar h-18 sm:h-full max-h-full w-full space-y-2 overflow-x-auto overflow-y-auto border-t border-gray-900/25 bg-white p-2 pb-1.5 shadow-lg sm:w-auto sm:rounded-e-xl sm:border-0 sm:border-none sm:pb-2 dark:border-white/25 dark:bg-zinc-800"
 				>
 					<!-- space-y only from sm up (vertical sidebar). On mobile the bar is horizontal —
 					     space-y would stagger tabs. Labels are in-flow under icons, so sm gap is modest. -->
@@ -461,7 +461,7 @@
 									type="button"
 									onclick={() => selectSection(section.key)}
 									title={section.name}
-									class="lg:px-4 flex lg:w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 sm:justify-center lgv:justify-between lg:justify-between {magicSearchActive
+									class="g2 lg:px-4 flex lg:w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 sm:justify-center lgv:justify-between lg:justify-between {magicSearchActive
 										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
 										: activeSection === section.key
 											? 'cursor-pointer border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
@@ -497,7 +497,7 @@
 									type="button"
 									onclick={() => (overflowMenuOpen = true)}
 									title={overflowMenuTitle}
-									class="flex w-full items-center justify-center rounded-lg border px-2 py-2 transition-colors cursor-pointer {unimportantSectionActive
+									class="g2 flex w-full items-center justify-center rounded-lg border px-2 py-2 transition-colors cursor-pointer {unimportantSectionActive
 										? 'border-azure-500 bg-gradient-to-bl from-azure-500 to-azure-700 text-white hover:bg-azure-900'
 										: 'border-azure-100 bg-azure-50 text-azure-700 hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:text-azure-200 dark:hover:bg-zinc-750'}"
 								>
@@ -556,7 +556,7 @@
 										magicSearchInput?.blur();
 									}
 								}}
-								class="peer w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 sm:pe-28 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
+								class="peer g2 w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 sm:pe-28 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
 							/>
 							{#if magicSearchFocused}
 								<div
@@ -632,7 +632,7 @@
 
 <!-- Overflow menu Modal (mobile) -->
 <Modal isOpen={overflowMenuOpen} onClose={() => (overflowMenuOpen = false)} verticalAlign="bottom">
-	<div class="rounded-t-2xl bg-white p-4 pt-6 dark:bg-zinc-800">
+	<div class="g2 rounded-t-2xl bg-white p-4 pt-6 dark:bg-zinc-800">
 		<ul class="space-y-1">
 			<!-- Unimportant section tabs -->
 			{#each unimportantSections as section}
@@ -645,7 +645,7 @@
 							? 'cursor-not-allowed opacity-50 text-gray-400 dark:text-gray-500'
 							: activeSection === section.key
 								? 'cursor-pointer bg-azure-50 text-azure-700 dark:bg-azure-900/30 dark:text-azure-200'
-								: 'cursor-pointer text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-750'} flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start transition-colors"
+								: 'cursor-pointer text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-750'} g2 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start transition-colors"
 					>
 						{#if section.svgIcon}
 							<SvgIcon name={section.svgIcon} size="w-[20px] h-[20px]" />
@@ -666,7 +666,7 @@
 			{#each navActions as action}
 				<li>
 					<button
-						class="cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start font-medium text-azure-700 transition-colors hover:bg-gray-100 dark:text-azure-400 dark:hover:bg-zinc-750"
+						class="g2 cursor-pointer flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start font-medium text-azure-700 transition-colors hover:bg-gray-100 dark:text-azure-400 dark:hover:bg-zinc-750"
 						onclick={() => { action.onclick?.(); overflowMenuOpen = false; }}
 					>
 						<action.icon size={20} />

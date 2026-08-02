@@ -139,7 +139,7 @@
 								<button
 									type="button"
 									onclick={() => toggleFieldVisibility(field.key)}
-									class="flex p-3 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-gray-300 text-gray-500 transition-colors hover:bg-neutral-100 hover:text-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-zinc-750 dark:hover:text-gray-200"
+									class="g2 flex p-3 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-gray-300 text-gray-500 transition-colors hover:bg-neutral-100 hover:text-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-zinc-750 dark:hover:text-gray-200"
 									title={visibleFields[field.key] ? 'Hide' : 'Show'}
 								>
 									{#if visibleFields[field.key]}

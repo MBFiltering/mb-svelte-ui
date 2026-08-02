@@ -60,10 +60,10 @@
 				href={link.url}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="flex min-w-0 items-center gap-3 overflow-hidden rounded-lg border border-azure-100 bg-azure-50 p-1.5 sm:p-3 transition-all hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:hover:bg-zinc-750"
+				class="g2 flex min-w-0 items-center gap-3 overflow-hidden rounded-lg border border-azure-100 bg-azure-50 p-1.5 sm:p-3 transition-all hover:bg-azure-100 dark:border-zinc-750 dark:bg-zinc-800 dark:hover:bg-zinc-750"
 			>
 				<div
-					class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-bl from-azure-500 to-azure-700 text-white"
+					class="g2 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-bl from-azure-500 to-azure-700 text-white"
 				>
 					<link.icon size={20} />
 				</div>

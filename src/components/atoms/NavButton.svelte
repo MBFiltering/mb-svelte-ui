@@ -18,7 +18,7 @@
 	} = $props();
 
 	const baseClasses = $derived(
-		`flex items-center gap-2 rounded-lg border px-2 py-2 font-medium transition-colors xl:px-4 ${getNavButtonColorClasses(color)} ${className}`
+		`g2 flex items-center gap-2 rounded-lg border px-2 py-2 font-medium transition-colors xl:px-4 ${getNavButtonColorClasses(color)} ${className}`
 	);
 	const disabledClasses = $derived(getNavButtonStateClasses(disabled));
 </script>

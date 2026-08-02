@@ -127,7 +127,7 @@
 			onclick={() => handleFixedClick(option.value)}
 			disabled={disabled || option?.disabled}
 			aria-pressed={currentValue === option?.value}
-			class="px-3 py-1.5 text-sm font-medium transition-all {i === 0
+			class="g2 px-3 py-1.5 text-sm font-medium transition-all {i === 0
 				? 'rounded-s-lg'
 				: ''} {!hasDropdown && i === fixedOptions.length - 1
 				? 'rounded-e-lg'
@@ -150,7 +150,7 @@
 	<!-- Dropdown for remaining options -->
 	{#if hasDropdown}
 		<div
-			class="relative {fixedOptions.length === 0
+			class="g2 relative {fixedOptions.length === 0
 				? 'rounded-lg'
 				: 'rounded-e-lg'} {getButtonColor(
 				displayedDropdownOption,

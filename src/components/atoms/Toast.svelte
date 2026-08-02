@@ -53,7 +53,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 shadow-lg transition-all duration-300 ease-out {typeStyles[
+	class="g2 flex cursor-pointer items-center gap-3 rounded-lg px-4 py-3 shadow-lg transition-all duration-300 ease-out {typeStyles[
 		type
 	]} {visible ? 'translate-y-0 scale-100 opacity-100' : '-translate-y-2 scale-95 opacity-0'}"
 	role="alert"

@@ -19,12 +19,12 @@
 	const items = $derived(Array.isArray(config) ? config.filter(Boolean) : []);
 	const isTriggerDisabled = $derived(disabled || items.length === 0);
 	const triggerClasses = $derived(
-		`flex items-center gap-2 rounded-lg border px-2 py-2 font-medium transition-colors xl:px-4 ${getNavButtonColorClasses(color)} ${className}`
+		`flex items-center gap-2 g2 rounded-lg border px-2 py-2 font-medium transition-colors xl:px-4 ${getNavButtonColorClasses(color)} ${className}`
 	);
 	const triggerStateClasses = $derived(getNavButtonStateClasses(isTriggerDisabled));
 
 	function getItemClasses(item) {
-		return `flex w-full items-center gap-2 rounded-lg border px-3 py-2.5 text-left text-sm font-medium transition-colors ${getNavButtonColorClasses(item.color)} ${getNavButtonStateClasses(item.disabled)} ${item.className || ''}`;
+		return `flex w-full items-center gap-2 g2 rounded-lg border px-3 py-2.5 text-left text-sm font-medium transition-colors ${getNavButtonColorClasses(item.color)} ${getNavButtonStateClasses(item.disabled)} ${item.className || ''}`;
 	}
 
 	function toggleDropdown() {
@@ -98,7 +98,7 @@
 
 	{#if isOpen}
 		<div
-			class="absolute right-0 z-50 mt-2 min-w-56 rounded-xl border border-gray-200 bg-white p-1.5 space-y-1.5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 {dropdownClassName}"
+			class="g2 absolute right-0 z-50 mt-2 min-w-56 rounded-xl border border-gray-200 bg-white p-1.5 space-y-1.5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 {dropdownClassName}"
 			role="menu"
 			aria-label={title || label}
 		>

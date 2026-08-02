@@ -93,7 +93,7 @@
 
 	// Common classes for both input and textarea
 	const baseClasses = $derived(
-		`w-full rounded-lg border text-gray-700 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200 ${sizeClasses[size]} ${paddingClasses} ${variantClasses[variant]} ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''} ${readonly ? 'bg-gray-50 dark:bg-gray-900' : ''} ${className}`
+		`g2 w-full rounded-lg border text-gray-700 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200 ${sizeClasses[size]} ${paddingClasses} ${variantClasses[variant]} ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''} ${readonly ? 'bg-gray-50 dark:bg-gray-900' : ''} ${className}`
 	);
 
 	// Search icon size based on input size

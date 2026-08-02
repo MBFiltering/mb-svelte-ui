@@ -167,6 +167,40 @@ Before changing this:
 
 ---
 
+## Corners — `g2` is the house style
+
+Every corner with a radius of 8px or more in this library carries `g2`, a `@utility`
+declared in `styles.css` that sets `corner-shape: squircle`. It turns the default G1
+corner (a circular arc spliced onto the edge, curvature jumping 0 → 1/r) into a G2
+continuous one. It is the cheapest single change that makes the product read as
+premium rather than default-Tailwind, and it is why the rule below is absolute rather
+than case-by-case: consistency is the whole effect.
+
+**When you add or edit markup with a radius, add `g2` alongside it**, subject to three
+rules that are not negotiable:
+
+- **`g2` needs a radius on the same element.** `corner-shape` only reshapes corners
+  that already have one. Alone it is a silent no-op — which also makes it *safe* on
+  partially rounded elements (`rounded-t-lg`, `sm:rounded-e-xl`): square corners stay
+  square, and a `sm:`-only radius stays unshaped below `sm`.
+- **Never on `rounded-full`.** A 50% radius plus `squircle` is not a circle, it is an
+  app-icon blob. Avatars, toggle knobs, radio dots, pills and the Modal drag handle
+  are deliberately left plain — check the grep before "fixing" one of them.
+- **Never on `rounded`/`rounded-sm` (≤ 4px).** The arc is too short for the difference
+  to be visible, so it is bytes for nothing. `Badge`, `CheckBox`, `JSONPrint` and the
+  `Skeleton` sub-rows are correctly excluded.
+
+Support is progressive enhancement with **no `@supports` wrapper** — browsers without
+`corner-shape` drop the declaration and render the old G1 radius, with no layout shift.
+Do not add a fallback; there is nothing to fall back to.
+
+Consuming apps get `g2` from `@import '@mbsmart/ui/styles.css'` and use it on their own
+markup the same way they use `azure` or `mulberry`. If a component takes a radius as a
+prop (`Skeleton`'s `rounded`), the default includes `g2` and passing a bare radius is
+the documented way to opt out.
+
+---
+
 ## i18n — two data shapes, one engine
 
 `src/utils/i18n/` is the shared translation engine. Consumers register their own strings;
