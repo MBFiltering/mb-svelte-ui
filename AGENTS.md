@@ -190,9 +190,31 @@ rules that are not negotiable:
   to be visible, so it is bytes for nothing. `Badge`, `CheckBox`, `JSONPrint` and the
   `Skeleton` sub-rows are correctly excluded.
 
-Support is progressive enhancement with **no `@supports` wrapper** — browsers without
-`corner-shape` drop the declaration and render the old G1 radius, with no layout shift.
-Do not add a fallback; there is nothing to fall back to.
+Support is progressive enhancement with **no `@supports` wrapper on the shape** —
+browsers without `corner-shape` drop the declaration and render the old G1 radius, with
+no layout shift. Do not add a fallback; there is nothing to fall back to.
+
+### `--g2-scale` — why squircles are drawn at a bigger radius
+
+A superellipse fills more of the corner than a circular arc of the same radius, so a
+squircle at the authored radius reads visibly *tighter* than the G1 corner it replaced.
+`g2` compensates by re-pointing `--radius-lg` … `--radius-4xl` on its own element to
+`base × var(--g2-scale)` — Tailwind compiles `rounded-xl` to `border-radius:
+var(--radius-xl)`, so the radius utility resolves against the scaled value.
+
+Three things not to break:
+
+- **`--g2-scale` is 1 without `corner-shape` support.** Those browsers draw a circular
+  corner, which already looks right at the authored radius; inflating it would make
+  them far too round. The `@supports` guard belongs on the *scale*, never on the shape.
+- **It is tunable per app.** `:root { --g2-scale: … }` in an app's own CSS overrides the
+  default. The right value depends on which radii that app uses: a UI built mostly from
+  8px corners needs more compensation than one whose prominent surfaces are 16–44px.
+  Check the actual product before changing a number here — the two portals legitimately
+  differ.
+- **For an arbitrary radius, multiply it in yourself**:
+  `rounded-[calc(2.75rem*var(--g2-scale))]`. Only the named scale is rescaled
+  automatically.
 
 Consuming apps get `g2` from `@import '@mbsmart/ui/styles.css'` and use it on their own
 markup the same way they use `azure` or `mulberry`. If a component takes a radius as a

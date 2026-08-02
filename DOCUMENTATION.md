@@ -2751,9 +2751,41 @@ should match:
 | ❌ `rounded-full` | A 50% radius plus `squircle` is not a circle, it is an app-icon blob. Wrong for avatars, toggle knobs, pills, drag handles. |
 | ❌ `rounded`/`rounded-sm` (≤ 4px) | The arc is too short to read — payload for no visual gain. |
 
-**Browser support is progressive enhancement, no `@supports` needed.** Browsers without
-`corner-shape` (Firefox, older Safari) drop the declaration and render the plain G1
-radius. Nothing breaks and no layout shifts — those users just get the previous corner.
+**Browser support is progressive enhancement, no `@supports` needed on the shape.**
+Browsers without `corner-shape` (Firefox, older Safari) drop the declaration and render
+the plain G1 radius. Nothing breaks and no layout shifts — those users just get the
+previous corner.
+
+#### `--g2-scale` — the radius multiplier
+
+A superellipse fills more of the corner than a circular arc of the same radius, so a
+squircle at the authored radius reads *tighter* than the G1 corner it replaced. `g2`
+compensates by drawing at `radius × var(--g2-scale)`, applied to `rounded-lg` through
+`rounded-4xl`.
+
+The scale is **1 on browsers without `corner-shape`** — they draw a circular corner,
+which already looks right at the authored radius and must not be inflated.
+
+Override it per app, in one line after the import:
+
+```css
+@import '@mbsmart/ui/styles.css';
+@import 'tailwindcss';
+
+:root {
+	--g2-scale: 1.5;
+}
+```
+
+The right value depends on which radii the app actually uses — a UI built mostly from
+8px corners needs more compensation than one whose prominent surfaces are 16–44px.
+
+For an **arbitrary** radius, multiply it in yourself; only the named scale is rescaled
+automatically:
+
+```svelte
+<div class="g2 rounded-[calc(2.75rem*var(--g2-scale))]">…</div>
+```
 
 Components that apply `g2` internally do so on their own markup, so you get it for free:
 `ControlButton`, `NavButton`, `NavDropdown`, `Kbd`, `Toast`, `SafetyBadge`, `TextInput`,

@@ -434,18 +434,90 @@
    - NO on `rounded`/`rounded-sm` (<=4px). The arc is too short to read, so it
      is pure payload for no visual gain.
 
-   Progressive enhancement, no `@supports` needed: browsers without
-   `corner-shape` (Firefox, older Safari) drop the declaration and render the
-   plain G1 radius. Nothing breaks, nothing shifts — those users just get the
-   old corner.
+   Progressive enhancement, no `@supports` needed on the shape itself: browsers
+   without `corner-shape` (Firefox, older Safari) drop the declaration and
+   render the plain G1 radius. Nothing breaks, nothing shifts — those users just
+   get the old corner.
 
    Consumers get this from `@import '@mbsmart/ui/styles.css'` and can use `g2`
    on their own markup exactly like `azure` or `mulberry` — it is a first-class
    utility, so variants (`sm:g2`, `dark:g2`) and `@apply` work.
+
+   ── The radius scale (`--g2-scale`) ──────────────────────────────────────────
+
+   A superellipse fills MORE of the corner than a circular arc of the same
+   radius, so a squircle at the authored radius reads visibly *tighter* — the
+   bigger the radius, the sharper it looks next to the G1 corner it replaced.
+   The fix is the one Apple uses: draw the squircle at a larger radius.
+
+   `--g2-scale` is that multiplier, and it is the single knob for the whole
+   product — retune every squircle by changing the one number below.
+
+   It is a plain custom property on `:root`, so **a consuming app can override
+   it in one line** after importing this file:
+
+       :root { --g2-scale: 1.5; }   /* in the app's own app.css */
+
+   That matters because the right value depends on which radii an app actually
+   uses. An app built mostly from 8px corners needs more compensation — at that
+   size a squircle reads nearly square — while one whose prominent surfaces are
+   16–44px already reads round and will look bloated if scaled as hard. Do not
+   assume one number suits every app; look at the product before changing it.
+
+   Crucially it is **1 on browsers without `corner-shape`**. They are drawing a
+   plain circular corner, which already looks right at the authored radius and
+   must NOT be inflated — a doubled G1 radius would be far too round. So the
+   `@supports` guard is on the *scale*, not on the shape.
+
+   How it works: Tailwind compiles `rounded-xl` to `border-radius:
+   var(--radius-xl)`, so `g2` re-points that scale on its own element and the
+   radius utility resolves against the scaled value. Base values are captured
+   from the theme rather than hard-coded, so retheming the radii still works.
+
+   Two consequences worth knowing:
+
+   - **Only `lg` and up are scaled.** Smaller radii never carry `g2` (see the
+     rule above), so leaving them alone keeps them predictable.
+   - **Custom properties inherit**, so a `rounded-lg`+ descendant of a `g2`
+     element also resolves the scaled value. That is correct for descendants
+     that carry `g2` themselves — which, per the rule above, is all of them.
+     A `rounded-lg` WITHOUT `g2` nested inside a `g2` element would get a
+     doubled *circular* corner; that combination is already a rule violation,
+     and this is what it looks like when you commit one.
+
+   For an arbitrary radius, multiply it in yourself — the scale is a plain
+   custom property, so it composes:
+
+       <div class="g2 rounded-[calc(2.75rem*var(--g2-scale))]">
    ============================================================================= */
+
+:root {
+	/* Captured from the theme so retheming a radius still flows through. */
+	--g2-base-lg: var(--radius-lg);
+	--g2-base-xl: var(--radius-xl);
+	--g2-base-2xl: var(--radius-2xl);
+	--g2-base-3xl: var(--radius-3xl);
+	--g2-base-4xl: var(--radius-4xl);
+
+	/* No `corner-shape` support → G1 corners → do not inflate the radius. */
+	--g2-scale: 1;
+}
+
+@supports (corner-shape: squircle) {
+	:root {
+		/* ↓↓↓ THE KNOB: how much bigger a squircle is drawn than its G1 radius. ↓↓↓ */
+		--g2-scale: 2;
+	}
+}
 
 @utility g2 {
 	corner-shape: squircle;
+
+	--radius-lg: calc(var(--g2-base-lg) * var(--g2-scale));
+	--radius-xl: calc(var(--g2-base-xl) * var(--g2-scale));
+	--radius-2xl: calc(var(--g2-base-2xl) * var(--g2-scale));
+	--radius-3xl: calc(var(--g2-base-3xl) * var(--g2-scale));
+	--radius-4xl: calc(var(--g2-base-4xl) * var(--g2-scale));
 }
 
 /* Hide keyboard shortcuts when setting is disabled */
