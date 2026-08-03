@@ -1,8 +1,7 @@
 Copyright 2020 The Poppins Project Authors (https://github.com/itfoundry/Poppins)
-Copyright 2011 The Montserrat Project Authors (https://github.com/JulietaUla/Montserrat)
-Copyright 2015 The Heebo Project Authors (https://github.com/OdedEzer/heebo)
+Copyright 2025 Google LLC (Google Sans, https://fonts.google.com/specimen/Google+Sans)
 
-All three families in this directory are licensed under the same terms.
+Both families in this directory are licensed under the same terms.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

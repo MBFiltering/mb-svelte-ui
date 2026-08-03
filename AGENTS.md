@@ -97,7 +97,7 @@ src/
 │   ├── molecules/        # Composite components (Grid, Island, NamedControl, Tabs)
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
-├── fonts/                # Poppins + Montserrat + Heebo (OFL) — WOFF2 subsets,
+├── fonts/                # Poppins + Google Sans (OFL) — WOFF2 subsets,
 │                         #   declared in styles.css, one family per script.
 │                         #   See "Fonts" below before adding or removing a face.
 └── utils/                # Helper functions (dateTime, stringUtils, toastStore, etc.)
@@ -116,34 +116,42 @@ src/
 
 ## Fonts
 
-`font-sans` is **three typefaces, one per script**, and they ship **with this package** —
+`font-sans` is **two typefaces split by script**, and they ship **with this package** —
 consumers get them from `@import '@mbsmart/ui/styles.css'` and must never re-declare one
 or copy it into their own `static/fonts`.
 
-| Family     | Script / subset  | Locales | Files |
-|------------|------------------|---------|-------|
-| Poppins    | latin, latin-ext | en/es/fr and all Latin text | 14 static, ~101 KB |
-| Montserrat | cyrillic         | ru      | 2 variable, ~48 KB |
-| Heebo      | hebrew           | he, yi  | 1 variable, ~12 KB |
+| Family      | Script / subset  | Locales | Files |
+|-------------|------------------|---------|-------|
+| Poppins     | latin, latin-ext | en/es/fr and all Latin text | 14 static, ~101 KB |
+| Google Sans | cyrillic         | ru      | 2 variable, ~32 KB |
+| Google Sans | hebrew           | he, yi  | 2 variable, ~24 KB |
+
+Google Sans replaced **Montserrat** (cyrillic) and **Heebo** (hebrew) in August 2026. One
+family now carries both non-Latin scripts, so Hebrew and Russian share letterforms instead
+of borrowing two unrelated ones, and it is smaller than the pair it replaced despite adding
+a Hebrew italic that Heebo never had.
 
 **Selection is per glyph, not per locale.** Every face carries a `unicode-range`, so the
 browser walks `--font-sans` per character and lands on the family that has the glyph — a
-Hebrew page with an English product name in it renders Heebo and Poppins on the same line.
-Host apps need **no i18n wiring for fonts at all**; nothing keys off `$language` or `dir`.
-It also means a page downloads only the scripts it renders: an English page pulls three or
-four latin Poppins faces (~26–35 KB) and never touches Montserrat or Heebo.
+Hebrew page with an English product name in it renders Google Sans and Poppins on the same
+line. Host apps need **no i18n wiring for fonts at all**; nothing keys off `$language` or
+`dir`. It also means a page downloads only the scripts it renders: an English page pulls
+three or four latin Poppins faces (~26–35 KB) and never touches Google Sans.
 
 `src/fonts/` holds **WOFF2 only**. Poppins is seven static faces per subset (400/500/600/700
-upright plus 400, 600 and 700 italic); Montserrat and Heebo are variable fonts declared
-`font-weight: 400 700`, which is smaller and fewer files than the equivalent statics.
+upright plus 400, 600 and 700 italic); Google Sans is one upright and one italic variable
+font per subset, declared `font-weight: 400 700`, which is smaller and fewer files than the
+equivalent statics.
 
 Before changing this:
 
 - **Do not add a face, subset, or weight without a real usage.** CSS font matching resolves
   an unavailable weight to the nearest available one — `font-extrabold` (one usage, in
-  device-portal) correctly renders as 700 in all three families. That is the intended
-  degradation. Poppins' Devanagari block and Montserrat's `cyrillic-ext` are dropped for
+  device-portal) correctly renders as 700 in both families. That is the intended
+  degradation. Poppins' Devanagari block and Google Sans' `cyrillic-ext` are dropped for
   the same reason; Russian (and Ukrainian) live entirely in the base `cyrillic` range.
+  Google Sans ships in ~25 subsets on the Google Fonts API and we take **two** of them:
+  do not pull in greek, armenian, thai or the rest without a locale that needs them.
 - **Mind the italic weight ramp — a missing italic face is a silent bug.** Poppins has
   400/600/700 italic but **no 500**, so `font-medium` + `italic` resolves *down* to 400 and
   renders at regular weight. This bit us once already: before 700 italic existed, the
@@ -157,13 +165,11 @@ Before changing this:
   browser UA — that is where the current files came from, and the `unicode-range` values in
   `styles.css` are copied verbatim from its output. Otherwise regenerate with
   `pyftsubset SRC.ttf --unicodes=<range> --layout-features='*' --flavor=woff2`.
-- **Heebo has no italic face at any weight**, so Hebrew `<em>` renders as a
-  browser-synthesised oblique, and only an upright `@font-face` is declared for it. Do not
-  add a `font-style: italic` rule for Heebo — there is no file to point it at. Synthesis is
-  deliberately left on (the `font-synthesis` default): suppressing it would make emphasis
-  indistinguishable from body text, which is worse. Note the oblique slants right, i.e.
-  against the reading direction in RTL. If real Hebrew italics ever matter, Rubik is the
-  closest substitute that has them — this was a considered trade, not an oversight.
+- **Hebrew italics are now real.** Heebo had no italic at any weight, so Hebrew `<em>` and
+  the landing hero's italic accent span used to render as a browser-synthesised oblique
+  that slanted right, i.e. against the reading direction in RTL. Google Sans draws a Hebrew
+  italic, so both are a designed face. Consumers that worked around the old gap by forcing
+  RTL emphasis upright (the brochure did) can drop that workaround.
 
 ---
 

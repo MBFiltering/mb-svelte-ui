@@ -12,33 +12,33 @@
    UI FONT STACK (`font-sans`) — one typeface per script
    Self-hosted from src/fonts (all OFL, see src/fonts/OFL.txt). WOFF2 only.
 
-     Poppins     latin, latin-ext   en/es/fr and all Latin text
-     Montserrat  cyrillic           ru
-     Heebo       hebrew             he/yi
+     Poppins      latin, latin-ext   en/es/fr and all Latin text
+     Google Sans  cyrillic           ru
+     Google Sans  hebrew             he/yi
 
    Poppins has no Cyrillic and no Hebrew glyphs at all, so ru/he/yi used to fall
-   through to system-ui. Montserrat and Heebo are the closest geometric sans
-   matches for those scripts.
-
-   Heebo ships no italic face at any weight, so Hebrew `<em>` is a synthesised
-   oblique. Montserrat and Poppins have real italics.
+   through to system-ui. Google Sans covers both scripts from one family (it
+   replaced Montserrat for Cyrillic and Heebo for Hebrew), so the two non-Latin
+   scripts now share a single set of letterforms instead of two unrelated ones.
 
    Selection is per glyph, not per locale: every face carries a `unicode-range`,
    so the browser picks the family that actually covers each character and
    downloads nothing else. A Hebrew page with an English product name in it gets
-   Heebo and Poppins on the same line, with no i18n wiring in the host app.
+   Google Sans and Poppins on the same line, with no i18n wiring in the host app.
 
    Poppins ships as seven static faces per subset — 400/500/600/700 upright plus
-   400, 600 and 700 italic, the only ones the portals render. Montserrat and
-   Heebo ship as variable fonts clamped to `font-weight: 400 700`, which is both
-   smaller and fewer files than the equivalent statics (three files, ~60 KB, and
-   only on pages that render those scripts). Anything heavier than 700
-   (`font-extrabold`) resolves to 700 in all three by CSS font matching, which
-   is the intended graceful degradation — do not add faces or widen the weight
-   range without a real usage.
+   400, 600 and 700 italic, the only ones the portals render. Google Sans ships
+   as variable fonts clamped to `font-weight: 400 700`, one upright and one
+   italic per subset, which is both smaller and fewer files than the equivalent
+   statics (four files, ~58 KB, and only on pages that render those scripts).
+   Anything heavier than 700 (`font-extrabold`) resolves to 700 in both families
+   by CSS font matching, which is the intended graceful degradation — do not add
+   faces or widen the weight range without a real usage.
 
-   Two notes on italic weights, because the failure is silent and looks like a
-   rendering bug rather than a missing file:
+   Two notes on Poppins' italic weights, because the failure is silent and looks
+   like a rendering bug rather than a missing file. They apply to Latin only:
+   Google Sans is variable across 400-700 in italic as well as upright, so no
+   weight in that range is missing for Hebrew or Cyrillic.
 
    - 700 italic exists because `italic` + an inherited `font-bold` is real (the
      customer-portal hero `<h1>`). Without it, CSS font matching resolved bold
@@ -203,13 +203,13 @@
 		U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
-/* Montserrat — Cyrillic (ru). Variable weight axis, clamped to the 400-700 the
+/* Google Sans — Cyrillic (ru). Variable weight axis, clamped to the 400-700 the
    portals use. The cyrillic-ext subset (archaic Slavonic, Caucasian and Central
    Asian letters) is deliberately not shipped: Russian is our only Cyrillic
    locale and it lives entirely in the base range below, as does Ukrainian. */
 @font-face {
-	font-family: 'Montserrat';
-	src: url('./fonts/Montserrat-cyrillic.woff2') format('woff2');
+	font-family: 'Google Sans';
+	src: url('./fonts/GoogleSans-cyrillic.woff2') format('woff2');
 	font-weight: 400 700;
 	font-style: normal;
 	font-display: swap;
@@ -217,29 +217,36 @@
 }
 
 @font-face {
-	font-family: 'Montserrat';
-	src: url('./fonts/Montserrat-italic-cyrillic.woff2') format('woff2');
+	font-family: 'Google Sans';
+	src: url('./fonts/GoogleSans-italic-cyrillic.woff2') format('woff2');
 	font-weight: 400 700;
 	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
-/* Heebo — Hebrew (he, and yi which is written in the same script). The range
-   covers the Hebrew block plus the FB1D-FB4F presentation forms, which is where
-   the Yiddish digraphs and pointed forms live.
+/* Google Sans — Hebrew (he, and yi which is written in the same script). The
+   range covers the Hebrew block plus the FB1D-FB4F presentation forms, which is
+   where the Yiddish digraphs and pointed forms live.
 
-   There is only an upright face because Heebo has no italic at any weight, so
-   `<em>` in Hebrew is a browser-synthesised oblique. That is deliberate: it is
-   left on (the `font-synthesis` default) because suppressing it would render
-   emphasis identically to body text, and no emphasis is worse than a slanted
-   one. Do not add a `font-style: italic` face here — there is no file to point
-   it at. */
+   Both faces are real: unlike Heebo, which this replaced and which had no italic
+   at any weight, Google Sans draws a Hebrew italic, so `<em>` and the landing
+   hero's italic accent span are a designed face rather than a browser-synthesised
+   oblique slanting against the reading direction. */
 @font-face {
-	font-family: 'Heebo';
-	src: url('./fonts/Heebo-hebrew.woff2') format('woff2');
+	font-family: 'Google Sans';
+	src: url('./fonts/GoogleSans-hebrew.woff2') format('woff2');
 	font-weight: 400 700;
 	font-style: normal;
+	font-display: swap;
+	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+	font-family: 'Google Sans';
+	src: url('./fonts/GoogleSans-italic-hebrew.woff2') format('woff2');
+	font-weight: 400 700;
+	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
 }
@@ -294,13 +301,13 @@
 	--breakpoint-xl2: 90rem; /* 1440px — between xl and 2xl */
 	--breakpoint-2xl2: 103.125rem; /* 1650px — above 2xl */
 
-	/* Font Family — Poppins (latin), Montserrat (cyrillic), Heebo (hebrew).
+	/* Font Family — Poppins (latin), Google Sans (cyrillic and hebrew).
 	   Order matters: each family is declared with a `unicode-range` covering only
 	   its script, so the browser walks the list per character and lands on the one
 	   that actually has the glyph. See the font-face block at the top of this file. */
 	--font-sans:
-		'Poppins', 'Montserrat', 'Heebo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-		Roboto, 'Helvetica Neue', Arial, sans-serif;
+		'Poppins', 'Google Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		'Helvetica Neue', Arial, sans-serif;
 
 	/* Using: https://oklch.com/#0.322,0.0095,285.919,100 */
 	/* Tailwind Extended Colors */

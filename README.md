@@ -88,18 +88,18 @@ npm install svelte @lucide/svelte
 ```
 
 **Fonts need no setup in consuming projects — including for i18n.** `font-sans` covers
-every locale we support: Poppins for Latin (en/es/fr), Montserrat for Cyrillic (ru) and
-Heebo for Hebrew (he/yi). All three ship inside this package as WOFF2 subsets and are
-declared by `styles.css` with relative `./fonts/…` URLs, so your bundler resolves and
-fingerprints them for you.
+every locale we support: Poppins for Latin (en/es/fr) and Google Sans for Cyrillic (ru) and
+Hebrew (he/yi). Both ship inside this package as WOFF2 subsets and are declared by
+`styles.css` with relative `./fonts/…` URLs, so your bundler resolves and fingerprints them
+for you.
 
 The right family is picked **per character** by `unicode-range`, so there is nothing to
 wire up: no `:lang()` rules, no switching on `$language` or `dir`, and mixed-script text
 (an English product name inside a Hebrew sentence) renders correctly on its own. Pages
 download only the scripts they actually render.
 
-Do not copy the fonts into `static/fonts` and do not re-declare `@font-face` for any of the
-three — a second declaration with absolute paths just downloads the family twice.
+Do not copy the fonts into `static/fonts` and do not re-declare `@font-face` for either
+family — a second declaration with absolute paths just downloads it twice.
 
 Importing the stylesheet is the whole of it:
 
