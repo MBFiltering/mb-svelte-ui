@@ -107,7 +107,7 @@ Basic building blocks - simple, single-purpose components.
 
 ### BackButton
 
-Back navigation control. Renders an icon-only `CircleButton` by default; passing `label` opts into a labelled inline variant (arrow + text). The arrow flips automatically in RTL.
+Back navigation control. Renders an icon-only `CircleButton` by default; passing `label` opts into a labelled inline variant (arrow + text). The arrow flips automatically in RTL in **both** variants — the labelled one rotates its icon, the icon-only one rotates the whole circle (invisible on a round button). Consumers should not add an RTL class of their own.
 
 Navigation is left to the host app — the library does not depend on a router. Pass `onclick` (e.g. SvelteKit's `goto`), or `href` on the labelled variant to render a real anchor. With neither, the button calls `history.back()`.
 

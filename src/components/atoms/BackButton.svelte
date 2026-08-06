@@ -45,6 +45,10 @@
 			className
 	);
 
+	// The icon-only variant has no text to sit beside, so the whole circle
+	// flips — the arrow must point the way "back" goes in an RTL layout.
+	const iconOnlyClasses = $derived('rtl:rotate-180 ' + className);
+
 	/** @param {MouseEvent} event */
 	function handleClick(event) {
 		if (onclick) {
@@ -74,5 +78,13 @@
 		</button>
 	{/if}
 {:else}
-	<CircleButton {color} {size} {icon} {iconSize} {title} onclick={handleClick} {className} />
+	<CircleButton
+		{color}
+		{size}
+		{icon}
+		{iconSize}
+		{title}
+		onclick={handleClick}
+		className={iconOnlyClasses}
+	/>
 {/if}
