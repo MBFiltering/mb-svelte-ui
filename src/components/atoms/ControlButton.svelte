@@ -44,7 +44,7 @@
 	disabled={disabled || loading}
 	{type}
 	aria-busy={loading}
-	class="g2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all disabled:cursor-default transition-shadows hover:scale-101 hover:shadow-md {colorClass} {sizeClass} {className}"
+	class="g2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all disabled:cursor-default transition-shadows hover:scale-101 hover:shadow-md disabled:hover:scale-100 disabled:hover:shadow-none {colorClass} {sizeClass} {className}"
 >
 	{#if loading}
 		<LoaderCircle size={spinnerSize[size] || 16} class="animate-spin" aria-hidden="true" />

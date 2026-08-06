@@ -383,6 +383,10 @@ Styled button with color and size variants.
 | `className` | `string`   | `''`       | Additional CSS classes                                             |
 | `children`  | `snippet`  | -          | Button content                                                     |
 
+A disabled button (or a `loading` one, which is disabled too) is inert under the
+pointer: it keeps its gray fill and neither lifts nor casts a shadow on hover, so
+an action that cannot be taken never looks clickable.
+
 **Usage:**
 
 ```svelte
