@@ -1662,15 +1662,19 @@ gracefully on narrow / mobile screens.
 
 **Colors:**
 
-`tab.color` is one of `azure` (the default), `green`, `yellow`, `orange`, `red`,
-`gray` — the same vocabulary as `categoryColors.js` / `SafetyBadge`, so a strip of
-tabs can carry a Trusted → Danger scale.
+`tab.color` is one of `azure`, `green`, `yellow`, `orange`, `red`, `gray` — the same
+vocabulary as `categoryColors.js` / `SafetyBadge`, so a strip of tabs can carry a
+Trusted → Danger scale.
 
-A colored tab **stays colored while idle**: the color is the label's meaning, so
-greying it out would hide the scale until you clicked through it. The active tab
-is marked by its underline and a 10% tint instead. `azure` is the exception and
-the plain default — its idle tabs are gray, which is what an ordinary tab strip
-(Settings, Account/Password) wants.
+A tab that names a color **stays colored while idle**: the color is the label's
+meaning, so greying it out would hide the scale until you clicked through it. The
+active tab is marked by its underline and a 10% tint instead, which is why both
+states share a text shade.
+
+**Omitting `color` is the plain strip** — gray while idle, azure when active — and
+that is what an ordinary tab strip (Settings, Account/Password) wants. Note this is
+*not* the same as `color: 'azure'`, which gives you an azure tab that stays azure
+while idle, for a strip whose azure means something (MB Filter, say).
 
 **Usage:**
 
