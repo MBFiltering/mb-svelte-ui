@@ -25,37 +25,38 @@
 	 * A named tab keeps its color while idle — the color *is* the label's
 	 * meaning, so dropping it to gray would hide the scale until you clicked
 	 * through it. The active tab is marked by its underline and tint instead,
-	 * which is also why the two states share a text shade.
+	 * which is also why the two states share a text shade — and why the underline
+	 * is drawn in that same shade rather than a heavier one.
 	 */
 	const TAB_COLORS = {
 		azure: {
 			active:
-				'border-azure-600 bg-azure-500/10 text-azure-600 dark:border-azure-400 dark:bg-azure-400/10 dark:text-azure-300',
+				'border-azure-600 bg-azure-500/10 text-azure-600 dark:border-azure-300 dark:bg-azure-400/10 dark:text-azure-300',
 			idle: 'border-transparent text-azure-600 hover:bg-azure-500/10 dark:text-azure-300'
 		},
 		green: {
 			active:
-				'border-green-alt-600 bg-green-alt-500/10 text-green-alt-600 dark:border-green-alt-400 dark:bg-green-alt-400/10 dark:text-green-alt-300',
+				'border-green-alt-600 bg-green-alt-500/10 text-green-alt-600 dark:border-green-alt-300 dark:bg-green-alt-400/10 dark:text-green-alt-300',
 			idle: 'border-transparent text-green-alt-600 hover:bg-green-alt-500/10 dark:text-green-alt-300'
 		},
 		yellow: {
 			active:
-				'border-yellow-600 bg-yellow-500/10 text-yellow-600 dark:border-yellow-400 dark:bg-yellow-400/10 dark:text-yellow-300',
+				'border-yellow-600 bg-yellow-500/10 text-yellow-600 dark:border-yellow-300 dark:bg-yellow-400/10 dark:text-yellow-300',
 			idle: 'border-transparent text-yellow-600 hover:bg-yellow-500/10 dark:text-yellow-300'
 		},
 		orange: {
 			active:
-				'border-orange-alt-600 bg-orange-alt-500/10 text-orange-alt-600 dark:border-orange-alt-400 dark:bg-orange-alt-400/10 dark:text-orange-alt-300',
+				'border-orange-alt-600 bg-orange-alt-500/10 text-orange-alt-600 dark:border-orange-alt-300 dark:bg-orange-alt-400/10 dark:text-orange-alt-300',
 			idle: 'border-transparent text-orange-alt-600 hover:bg-orange-alt-500/10 dark:text-orange-alt-300'
 		},
 		red: {
 			active:
-				'border-red-alt-600 bg-red-alt-500/10 text-red-alt-600 dark:border-red-alt-400 dark:bg-red-alt-400/10 dark:text-red-alt-300',
+				'border-red-alt-600 bg-red-alt-500/10 text-red-alt-600 dark:border-red-alt-300 dark:bg-red-alt-400/10 dark:text-red-alt-300',
 			idle: 'border-transparent text-red-alt-600 hover:bg-red-alt-500/10 dark:text-red-alt-300'
 		},
 		gray: {
 			active:
-				'border-gray-600 bg-gray-500/10 text-gray-600 dark:border-gray-400 dark:bg-gray-400/10 dark:text-gray-300',
+				'border-gray-600 bg-gray-500/10 text-gray-600 dark:border-gray-300 dark:bg-gray-400/10 dark:text-gray-300',
 			idle: 'border-transparent text-gray-600 hover:bg-gray-500/10 dark:text-gray-300'
 		}
 	};
