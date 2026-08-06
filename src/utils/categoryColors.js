@@ -16,6 +16,8 @@ export const labelToColorKey = {
 	technology: 'green',
 	business: 'green',
 	'basic information': 'green',
+	education: 'green',
+	productivity: 'green',
 
 	// Yellow (Caution)
 	travel: 'yellow',
@@ -25,12 +27,14 @@ export const labelToColorKey = {
 	'jewish news': 'yellow',
 	jobs: 'yellow',
 	nodata: 'yellow',
+	'no data': 'yellow',
 	'content servers': 'yellow',
 	health: 'yellow',
 	'basic shopping': 'yellow',
 
 	// Orange (Risk)
 	chats: 'orange',
+	communication: 'orange',
 	games: 'orange',
 	shopping: 'orange',
 	sports: 'orange',
@@ -49,7 +53,8 @@ export const labelToColorKey = {
 	entertainment: 'red',
 	prohibited: 'red',
 	'ad services': 'red',
-	badapps: 'red'
+	badapps: 'red',
+	'bad apps': 'red'
 };
 
 // Map color key -> risk label

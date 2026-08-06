@@ -34,6 +34,10 @@
 		// Pagination props
 		pageSize = 24, // 0 = no pagination, >0 = items per page
 		externalQuery = '', // Supplied search query from outside (e.g. SectionedPage magic search)
+		// The built-in search box's text. Bindable so a parent can read what is
+		// being searched for — e.g. to widen `items` beyond the category it is
+		// currently showing while a query is active — or clear it.
+		searchQuery = $bindable(''),
 		// i18n text props
 		ofText = 'of', // "of" text for "X of Y items"
 		selectedText = 'selected', // "selected" text for bulk mode
@@ -51,7 +55,6 @@
 		showResultsCount = true
 	} = $props();
 
-	let searchQuery = $state('');
 	let activeFilter = $state(filterTabs.length > 0 ? filterTabs[0].key : null);
 	let currentPage = $state(1);
 	let showAll = $state(false);

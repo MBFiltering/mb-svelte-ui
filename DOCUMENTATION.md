@@ -1653,11 +1653,24 @@ gracefully on narrow / mobile screens.
 
 **Props:**
 
-| Prop       | Type       | Default | Description                                                        |
-| ---------- | ---------- | ------- | ------------------------------------------------------------------ |
-| `tabs`     | `Array`    | `[]`    | Tabs to render: `{ id, label, icon? }`. `icon` is a Lucide component |
-| `active`   | `string`   | -       | Active tab id. Bindable (`bind:active`)                            |
-| `onChange` | `function` | `()=>{}`| Called with the selected tab id                                   |
+| Prop        | Type       | Default  | Description                                                                   |
+| ----------- | ---------- | -------- | ----------------------------------------------------------------------------- |
+| `tabs`      | `Array`    | `[]`     | Tabs to render: `{ id, label, icon?, color? }`. `icon` is a Lucide component    |
+| `active`    | `string`   | -        | Active tab id. Bindable (`bind:active`)                                        |
+| `ariaLabel` | `string`   | `'Tabs'` | Accessible name for the strip (`role="group"`)                                  |
+| `onChange`  | `function` | `()=>{}` | Called with the selected tab id                                                |
+
+**Colors:**
+
+`tab.color` is one of `azure` (the default), `green`, `yellow`, `orange`, `red`,
+`gray` — the same vocabulary as `categoryColors.js` / `SafetyBadge`, so a strip of
+tabs can carry a Trusted → Danger scale.
+
+A colored tab **stays colored while idle**: the color is the label's meaning, so
+greying it out would hide the scale until you clicked through it. The active tab
+is marked by its underline and a 10% tint instead. `azure` is the exception and
+the plain default — its idle tabs are gray, which is what an ordinary tab strip
+(Settings, Account/Password) wants.
 
 **Usage:**
 
@@ -1671,6 +1684,13 @@ gracefully on narrow / mobile screens.
 		{ id: 'account', label: 'Account', icon: UserPen },
 		{ id: 'password', label: 'Password', icon: KeyRound }
 	];
+
+	// Color-coded by risk level
+	const safetyTabs = [
+		{ id: 'green', label: 'Trusted', color: 'green' },
+		{ id: 'orange', label: 'Risk', color: 'orange' },
+		{ id: 'red', label: 'Danger', color: 'red' }
+	];
 </script>
 
 <Tabs {tabs} bind:active />
@@ -1679,6 +1699,11 @@ gracefully on narrow / mobile screens.
 	<!-- account panel -->
 {/if}
 ```
+
+`active` does not have to be one of the tab ids — passing a value no tab matches
+(and updating state from `onChange` instead of `bind:active`) renders the strip
+with **nothing** selected, which is how the customer portal's app list says "this
+search spans every tab".
 
 ---
 
@@ -1827,6 +1852,7 @@ Searchable, filterable list with optional bulk selection.
 | `idKey`             | `string`  | `null`             | Key for #each block              |
 | `pageSize`          | `number`  | `28`               | Items per page (0 = no pagination) |
 | `externalQuery`     | `string`  | `''`               | Supplied search query from outside |
+| `searchQuery`       | `string`  | `''`               | The built-in search box's text. Bindable — a parent can read what is being searched for (e.g. to widen `items` beyond the category it is showing while a query is active) or clear it |
 | `ofText`            | `string`  | `'of'`             | i18n "of" text                   |
 | `selectedText`      | `string`  | `'selected'`       | i18n "selected" text             |
 | `pageText`          | `string`  | `'Page'`           | i18n "Page" label                |
