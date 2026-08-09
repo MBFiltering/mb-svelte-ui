@@ -9,7 +9,7 @@
 > This file is the **API reference** — what each component takes and returns. For the
 > *design* rules that apply across every MB Smart surface (palette, light↔dark mappings,
 > corners, fonts, RTL, accessibility, browser tab titles) see
-> [STYLE-GUIDE.md](STYLE-GUIDE.md).
+> [STYLE-GUIDE.md](../mb-specs/STYLE-GUIDE.md).
 
 ---
 

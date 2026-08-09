@@ -2,10 +2,11 @@
 
 > **Living Document**: Any AI agent making changes to this repository, or receives new maxims from the human, **must** update this file accordingly.
 
-> **Design rules live in [STYLE-GUIDE.md](STYLE-GUIDE.md)** — the palette, light↔dark
-> mappings, corners, fonts, RTL, accessibility and browser tab titles, for this package
-> *and* every app that consumes it. It is the canonical copy; the portals' own docs point
-> at it. Add a style rule there, not here.
+> **Design rules live in [STYLE-GUIDE.md](../mb-specs/STYLE-GUIDE.md), in the `mb-specs`
+> repo** — the palette, light↔dark mappings, corners, fonts, RTL, accessibility and
+> browser tab titles, for this package *and* every app that consumes it. It is the
+> canonical copy and it is estate-wide, which is why it does not live here; every repo's
+> docs point at it. Add a style rule there, not here.
 
 ---
 
@@ -26,6 +27,8 @@ When working on this codebase, adhere to these principles:
 5. **Single responsibility** — Each component or function should do one thing well.
 
 6. **Consistency** — Follow existing patterns in the codebase. Match naming conventions, file structure, and coding style.
+
+7. **No branches of your own** — Work on the branch that is already checked out. Never create a branch for a new feature and never switch branches unless the user explicitly asks.
 
 ### Svelte-Specific Guidelines
 
@@ -192,7 +195,7 @@ negotiable:
 - **Never on `rounded`/`rounded-sm` (≤ 4px)** — the arc is too short to read.
 
 The reasoning, the `--g2-scale` compensation and the browser-support story are in
-[STYLE-GUIDE.md](STYLE-GUIDE.md#corners--g2-is-the-house-style); the per-component
+[STYLE-GUIDE.md](../mb-specs/STYLE-GUIDE.md#corners--g2-is-the-house-style); the per-component
 list is in [DOCUMENTATION.md](DOCUMENTATION.md#css-classes-reference).
 
 ---
