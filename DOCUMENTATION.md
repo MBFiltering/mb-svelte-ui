@@ -17,6 +17,7 @@
 
 1. [Installation & Setup](#installation--setup)
 2. [Atoms (Basic Components)](#atoms)
+   - [Avatar](#avatar)
    - [BackButton](#backbutton)
    - [Badge](#badge)
    - [Callout](#callout)
@@ -45,6 +46,7 @@
 3. [Molecules (Composite Components)](#molecules)
 	- [DeviceCard](#devicecard)
    - [Grid](#grid)
+   - [HeaderNav](#headernav)
    - [Island](#island)
 	- [ListCard](#listcard)
    - [MultiInput](#multiinput)
@@ -62,6 +64,7 @@
 6. [Utilities](#utilities)
    - [categoryColors](#categorycolors)
    - [dateTime](#datetime)
+   - [dismiss](#dismiss)
    - [labels](#labels)
    - [stringUtils](#stringutils)
    - [toastStore](#toaststore)
@@ -109,6 +112,44 @@ npm install svelte@^5.0.0 @lucide/svelte@>=0.400.0
 ## Atoms
 
 Basic building blocks - simple, single-purpose components.
+
+### Avatar
+
+Circular identity mark with a plain-SVG person glyph. Used by `AppShell`'s account chip.
+
+**Import:**
+
+```svelte
+<script>
+	import { Avatar } from '@mbsmart/ui/atoms';
+</script>
+```
+
+**Props:**
+
+| Prop        | Type   | Default    | Description                                                          |
+| ----------- | ------ | ---------- | -------------------------------------------------------------------- |
+| `size`      | string | `h-8 w-8`  | Tailwind size classes for the circle                                  |
+| `className` | string | `''`       | Additional classes (hover states, ring, margin)                       |
+| `ariaLabel` | string | `''`       | Give it a name only when it stands alone; empty keeps it `aria-hidden` |
+
+**Usage:**
+
+```svelte
+<!-- Beside a visible name: decorative, no accessible name -->
+<Avatar />
+<span>{userName}</span>
+
+<!-- Alone in a tight row: name it -->
+<Avatar size="h-6 w-6" ariaLabel={$t('nav.account')} />
+```
+
+**Notes:**
+
+- The glyph is inline SVG in `currentColor`, so the circle recolours with text utilities.
+- `rounded-full` carries **no** `g2`: a squircle at 50% radius is an app-icon blob, not a circle.
+
+---
 
 ### BackButton
 
@@ -1394,6 +1435,66 @@ Responsive grid with row-first or column-first flow.
 
 ---
 
+### HeaderNav
+
+The header's navigation, rendered from data: an icon row on `sm+`, a hamburger menu below it. `AppShell` renders this for you from its `navItems` prop — use it directly only if you are building a header outside `AppShell`.
+
+Taking items as an array rather than a snippet is the point: one source drives both presentations, so the wide row and the narrow menu cannot drift apart, and the menu can show labels that the row hides below `xl`.
+
+**Import:**
+
+```svelte
+<script>
+	import { HeaderNav } from '@mbsmart/ui/molecules';
+</script>
+```
+
+**Props:**
+
+| Prop        | Type        | Default  | Description                                        |
+| ----------- | ----------- | -------- | -------------------------------------------------- |
+| `items`     | `NavItem[]` | `[]`     | Nav items; falsy entries are dropped               |
+| `menuLabel` | string      | `'Menu'` | Accessible name for the hamburger; pass translated |
+| `className` | string      | `''`     | Extra classes for the wide row                     |
+
+**NavItem:**
+
+```javascript
+{
+  icon: Settings,          // Lucide icon component
+  label: 'Settings',       // Visible label; the row hides it below xl, the menu never does
+  title: 'My settings',    // Optional tooltip / accessible name when it differs from label
+  href: '/settings',       // Link mode
+  onclick: () => {},       // Button mode; wins over href
+  color: 'azure',          // azure | red | green | gray
+  disabled: false,
+  items: [ /* NavItem[] */ ]  // Nested group: a NavDropdown in the row, a labelled
+                              // section in the menu. One level only.
+}
+```
+
+**Usage:**
+
+```svelte
+<HeaderNav
+	menuLabel={$t('nav.menu')}
+	items={[
+		{ href: '/home', icon: House, label: $t('nav.home') },
+		{ onclick: openSettings, icon: Settings, label: $t('nav.settings') },
+		{ onclick: logout, icon: LogOut, label: $t('auth.logout'), color: 'red' }
+	]}
+/>
+```
+
+**Behaviour:**
+
+- Below `sm` the row is replaced by one hamburger button (`aria-haspopup="menu"`, `aria-expanded`, `aria-controls`).
+- The menu closes on item click, outside pointerdown and Escape (via `dismissOnOutside`).
+- A nested group becomes a `role="group"` section with the parent's label as its heading — flattened rather than a submenu, because a submenu inside a mobile popover is a trap.
+- Disabled items block their `onclick` and suppress link navigation.
+
+---
+
 ### Island
 
 Collapsible card container with optional title and icon.
@@ -2094,47 +2195,63 @@ Complex page template with sidebar navigation, magic search, and section content
 
 ### AppShell
 
-Full page layout template with sticky header, loading progress bar, and main content area. Provides the complete shell for dashboard and app layouts.
+Full page layout template: sticky header, loading progress bar, main content area, and a faded brand footer.
+
+**The header is identity, the footer is product.** The header carries the signed-in account (avatar + name) and the nav; the product name ("MB Smart Filtering", "MB Smart Technician") lives in the footer with the version, the way a copyright line does. Do not pass a product name as `userName` — that conflation is what made the two portals' headers mean different things.
 
 **Import:**
 
 ```svelte
 <script>
 	import { AppShell } from '@mbsmart/ui/templates';
-	import { NavButton } from '@mbsmart/ui/atoms';
 	import { LogOut, Settings, UserRoundPlus } from '@lucide/svelte';
 </script>
 ```
 
 **Props:**
 
-| Prop              | Type    | Default        | Description                               |
-| ----------------- | ------- | -------------- | ----------------------------------------- |
-| `title`           | string  | `''`           | Main title (e.g. userId, page name)       |
-| `versionString`   | string  | `''`           | Version badge (e.g. `VERSION_STRING`)     |
-| `logoIcon`        | string  | `mbsmart-logo` | Custom logo icon name for SvgIcon         |
-| `logoHref`        | string  | `/dashboard`   | Logo, title, and version link destination |
-| `loadingProgress` | number  | `0`            | Loading bar progress percentage (0-100)   |
-| `isFullyLoaded`   | boolean | `true`         | When true, hides the loading bar          |
-| `className`       | string  | `''`           | Additional CSS classes for wrapper        |
-| `headerContent`   | snippet | -              | Content for header area (search, buttons) |
-| `children`        | snippet | -              | Main page content                         |
+| Prop              | Type       | Default        | Description                                                        |
+| ----------------- | ---------- | -------------- | ------------------------------------------------------------------ |
+| `userName`        | string     | `''`           | Signed-in account, shown beside the avatar (e.g. `tagintl`, a name) |
+| `userHref`        | string     | `/dashboard`   | Where the account chip links — normally the dashboard              |
+| `homeLabel`       | string     | `'Home'`       | Accessible name for the chip link; pass a translated string        |
+| `navItems`        | `NavItem[]`| `[]`           | Nav, rendered as an icon row on `sm+` and a hamburger below it (see [HeaderNav](#headernav)) |
+| `menuLabel`       | string     | `'Menu'`       | Accessible name for the hamburger; pass a translated string        |
+| `productName`     | string     | `''`           | Product name in the footer. Empty hides the footer entirely        |
+| `brandIcon`       | string     | `mbsmart-logo` | Footer icon name for `SvgIcon`                                     |
+| `versionString`   | string     | `''`           | Version, appended to the product name after a `·`                  |
+| `loadingProgress` | number     | `0`            | Loading bar progress percentage (0-100)                            |
+| `isFullyLoaded`   | boolean    | `true`         | When true, hides the loading bar                                   |
+| `className`       | string     | `''`           | Additional CSS classes for wrapper                                 |
+| `headerContent`   | snippet    | -              | Header content that must stay visible at every width (e.g. search) |
+| `children`        | snippet    | -              | Main page content                                                  |
 
 **Usage:**
 
 ```svelte
-<AppShell title={userId} versionString={VERSION_STRING} loadingProgress={75} isFullyLoaded={false}>
+<AppShell
+	userName={userId}
+	userHref="/{lang}/dashboard"
+	homeLabel={$t('nav.home')}
+	productName="MB Smart Technician"
+	versionString={VERSION_STRING}
+	menuLabel={$t('nav.menu')}
+	navItems={[
+		{ icon: Wrench, label: $t('nav.tools'), items: [
+			{ href: `/${lang}/dashboard/device/new`, icon: UserRoundPlus, label: $t('nav.newDevice') },
+			{ href: `/${lang}/dashboard/customers`, icon: Users, label: $t('customers.title') }
+		] },
+		{ href: `/${lang}/dashboard/settings`, icon: Settings, label: $t('nav.settings') },
+		{ onclick: logout, icon: LogOut, label: $t('auth.logout'), color: 'red' }
+	]}
+	loadingProgress={75}
+	isFullyLoaded={false}
+>
 	{#snippet headerContent()}
-		<!-- Search input -->
-		<input type="text" placeholder="Search..." class="..." />
-
-		<!-- Nav buttons -->
-		<NavButton href="/dashboard/device/new" icon={UserRoundPlus} label="New Device" color="azure" />
-		<NavButton href="/dashboard/settings" icon={Settings} label="Settings" color="azure" />
-		<NavButton onclick={logout} icon={LogOut} label="Logout" color="red" />
+		<!-- Stays in the bar at every width, beside the hamburger -->
+		<SearchButton />
 	{/snippet}
 
-	<!-- Main page content -->
 	<div class="p-4">
 		<h1>Dashboard</h1>
 	</div>
@@ -2144,30 +2261,21 @@ Full page layout template with sticky header, loading progress bar, and main con
 **Features:**
 
 - Full page layout with `min-h-screen` and neutral background
-- Sticky header (`sticky top-0 z-40`) with shadow
-- Built-in MB logo and title display (one clickable unit with shared hover)
-- Version badge (right of title; included in the logo/title link)
+- Sticky header (`sticky top-0 z-20`) with shadow
+- Account chip: `Avatar` + name, one link to `userHref`, shared hover
+- Nav collapses to a hamburger below `sm`, where labels become visible
 - Loading progress bar below header (sticky, animates)
-- Main content area with proper padding for mobile nav
-- Responsive and accessible
-
-**Loading Bar:**
-
-The loading bar appears below the header and shows progress:
-
-```svelte
-<AppShell loadingProgress={loadingPercent} isFullyLoaded={loadingPercent >= 100}>...</AppShell>
-```
+- Faded brand footer, in-flow after `<main>` — it sits at the bottom on short pages and scrolls away on long ones
 
 **Notes:**
 
-- Use `headerContent` snippet for header actions (search, NavButtons)
-- Use `children` for main page content
-- Logo defaults to MB logo, can be overridden with `logoIcon` prop
-- Logo, title, and version share one `logoHref` link with coordinated hover colors
+- `headerContent` is for controls that must never hide behind the hamburger. Everything else belongs in `navItems`, so one array drives both presentations.
+- The footer is `select-none` and rendered at 40% / 35% opacity (light / dark). It is deliberately quiet; do not brighten it to make it "readable".
+- No `productName` means no footer element at all.
 - Loading bar automatically hides when `isFullyLoaded` is true
 
 ---
+
 
 **Props:**
 
@@ -2474,6 +2582,37 @@ Gets elapsed time (always past tense, more granular).
 getTimeElapsed(recentDate); // '5 minutes ago'
 getTimeElapsed(oldDate); // '3 months ago'
 ```
+
+---
+
+### dismiss
+
+Close-on-outside-interaction wiring for popovers, dropdowns and menus. Used by `NavDropdown` and `HeaderNav`.
+
+```javascript
+import { dismissOnOutside } from '@mbsmart/ui/utils';
+```
+
+**`dismissOnOutside(getElement, close)`**
+
+| Param        | Type                 | Description                          |
+| ------------ | -------------------- | ------------------------------------ |
+| `getElement` | `() => Element｜null` | Returns the surface's root node      |
+| `close`      | `() => void`         | Called on outside pointerdown or Esc |
+
+Returns a teardown that removes both listeners.
+
+```javascript
+let isOpen = $state(false);
+let element = $state(null);
+
+$effect(() => {
+	if (!isOpen) return;
+	return dismissOnOutside(() => element, () => (isOpen = false));
+});
+```
+
+Call it from an effect that only runs while the surface is open, and return its result as the effect's teardown. It touches `document` directly, so it must not run during SSR — inside `$effect` it never does.
 
 ---
 
@@ -2827,7 +2966,7 @@ automatically:
 ```
 
 Components that apply `g2` internally do so on their own markup, so you get it for free:
-`ControlButton`, `NavButton`, `NavDropdown`, `Kbd`, `Toast`, `SafetyBadge`, `TextInput`,
+`ControlButton`, `NavButton`, `NavDropdown`, `HeaderNav`, `Kbd`, `Toast`, `SafetyBadge`, `TextInput`,
 `Info`, `ToggleSwitch` (the row, not the knob), `OneFromMany`, `Skeleton` (default),
 `Island`, `NamedControl`, `Tabs`, `MultiInput`, `QuickLinks`, `Modal` (close button),
 `SectionedPage`.

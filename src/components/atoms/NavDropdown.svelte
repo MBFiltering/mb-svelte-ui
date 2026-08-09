@@ -1,6 +1,12 @@
 <script>
 	import { ChevronDown } from '@lucide/svelte';
-	import { getNavButtonColorClasses, getNavButtonStateClasses } from './navButtonStyles.js';
+	import {
+		getNavButtonColorClasses,
+		getNavButtonStateClasses,
+		getNavMenuItemClasses,
+		NAV_PANEL_CLASSES
+	} from './navButtonStyles.js';
+	import { dismissOnOutside } from '../../utils/dismiss.js';
 
 	let {
 		config = [],
@@ -23,10 +29,6 @@
 	);
 	const triggerStateClasses = $derived(getNavButtonStateClasses(isTriggerDisabled));
 
-	function getItemClasses(item) {
-		return `flex w-full items-center gap-2 g2 rounded-lg border px-3 py-2.5 text-left text-sm font-medium transition-colors ${getNavButtonColorClasses(item.color)} ${getNavButtonStateClasses(item.disabled)} ${item.className || ''}`;
-	}
-
 	function toggleDropdown() {
 		if (isTriggerDisabled) return;
 		isOpen = !isOpen;
@@ -48,26 +50,7 @@
 
 	$effect(() => {
 		if (!isOpen) return;
-
-		const handlePointerDown = (event) => {
-			if (!dropdownElement?.contains(event.target)) {
-				closeDropdown();
-			}
-		};
-
-		const handleKeydown = (event) => {
-			if (event.key === 'Escape') {
-				closeDropdown();
-			}
-		};
-
-		document.addEventListener('pointerdown', handlePointerDown);
-		document.addEventListener('keydown', handleKeydown);
-
-		return () => {
-			document.removeEventListener('pointerdown', handlePointerDown);
-			document.removeEventListener('keydown', handleKeydown);
-		};
+		return dismissOnOutside(() => dropdownElement, closeDropdown);
 	});
 </script>
 
@@ -98,7 +81,7 @@
 
 	{#if isOpen}
 		<div
-			class="g2 absolute right-0 z-50 mt-2 min-w-56 rounded-xl border border-gray-200 bg-white p-1.5 space-y-1.5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 {dropdownClassName}"
+			class="{NAV_PANEL_CLASSES} {dropdownClassName}"
 			role="menu"
 			aria-label={title || label}
 		>
@@ -108,7 +91,7 @@
 					<a
 						href={item.disabled ? undefined : item.href}
 						onclick={(event) => handleItemClick(item, event)}
-						class={getItemClasses(item)}
+						class={getNavMenuItemClasses(item)}
 						title={item.title || item.label}
 						aria-label={item.title || item.label}
 						aria-disabled={item.disabled}
@@ -128,7 +111,7 @@
 						type="button"
 						onclick={(event) => handleItemClick(item, event)}
 						disabled={item.disabled}
-						class={getItemClasses(item)}
+						class={getNavMenuItemClasses(item)}
 						title={item.title || item.label}
 						aria-label={item.title || item.label}
 						role="menuitem"

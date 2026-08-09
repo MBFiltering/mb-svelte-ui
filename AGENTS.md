@@ -112,8 +112,8 @@ src/
 
 | Layer       | Purpose                              | Examples                          |
 |-------------|--------------------------------------|-----------------------------------|
-| **Atoms**   | Single-purpose, primitive UI         | Badge, CheckBox, NavDropdown, Spinner, TextInput |
-| **Molecules** | Composed of atoms, reusable groups | Grid, Island, MultiInput          |
+| **Atoms**   | Single-purpose, primitive UI         | Avatar, Badge, CheckBox, NavDropdown, Spinner, TextInput |
+| **Molecules** | Composed of atoms, reusable groups | Grid, HeaderNav, Island, MultiInput |
 | **Organisms** | Complex, self-contained features   | Modal, SearchableList, ToastContainer |
 | **Templates** | Page layouts and shells            | AppShell, SectionedPage           |
 
@@ -196,6 +196,28 @@ The reasoning, the `--g2-scale` compensation and the browser-support story are i
 list is in [DOCUMENTATION.md](DOCUMENTATION.md#css-classes-reference).
 
 ---
+
+## The app shell — identity in the header, product in the footer
+
+`AppShell` splits two things that used to share one slot. The header carries the
+**signed-in account**: an `Avatar` circle plus `userName`, linking to `userHref`. The
+**product name** (`productName`, plus `versionString`) sits in a faded, in-flow footer at
+the bottom of the page, where a copyright line would.
+
+This is not cosmetic. The old `title` prop meant "whatever this app wants up there", and
+the two portals picked differently — `portal-svelte` passed the technician's login,
+`customer-portal-svelte` passed "MB Smart Filtering" — so the same pixel meant two
+unrelated things depending on which product you were looking at. Keep the split:
+
+- **Never pass a product name as `userName`.** If an app has no account to show, leave it
+  empty; the chip is still the way home.
+- **Nav goes in `navItems`, not `headerContent`.** `HeaderNav` renders that one array as
+  an icon row on `sm+` and a labelled hamburger menu below it. A snippet cannot be
+  re-rendered into a menu with sensible labels, which is why the nav is data.
+  `headerContent` is only for controls that must stay in the bar at every width — the
+  technician portal's device search is the one real case.
+- **The footer is quiet on purpose** (40% / 35% opacity, `select-none`). Passing no
+  `productName` removes it entirely.
 
 ## i18n — two data shapes, one engine
 

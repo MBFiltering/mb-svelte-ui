@@ -14,3 +14,17 @@ export function getNavButtonColorClasses(color = 'azure') {
 export function getNavButtonStateClasses(disabled = false) {
 	return disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
 }
+
+/**
+ * Full-width labelled row used inside a nav popover — the NavDropdown panel and
+ * the HeaderNav hamburger menu, which must look like one another.
+ *
+ * @param {{ color?: string, disabled?: boolean, className?: string }} item
+ */
+export function getNavMenuItemClasses(item = {}) {
+	return `g2 flex w-full items-center gap-2 rounded-lg border px-3 py-2.5 text-start text-sm font-medium transition-colors ${getNavButtonColorClasses(item.color)} ${getNavButtonStateClasses(item.disabled)} ${item.className || ''}`;
+}
+
+/** Shared shell for a nav popover panel: the dropdown and the hamburger menu. */
+export const NAV_PANEL_CLASSES =
+	'g2 absolute end-0 z-50 mt-2 min-w-56 space-y-1.5 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900';

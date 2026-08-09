@@ -1,19 +1,35 @@
 <script>
 	import SvgIcon from '../atoms/SvgIcon.svelte';
+	import Avatar from '../atoms/Avatar.svelte';
+	import HeaderNav from '../molecules/HeaderNav.svelte';
 
 	/**
-	 * AppShell - Full page layout template with header and main content area
+	 * AppShell - Full page layout template.
+	 *
+	 * The header answers "who am I signed in as", the footer answers "what is
+	 * this product" — deliberately two places, because the header used to carry
+	 * whichever of the two an app happened to pass and the portals drifted apart
+	 * over it.
+	 *
 	 * Includes:
-	 * - Sticky header with logo, title, version string
+	 * - Sticky header: account chip (avatar + name), app content, nav
 	 * - Optional loading progress bar
-	 * - Main content area with proper spacing
-	 * - Content (search, buttons) passed via snippets
+	 * - Main content area
+	 * - Faded brand footer with the product name and version
 	 */
 	let {
-		// Header props
-		logoIcon = 'mbsmart-logo',
-		logoHref = '/dashboard',
-		title = '',
+		// Account chip (header, start side)
+		userName = '',
+		userHref = '/dashboard',
+		homeLabel = 'Home',
+
+		// Nav (header, end side) — see HeaderNav for the NavItem shape
+		navItems = [],
+		menuLabel = 'Menu',
+
+		// Brand (footer)
+		productName = '',
+		brandIcon = 'mbsmart-logo',
 		versionString = '',
 
 		// Loading bar props
@@ -33,43 +49,31 @@
 	<!-- Sticky Header -->
 	<header class="sticky top-0 z-20 h-14 bg-white px-4 py-2 shadow-lg dark:bg-zinc-800">
 		<div class="flex items-center justify-between gap-4">
-			<!-- Logo and Title Section (single link: logo + title + version) -->
+			<!-- Account chip: who is signed in, and the way home -->
 			<a
-				href={logoHref}
-				class="group flex cursor-pointer gap-4"
-				aria-label="Home"
+				href={userHref}
+				class="group flex min-w-0 items-center gap-2.5"
+				aria-label={homeLabel}
 				data-sveltekit-reload
 			>
-				<div class="h-8 w-10">
-					<SvgIcon
-						name={logoIcon}
-						size="w-8 h-8"
-						className="text-azure-700 dark:text-azure-500 group-hover:text-azure-900 dark:group-hover:text-azure-700 transition-colors"
-					/>
-				</div>
-				<div class="hidden items-center justify-center gap-2 xs:flex">
-					{#if title}
-						<h1
-							class="text-center text-sm leading-none font-semibold whitespace-nowrap text-azure-700 transition-colors group-hover:text-azure-900 lg:text-xl dark:text-azure-500 dark:group-hover:text-azure-700"
-						>
-							{title}
-						</h1>
-					{/if}
-					{#if versionString}
-						<p
-							class="p-0.5 px-1 text-[10px] font-semibold text-gray-700 transition-colors group-hover:text-gray-900 dark:text-gray-200 dark:group-hover:text-white"
-						>
-							{versionString}
-						</p>
-					{/if}
-				</div>
+				<Avatar
+					className="transition-colors group-hover:bg-azure-200 dark:group-hover:bg-azure-800"
+				/>
+				{#if userName}
+					<span
+						class="truncate text-sm leading-none font-semibold text-azure-700 transition-colors group-hover:text-azure-900 lg:text-base dark:text-azure-500 dark:group-hover:text-azure-700"
+					>
+						{userName}
+					</span>
+				{/if}
 			</a>
 
-			<!-- Header Content Section (search, buttons, etc.) -->
-			<div class="flex max-w-7xl flex-1 items-center gap-2 sm:gap-4">
+			<!-- App content (search and the like), then the nav -->
+			<div class="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-4">
 				{#if headerContent}
 					{@render headerContent()}
 				{/if}
+				<HeaderNav items={navItems} {menuLabel} />
 			</div>
 		</div>
 	</header>
@@ -85,9 +89,21 @@
 	</div>
 
 	<!-- Main Content Area -->
-	<main class="flex-1 pb-14 sm:pb-0">
+	<main class="flex-1">
 		{#if children}
 			{@render children()}
 		{/if}
 	</main>
+
+	<!-- Brand Footer: faded, in-flow, the way a copyright line sits -->
+	{#if productName}
+		<footer
+			class="flex select-none items-center justify-center gap-2 px-4 py-6 text-gray-900/40 dark:text-gray-50/35"
+		>
+			<SvgIcon name={brandIcon} size="w-4 h-4" className="shrink-0" />
+			<p class="text-xs font-medium">
+				{productName}{versionString ? ` · ${versionString}` : ''}
+			</p>
+		</footer>
+	{/if}
 </div>

@@ -66,6 +66,36 @@ nothing else — no page hard-codes it.
 
 ---
 
+## App chrome — the header is identity, the footer is product
+
+The same two facts appear on every signed-in page, and they live in fixed places:
+
+| Fact | Where | Carried by |
+| --- | --- | --- |
+| **Who is signed in** — `tagintl`, a customer's name | Top-start of the header | `AppShell` `userName`, beside an `Avatar` circle |
+| **What this product is** — the brand token from the table above, plus the version | Faded, centred, at the foot of the page | `AppShell` `productName` + `versionString` |
+
+Before August 2026 both shared one `title` prop next to the logo, and the two
+portals filled it differently: `portal-svelte` put the technician's login there,
+`customer-portal-svelte` put "MB Smart Filtering". The same pixel meant two
+unrelated things depending on which product you were in. Hence the split.
+
+- **The account chip is the way home.** It links to the app's dashboard; there is
+  no separate logo link.
+- **The brand footer is deliberately quiet** — 40% opacity on light, 35% on dark,
+  `select-none`, in the flow after `<main>` so it sits at the bottom of a short
+  page and scrolls away on a long one. It is a copyright line, not a banner. Do
+  not brighten it to make it "readable".
+- **The brand token is not translated** here either, for the same reason it is not
+  in the tab title.
+
+Header nav is **data, not markup**: apps pass `navItems` and `AppShell` renders an
+icon row on `sm+` and a labelled hamburger menu below it. Anything that must stay
+in the bar at every width (the technician portal's device search) goes in the
+`headerContent` snippet instead — that is the only thing that snippet is for.
+
+---
+
 ## Colour
 
 ### Palette
@@ -79,7 +109,7 @@ colour in an app.
 | `azure` | The brand. Primary actions, links, focus, everything Basic. |
 | `mulberry` | Pro. Everything that is a paid tier or an upgrade. |
 | `blue-chill` | Secondary accent. |
-| `merino` | Warm neutral accent. |
+| `merino` | Warm neutral accent. Kept for possible future use, but **currently has no use in any project**, and should only be adopted starting with an explicit decision from a human designer. |
 | `green-alt` | Success / allowed. |
 | `red-alt` | Danger / blocked. |
 | `orange-alt` | Warning / paused. |
