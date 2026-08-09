@@ -2,6 +2,11 @@
 
 > **Living Document**: Any AI agent making changes to this repository, or receives new maxims from the human, **must** update this file accordingly.
 
+> **Design rules live in [STYLE-GUIDE.md](STYLE-GUIDE.md)** — the palette, light↔dark
+> mappings, corners, fonts, RTL, accessibility and browser tab titles, for this package
+> *and* every app that consumes it. It is the canonical copy; the portals' own docs point
+> at it. Add a style rule there, not here.
+
 ---
 
 ## AI Behaviour & Coding Standards
@@ -176,56 +181,19 @@ Before changing this:
 ## Corners — `g2` is the house style
 
 Every corner with a radius of 8px or more in this library carries `g2`, a `@utility`
-declared in `styles.css` that sets `corner-shape: squircle`. It turns the default G1
-corner (a circular arc spliced onto the edge, curvature jumping 0 → 1/r) into a G2
-continuous one. It is the cheapest single change that makes the product read as
-premium rather than default-Tailwind, and it is why the rule below is absolute rather
-than case-by-case: consistency is the whole effect.
+declared in `styles.css` that sets `corner-shape: squircle`. **When you add or edit
+markup with a radius, add `g2` alongside it** — subject to three rules that are not
+negotiable:
 
-**When you add or edit markup with a radius, add `g2` alongside it**, subject to three
-rules that are not negotiable:
+- **`g2` needs a radius on the same element**, or it is a silent no-op.
+- **Never on `rounded-full`** — a 50% radius plus `squircle` is an app-icon blob, not a
+  circle. Avatars, toggle knobs, radio dots, pills and the Modal drag handle are
+  deliberately plain; check the grep before "fixing" one of them.
+- **Never on `rounded`/`rounded-sm` (≤ 4px)** — the arc is too short to read.
 
-- **`g2` needs a radius on the same element.** `corner-shape` only reshapes corners
-  that already have one. Alone it is a silent no-op — which also makes it *safe* on
-  partially rounded elements (`rounded-t-lg`, `sm:rounded-e-xl`): square corners stay
-  square, and a `sm:`-only radius stays unshaped below `sm`.
-- **Never on `rounded-full`.** A 50% radius plus `squircle` is not a circle, it is an
-  app-icon blob. Avatars, toggle knobs, radio dots, pills and the Modal drag handle
-  are deliberately left plain — check the grep before "fixing" one of them.
-- **Never on `rounded`/`rounded-sm` (≤ 4px).** The arc is too short for the difference
-  to be visible, so it is bytes for nothing. `Badge`, `CheckBox`, `JSONPrint` and the
-  `Skeleton` sub-rows are correctly excluded.
-
-Support is progressive enhancement with **no `@supports` wrapper on the shape** —
-browsers without `corner-shape` drop the declaration and render the old G1 radius, with
-no layout shift. Do not add a fallback; there is nothing to fall back to.
-
-### `--g2-scale` — why squircles are drawn at a bigger radius
-
-A superellipse fills more of the corner than a circular arc of the same radius, so a
-squircle at the authored radius reads visibly *tighter* than the G1 corner it replaced.
-`g2` compensates by re-pointing `--radius-lg` … `--radius-4xl` on its own element to
-`base × var(--g2-scale)` — Tailwind compiles `rounded-xl` to `border-radius:
-var(--radius-xl)`, so the radius utility resolves against the scaled value.
-
-Three things not to break:
-
-- **`--g2-scale` is 1 without `corner-shape` support.** Those browsers draw a circular
-  corner, which already looks right at the authored radius; inflating it would make
-  them far too round. The `@supports` guard belongs on the *scale*, never on the shape.
-- **It is tunable per app.** `:root { --g2-scale: … }` in an app's own CSS overrides the
-  default. The right value depends on which radii that app uses: a UI built mostly from
-  8px corners needs more compensation than one whose prominent surfaces are 16–44px.
-  Check the actual product before changing a number here — the two portals legitimately
-  differ.
-- **For an arbitrary radius, multiply it in yourself**:
-  `rounded-[calc(2.75rem*var(--g2-scale))]`. Only the named scale is rescaled
-  automatically.
-
-Consuming apps get `g2` from `@import '@mbsmart/ui/styles.css'` and use it on their own
-markup the same way they use `azure` or `mulberry`. If a component takes a radius as a
-prop (`Skeleton`'s `rounded`), the default includes `g2` and passing a bare radius is
-the documented way to opt out.
+The reasoning, the `--g2-scale` compensation and the browser-support story are in
+[STYLE-GUIDE.md](STYLE-GUIDE.md#corners--g2-is-the-house-style); the per-component
+list is in [DOCUMENTATION.md](DOCUMENTATION.md#css-classes-reference).
 
 ---
 

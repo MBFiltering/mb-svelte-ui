@@ -6,6 +6,11 @@
 **Framework**: Svelte 5 (Runes Mode)  
 **Styling**: TailwindCSS v4
 
+> This file is the **API reference** — what each component takes and returns. For the
+> *design* rules that apply across every MB Smart surface (palette, light↔dark mappings,
+> corners, fonts, RTL, accessibility, browser tab titles) see
+> [STYLE-GUIDE.md](STYLE-GUIDE.md).
+
 ---
 
 ## Table of Contents
