@@ -556,7 +556,7 @@
 										magicSearchInput?.blur();
 									}
 								}}
-								class="peer g2 w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 sm:pe-28 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
+								class="peer g2 w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 sm:pe-28 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400/80 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
 							/>
 							{#if magicSearchFocused}
 								<div

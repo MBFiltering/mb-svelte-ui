@@ -109,7 +109,7 @@
 			<p
 				class="flex-1 {textSizeClass} whitespace-pre-wrap {value
 					? 'text-gray-700 dark:text-gray-200'
-					: 'text-gray-900/50 dark:text-gray-50/50'}"
+					: 'text-gray-400/80 dark:text-gray-500'}"
 			>
 				{value || emptyText}
 			</p>
@@ -117,7 +117,7 @@
 			<p
 				class="flex-1 {textSizeClass} {value
 					? 'text-gray-700 dark:text-gray-200'
-					: 'text-gray-900/50 dark:text-gray-50/50'}"
+					: 'text-gray-400/80 dark:text-gray-500'}"
 			>
 				{value || emptyText}
 			</p>

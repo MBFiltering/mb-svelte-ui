@@ -91,9 +91,16 @@
 		showPassword = !showPassword;
 	}
 
-	// Common classes for both input and textarea
+	// Common classes for both input and textarea.
+	//
+	// The placeholder colour is set explicitly rather than left to Tailwind's
+	// preflight, which resolves `::placeholder` to `currentColor` at 50% — i.e.
+	// a tint of the *typed* colour, which lands too close to it to read as
+	// "not yet filled in". Pinning it moves it away from the text in both
+	// themes: lighter than gray-400 on white, and down to gray-500 on the dark
+	// surface, where a 50% tint of gray-200 was nearly as bright as real input.
 	const baseClasses = $derived(
-		`g2 w-full rounded-lg border text-gray-700 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200 ${sizeClasses[size]} ${paddingClasses} ${variantClasses[variant]} ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''} ${readonly ? 'bg-gray-50 dark:bg-gray-900' : ''} ${className}`
+		`g2 w-full rounded-lg border text-gray-700 placeholder-gray-400/80 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200 dark:placeholder-gray-500 ${sizeClasses[size]} ${paddingClasses} ${variantClasses[variant]} ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''} ${readonly ? 'bg-gray-50 dark:bg-gray-900' : ''} ${className}`
 	);
 
 	// Search icon size based on input size
