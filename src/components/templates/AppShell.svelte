@@ -57,11 +57,13 @@
 				data-sveltekit-reload
 			>
 				<Avatar
-					className="transition-colors group-hover:bg-azure-200 dark:group-hover:bg-azure-800"
+					className="transition-colors group-hover:bg-azure-200 group-hover:text-azure-900 dark:group-hover:bg-azure-800 dark:group-hover:text-azure-100"
 				/>
 				{#if userName}
+					<!-- leading-normal, not leading-none: `truncate` clips overflow, and a
+					     1em line box cuts the descenders off a name like "Greg". -->
 					<span
-						class="truncate text-sm leading-none font-semibold text-azure-700 transition-colors group-hover:text-azure-900 lg:text-base dark:text-azure-500 dark:group-hover:text-azure-700"
+						class="truncate text-sm leading-normal font-semibold text-azure-700 transition-colors group-hover:text-azure-900 lg:text-base dark:text-azure-500 dark:group-hover:text-azure-100"
 					>
 						{userName}
 					</span>

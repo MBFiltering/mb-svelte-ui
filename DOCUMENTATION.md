@@ -146,7 +146,7 @@ Circular identity mark with a plain-SVG person glyph. Used by `AppShell`'s accou
 
 **Notes:**
 
-- The glyph is inline SVG in `currentColor`, so the circle recolours with text utilities.
+- The glyph is inline SVG in `currentColor`, so the circle recolours with text utilities — pass `group-hover:text-*` in `className` to move the glyph with the name it sits beside.
 - `rounded-full` carries **no** `g2`: a squircle at 50% radius is an app-icon blob, not a circle.
 
 ---
@@ -2262,7 +2262,7 @@ Full page layout template: sticky header, loading progress bar, main content are
 
 - Full page layout with `min-h-screen` and neutral background
 - Sticky header (`sticky top-0 z-20`) with shadow
-- Account chip: `Avatar` + name, one link to `userHref`, shared hover
+- Account chip: `Avatar` + name, one link to `userHref`, shared hover — circle, glyph and name all move together, **lightening** in dark mode and darkening in light, and the name takes the same hover shade as the glyph
 - Nav collapses to a hamburger below `sm`, where labels become visible
 - Loading progress bar below header (sticky, animates)
 - Faded brand footer, in-flow after `<main>` — it sits at the bottom on short pages and scrolls away on long ones
