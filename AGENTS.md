@@ -61,6 +61,40 @@ here, in the component:
   interpolate that variable. `Math.random()` is not SSR-safe.
 - **Pointer-only affordances** (drag handles, decorative overlays) get
   `aria-hidden="true"` so they never reach the a11y tree.
+- **Emit no `aria-label` rather than an empty or built-up one.** A name prop that
+  is unset must resolve to `undefined`, not to `''` or `` `Toggle ${label}` ``.
+  `aria-label` **overrides** an ancestor's `aria-labelledby`, so a placeholder
+  name does not merely read badly — it destroys the name `NamedControl` was
+  supplying. `ToggleSwitch` shipped `"Toggle "` on all 34 call sites for exactly
+  this reason.
+- **`role` is a contract, so only claim what is implemented.** `role="menu"` +
+  `role="menuitem"` promise arrow-key navigation and a roving tabindex; the nav
+  panels declared both while being plain Tab-navigated links, so they are now
+  `<ul>` disclosures described by `aria-expanded` + `aria-controls`. Prefer the
+  weaker, true markup over the stronger, false role.
+- **A surface that takes focus has to give it back.** Anything that destroys
+  itself — `Modal`, the nav dropdowns, the hamburger menu — returns focus to its
+  trigger on close, or focus falls to `<body>` and a keyboard user restarts from
+  the top of the document. `Modal` additionally traps Tab and moves focus in on
+  open, which is what `aria-modal="true"` already tells assistive tech it does.
+- **Help text must be reachable without a pointer.** Tooltips fire on `onfocus`
+  as well as hover, live on a real `<button>`, put `role="tooltip"` on the
+  *bubble* (not the trigger), tie the two together with `aria-describedby`, and
+  dismiss on Escape (1.4.13).
+- **Auto-dismissing anything is a time limit (2.2.1).** `Toast` pauses its
+  countdown on hover and on focus within, defaults to 8 s rather than 3 s, and
+  lets errors persist until dismissed. Timing belongs in the component, not in
+  `toastStore` — a store-side timer removes a toast someone is still reading.
+- **Error state needs `aria-invalid` and `aria-describedby`, not just a red
+  border.** `TextInput` takes `invalid` and `describedBy` props for this; a
+  colour-only error fails 1.4.1, and a message that is neither the name nor the
+  description reaches assistive tech nowhere at all.
+
+Known gaps, tracked in
+[`mb-specs/resources/WCAG-AA-AUDIT-2026-08.md`](../mb-specs/resources/WCAG-AA-AUDIT-2026-08.md):
+the `-500` palette steps fail 4.5:1 as text and under white text, `CheckBox` /
+`RadioButton` draw no focus ring, and `SearchableList`'s result count is not a
+live region. Read that file before changing a colour or a list component.
 
 ### Naming Conventions
 

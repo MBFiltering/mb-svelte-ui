@@ -8,7 +8,7 @@
 		title = 'Copy to clipboard',
 		ariaLabel = 'Copy to clipboard',
 		color = 'ghost2',
-		children
+		children = undefined
 	} = $props();
 
 	let copied = $state(false);

@@ -12,7 +12,7 @@
 		overflowVisible = false,
 		ariaLabel = '', // Names the dialog for screen readers — pass the modal's own title
 		closeLabel = 'Close modal', // aria-label/title for the close button
-		children
+		children = undefined
 	} = $props();
 
 	// Swipe-to-dismiss state (mobile bottom-sheet)
@@ -20,6 +20,24 @@
 	let isDragging = $state(false);
 	let dismissing = $state(false);
 	let modalHeight = $state(0);
+
+	// Focus management. `aria-modal="true"` tells assistive tech the rest of the
+	// page is inert, so the dialog has to actually hold focus or the user is left
+	// focused on something their screen reader has just hidden.
+	let dialogEl = $state(null);
+	/** @type {HTMLElement | null} */
+	let returnFocusTo = null;
+
+	const FOCUSABLE =
+		'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+	/** Focusable children, in tab order, skipping anything hidden. */
+	function focusableItems() {
+		if (!dialogEl) return [];
+		return Array.from(dialogEl.querySelectorAll(FOCUSABLE)).filter(
+			(el) => el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement
+		);
+	}
 
 	let startY = 0;
 	let lastY = 0;
@@ -38,11 +56,38 @@
 		}
 	}
 
-	// Handle escape key
+	// Handle escape key, and keep Tab inside the dialog.
 	function handleKeydown(event) {
 		if (!isOpen || dismissing) return;
 		if (closeOnEscape && event.key === 'Escape') {
 			onClose();
+			return;
+		}
+		if (event.key !== 'Tab' || !dialogEl) return;
+
+		const items = focusableItems();
+		if (items.length === 0) {
+			// Nothing to land on — keep focus on the dialog itself rather than
+			// letting Tab escape to the page behind the backdrop.
+			event.preventDefault();
+			dialogEl.focus();
+			return;
+		}
+
+		const first = items[0];
+		const last = items[items.length - 1];
+		const active = document.activeElement;
+
+		// Wrap at both ends, and pull focus back in if it has somehow got outside.
+		if (event.shiftKey && (active === first || active === dialogEl)) {
+			event.preventDefault();
+			last.focus();
+		} else if (!event.shiftKey && active === last) {
+			event.preventDefault();
+			first.focus();
+		} else if (!dialogEl.contains(active)) {
+			event.preventDefault();
+			first.focus();
 		}
 	}
 
@@ -100,6 +145,33 @@
 			dismissing = false;
 		}
 	});
+
+	// Move focus in on open and put it back on close. Several call sites focus
+	// their own search input on open; that runs after this and wins, which is the
+	// behaviour we want — this only guarantees focus lands *somewhere* inside.
+	$effect(() => {
+		if (!isOpen) return;
+
+		returnFocusTo = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+		// One frame, so the children the trap needs to find are actually rendered.
+		const frame = requestAnimationFrame(() => {
+			if (!dialogEl) return;
+			if (dialogEl.contains(document.activeElement)) return;
+			const items = focusableItems();
+			(items[0] ?? dialogEl).focus();
+		});
+
+		return () => {
+			cancelAnimationFrame(frame);
+			// Only take focus back if the dialog still owns it — if something else
+			// has deliberately moved focus on close, don't fight it.
+			if (!dialogEl || dialogEl.contains(document.activeElement) || document.activeElement === document.body) {
+				returnFocusTo?.focus();
+			}
+			returnFocusTo = null;
+		};
+	});
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -118,11 +190,13 @@
 	>
 		<!-- Modal Content Container -->
 		<div
+			bind:this={dialogEl}
 			bind:clientHeight={modalHeight}
 			role="dialog"
 			aria-modal="true"
 			aria-label={ariaLabel || undefined}
-			class="relative max-h-[90dvh] w-full max-w-3xl {overflowVisible
+			tabindex="-1"
+			class="relative max-h-[90dvh] w-full max-w-3xl focus:outline-none {overflowVisible
 				? 'overflow-visible'
 				: 'overflow-auto'} {isDragging ? '' : 'transition-transform duration-200'}"
 			style="transform: translateY({dragY}px)"

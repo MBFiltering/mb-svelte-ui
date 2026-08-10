@@ -1,7 +1,18 @@
 <script>
-	// Props - Svelte 5 style
+	/**
+	 * ToggleSwitch
+	 *
+	 * Naming: pass `ariaLabel` (or the older `customLabel`) and it names the
+	 * switch. Pass nothing and no `aria-label` is emitted at all — which is the
+	 * point. Almost every call site wraps this in `NamedControl`, whose
+	 * `role="group" aria-labelledby` already names the row; an `aria-label` here
+	 * would *override* that, and the old `Toggle ${label}` default did exactly
+	 * that on every toggle in both portals. It also concatenated English, which
+	 * the style guide forbids.
+	 */
 	let {
-		label = '', // Used for aria-label
+		label = '', // Visible-label hint, kept for callers that pass it
+		ariaLabel = '',
 		customLabel = null,
 		checked = false,
 		onChange = () => {},
@@ -15,6 +26,9 @@
 		onText = 'On',
 		offText = 'Off',
 	} = $props();
+
+	// Only emit a name when one was actually supplied — see the note above.
+	const name = $derived(customLabel || ariaLabel || undefined);
 </script>
 
 {#if variant === 'icon'}
@@ -25,8 +39,8 @@
 		class="g2 flex cursor-pointer items-center gap-2 rounded-lg p-2 transition-colors disabled:cursor-default disabled:opacity-50 {checked
 			? colorOn.replace('bg-', 'bg-') + ' text-white dark:text-zinc-750'
 			: colorOff.replace('bg-', 'bg-') + ' text-gray-700 dark:text-gray-200'}"
-		aria-label={customLabel || `Toggle ${label}`}
-		title={customLabel || `Toggle ${label}`}
+		aria-label={name}
+		title={name}
 		role="switch"
 		aria-checked={checked}
 	>
@@ -50,7 +64,7 @@
 			class="relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors disabled:cursor-default disabled:opacity-50 {checked
 				? colorOn
 				: colorOff}"
-			aria-label={customLabel || `Toggle ${label}`}
+			aria-label={name}
 			role="switch"
 			aria-checked={checked}
 		>

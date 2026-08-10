@@ -33,7 +33,7 @@
 		imageAlt = '',
 
 		/** @type {import('svelte').Snippet} Action button snippet */
-		action
+		action = undefined
 	} = $props();
 </script>
 

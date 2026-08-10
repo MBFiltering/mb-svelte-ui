@@ -21,6 +21,12 @@
 
 	let isOpen = $state(false);
 	let dropdownElement = null;
+	let triggerElement = $state(null);
+
+	// Ties the trigger to the panel it controls, per instance.
+	// ($props.id() has to be the whole initializer — it cannot be interpolated.)
+	const uid = $props.id();
+	const panelId = `nav-dropdown-${uid}`;
 
 	const items = $derived(Array.isArray(config) ? config.filter(Boolean) : []);
 	const isTriggerDisabled = $derived(disabled || items.length === 0);
@@ -35,7 +41,11 @@
 	}
 
 	function closeDropdown() {
+		if (!isOpen) return;
 		isOpen = false;
+		// Escape and outside-clicks destroy the panel; without this, focus falls to
+		// <body> and the keyboard user restarts from the top of the document.
+		triggerElement?.focus();
 	}
 
 	function handleItemClick(item, event) {
@@ -57,13 +67,14 @@
 <div class="relative inline-block" bind:this={dropdownElement}>
 	<button
 		type="button"
+		bind:this={triggerElement}
 		onclick={toggleDropdown}
 		disabled={isTriggerDisabled}
 		class="{triggerClasses} {triggerStateClasses}"
 		title={title || label}
 		aria-label={title || label}
 		aria-expanded={isOpen}
-		aria-haspopup="menu"
+		aria-controls={panelId}
 	>
 		{#if icon}
 			{@const IconComponent = icon}
@@ -80,52 +91,48 @@
 	</button>
 
 	{#if isOpen}
-		<div
-			class="{NAV_PANEL_CLASSES} {dropdownClassName}"
-			role="menu"
-			aria-label={title || label}
-		>
+		<!-- A disclosure of links, not an ARIA menu. `role="menu"` would promise
+		     arrow-key navigation and a roving tabindex that this does not implement;
+		     aria-expanded + aria-controls describe it correctly, and Tab works. -->
+		<ul id={panelId} class="{NAV_PANEL_CLASSES} {dropdownClassName}" aria-label={title || label}>
 			{#each items as item}
-
-				{#if item.href && !item.onclick}
-					<a
-						href={item.disabled ? undefined : item.href}
-						onclick={(event) => handleItemClick(item, event)}
-						class={getNavMenuItemClasses(item)}
-						title={item.title || item.label}
-						aria-label={item.title || item.label}
-						aria-disabled={item.disabled}
-						tabindex={item.disabled ? -1 : 0}
-						role="menuitem"
-					>
-						{#if item.icon}
-							{@const ItemIcon = item.icon}
-							<ItemIcon size={18} strokeWidth={2} />
-						{/if}
-						{#if item.label}
-							<span>{item.label}</span>
-						{/if}
-					</a>
-				{:else}
-					<button
-						type="button"
-						onclick={(event) => handleItemClick(item, event)}
-						disabled={item.disabled}
-						class={getNavMenuItemClasses(item)}
-						title={item.title || item.label}
-						aria-label={item.title || item.label}
-						role="menuitem"
-					>
-						{#if item.icon}
-							{@const ItemIcon = item.icon}
-							<ItemIcon size={18} strokeWidth={2} />
-						{/if}
-						{#if item.label}
-							<span>{item.label}</span>
-						{/if}
-					</button>
-				{/if}
+				<li>
+					{#if item.href && !item.onclick}
+						<a
+							href={item.disabled ? undefined : item.href}
+							onclick={(event) => handleItemClick(item, event)}
+							class={getNavMenuItemClasses(item)}
+							title={item.title || item.label}
+							aria-disabled={item.disabled}
+							tabindex={item.disabled ? -1 : 0}
+						>
+							{#if item.icon}
+								{@const ItemIcon = item.icon}
+								<ItemIcon size={18} strokeWidth={2} aria-hidden="true" />
+							{/if}
+							{#if item.label}
+								<span>{item.label}</span>
+							{/if}
+						</a>
+					{:else}
+						<button
+							type="button"
+							onclick={(event) => handleItemClick(item, event)}
+							disabled={item.disabled}
+							class={getNavMenuItemClasses(item)}
+							title={item.title || item.label}
+						>
+							{#if item.icon}
+								{@const ItemIcon = item.icon}
+								<ItemIcon size={18} strokeWidth={2} aria-hidden="true" />
+							{/if}
+							{#if item.label}
+								<span>{item.label}</span>
+							{/if}
+						</button>
+					{/if}
+				</li>
 			{/each}
-		</div>
+		</ul>
 	{/if}
 </div>

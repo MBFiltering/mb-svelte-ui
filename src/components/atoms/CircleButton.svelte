@@ -12,6 +12,10 @@
 		className = ''
 	} = $props();
 
+	// `<svelte:component>` is deprecated in runes mode — a capitalised binding
+	// is dynamic on its own (same shape as BackButton).
+	const Icon = $derived(icon);
+
 	// Color variants
 	const colorClasses = {
 		ghost: 'text-gray-700 hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10',
@@ -41,5 +45,7 @@
 	{type}
 	class="cursor-pointer rounded-full transition-colors disabled:cursor-default disabled:opacity-50 {colorClass} {sizeClass} {className}"
 >
-	<svelte:component this={icon} size={iconSize} />
+	{#if Icon}
+		<Icon size={iconSize} />
+	{/if}
 </button>

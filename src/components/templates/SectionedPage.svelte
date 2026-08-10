@@ -63,6 +63,10 @@
 		disabledDuringSearchTitle = 'Disabled during search',
 		advancedText = 'advanced',
 		overflowMenuTitle = 'More',
+		magicSearchLabel = 'Magic search',
+		clearSearchLabel = 'Clear search',
+		sectionsLabel = 'Sections',
+		retryText = 'Try Again',
 
 		// Default expanded state for all Islands (used on initial render)
 		defaultIslandsExpanded = true,
@@ -82,14 +86,16 @@
 		collapseAllEnabled = true,
 
 		// Snippets (sidebarSkeleton and mainSkeleton are required for loading states)
-		header,
-		sidebarSkeleton,
-		mainSkeleton,
-		sectionContent
+		header = undefined,
+		sidebarSkeleton = undefined,
+		mainSkeleton = undefined,
+		sectionContent = undefined
 	} = $props();
 
 	// Internal state
 	let activeSection = $state('');
+	// Initial position only; the expand/collapse-all control owns it afterwards.
+	// svelte-ignore state_referenced_locally
 	let allIslandsExpanded = $state(defaultIslandsExpanded);
 	let islandResetKey = $state(0);
 	let magicSearchQuery = $state('');
@@ -426,7 +432,10 @@
 				>
 					<!-- space-y only from sm up (vertical sidebar). On mobile the bar is horizontal —
 					     space-y would stagger tabs. Labels are in-flow under icons, so sm gap is modest. -->
-					<ul class="flex items-start justify-evenly sm:space-y-3 lg:space-y-2 sm:inline sm:w-auto sm:justify-normal">
+					<ul
+						aria-label={sectionsLabel}
+						class="flex items-start justify-evenly sm:space-y-3 lg:space-y-2 sm:inline sm:w-auto sm:justify-normal"
+					>
 					<!-- Nav action buttons (hidden on mobile, shown on sm+ sidebar) -->
 					{#if navActions.length > 0}
 						<div
@@ -461,6 +470,7 @@
 									type="button"
 									onclick={() => selectSection(section.key)}
 									title={section.name}
+									aria-current={activeSection === section.key ? 'true' : undefined}
 									class="g2 lg:px-4 flex lg:w-full items-center justify-between rounded-lg border px-2 py-2 transition-colors gap-1 sm:justify-center lgv:justify-between lg:justify-between {magicSearchActive
 										? 'cursor-not-allowed border-gray-100 bg-gray-50 text-gray-700/50 opacity-50 dark:border-gray-800/25 dark:bg-gray-900 dark:text-gray-200/50'
 										: activeSection === section.key
@@ -523,8 +533,8 @@
 					{@render mainSkeleton()}
 				{/if}
 			{:else if error}
-				<div class="mb-4 px-4 py-3 text-red-alt-600 dark:text-red-alt-500">{error}</div>
-				<ControlButton onclick={onRetry} color="azure" size="md">Try Again</ControlButton>
+				<div role="alert" class="mb-4 px-4 py-3 text-red-alt-600 dark:text-red-alt-500">{error}</div>
+				<ControlButton onclick={onRetry} color="azure" size="md">{retryText}</ControlButton>
 			{:else}
 				<!-- Header on mobile (shown on mobile, hidden on desktop since it's in sidebar) -->
 				{#if header}
@@ -548,6 +558,7 @@
 								bind:this={magicSearchInput}
 								bind:value={magicSearchQuery}
 								placeholder={magicSearchPlaceholder}
+								aria-label={magicSearchLabel}
 								onfocus={() => (magicSearchFocused = true)}
 								onblur={() => (magicSearchFocused = false)}
 								onkeydown={(e) => {
@@ -576,8 +587,10 @@
 									type="button"
 									onclick={clearMagicSearch}
 									class="absolute top-1/2 ltr:right-2 rtl:left-2 -translate-y-1/2 cursor-pointer rounded p-0.5 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300"
+									aria-label={clearSearchLabel}
+									title={clearSearchLabel}
 								>
-									<X size={14} />
+									<X size={14} aria-hidden="true" />
 								</button>
 							{/if}
 						</div>

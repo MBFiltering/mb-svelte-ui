@@ -113,7 +113,9 @@ export function setLanguageFromUrl(langCode) {
  *
  * @param {string} newLang - New language code
  * @param {string} currentPath - Current URL path (e.g., '/en/dashboard')
- * @param {function} navigateFn - Navigation function (e.g., goto from '$app/navigation')
+ * @param {function} navigateFn - Navigation function (e.g., SvelteKit's `goto`, which the
+ *   consuming app imports — this package deliberately has no SvelteKit imports of its own,
+ *   and spelling one here would trip `svelte-package`'s text scan for them)
  */
 export function setLanguageAndNavigate(newLang, currentPath, navigateFn) {
 	if (!isValidLanguage(newLang)) {

@@ -36,7 +36,7 @@
 		columns2Xl2 = null, // 1650px+ column count
 		disableGrid = false, // When true, items display in normal flow instead of grid
 		searchActions = undefined, // Optional actions rendered beside the search input
-		children,
+		children = undefined,
 		// Bulk selection props
 		bulk = false,
 		selected = $bindable([]), // array of selected item ids (bind:selected)
@@ -58,6 +58,11 @@
 		nextText = 'Next', // aria-label for next button
 		showAllText = 'Show all', // label for the show-all link
 		paginateText = 'Paginate', // label to return to paginated view
+		filtersLabel = 'Filter', // aria-label for the filter tab group
+		selectAllLabel = 'Select all visible', // aria-label for the bulk select-all checkbox
+		// Names each row's own bulk checkbox. Gets the item, so the row's subject
+		// lands in the label — "Select WhatsApp", not a list of "Select" checkboxes.
+		selectItemLabel = undefined,
 		// Optional full count-line override (e.g. "You have 3 devices"), applied
 		// only when every item is visible at a glance — nothing hidden by search,
 		// tabs, or pagination. A non-empty string replaces both "X of Y" and
@@ -67,6 +72,8 @@
 		showResultsCount = true
 	} = $props();
 
+	// First tab is the initial selection only; clicking a tab owns it afterwards.
+	// svelte-ignore state_referenced_locally
 	let activeFilter = $state(filterTabs.length > 0 ? filterTabs[0].key : null);
 	let currentPage = $state(1);
 	let showAll = $state(false);
@@ -255,15 +262,20 @@
 <div class="space-y-4">
 	<!-- Filter Tabs -->
 	{#if filterTabs.length > 0}
-		<div class="flex gap-2 border-b border-neutral-100 dark:border-zinc-750">
+		<div
+			role="group"
+			aria-label={filtersLabel}
+			class="flex gap-2 border-b border-neutral-100 dark:border-zinc-750"
+		>
 			{#each filterTabs as tab}
 				<button
 					type="button"
 					onclick={() => (activeFilter = tab.key)}
-					class="cursor-pointer border-b-2 px-4 py-2 text-sm font-medium transition-colors {activeFilter ===
+					aria-pressed={activeFilter === tab.key}
+					class="cursor-pointer border-b-2 px-4 py-2 text-sm transition-colors {activeFilter ===
 					tab.key
-						? 'border-azure-700 text-azure-700'
-						: 'border-transparent text-gray-900/50 hover:text-azure-700'}"
+						? 'border-azure-700 font-semibold text-azure-700 dark:border-azure-200 dark:text-azure-200'
+						: 'border-transparent font-medium text-gray-900/50 hover:text-azure-700 dark:text-gray-400 dark:hover:text-azure-200'}"
 				>
 					{tab.label}
 				</button>
@@ -282,7 +294,7 @@
 								checked={allVisibleSelected}
 								indeterminate={someVisibleSelected && !allVisibleSelected}
 								onclick={toggleSelectAllVisible}
-								ariaLabel="Select all visible"
+								ariaLabel={selectAllLabel}
 							/>
 						</div>
 					{/if}
@@ -342,7 +354,11 @@
 				{#if bulk}
 					<div class="flex items-center gap-3">
 						<div class="magicsearch-item flex items-start">
-							<Checkbox checked={isSelected(item)} onclick={() => toggleSelect(item)} />
+							<Checkbox
+								checked={isSelected(item)}
+								onclick={() => toggleSelect(item)}
+								ariaLabel={selectItemLabel?.(item) ?? selectAllLabel}
+							/>
 						</div>
 						<div class="flex-1 min-w-0">{@render children?.(item, activeFilter)}</div>
 					</div>
@@ -389,7 +405,7 @@
 					className="rtl:rotate-180"
 				/>
 
-				<span class="text-gray-300 dark:text-gray-600">|</span>
+				<span class="text-gray-300 dark:text-gray-600" aria-hidden="true">|</span>
 
 				<button
 					type="button"

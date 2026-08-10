@@ -1,6 +1,6 @@
 <script>
 	// Props - Svelte 5 style
-	let { children } = $props();
+	let { children = undefined } = $props();
 </script>
 
 <span

@@ -34,7 +34,7 @@
 		// Additional classes
 		className = '',
 		// Content
-		children
+		children = undefined
 	} = $props();
 
 	// Calculate rows for column-first flow

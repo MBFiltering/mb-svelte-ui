@@ -26,7 +26,7 @@
 		onSyncStart = null,
 		onSyncEnd = null,
 		labels = {},
-		actions
+		actions = undefined
 	} = $props();
 
 	const deviceIcons = {

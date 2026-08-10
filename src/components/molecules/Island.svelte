@@ -13,10 +13,12 @@
 		collapsible = true,
 		collapseLabel = 'Collapse', // Tooltip text when expanded
 		expandLabel = 'Expand', // Tooltip text when collapsed
-		children
+		children = undefined
 	} = $props();
 
-	// State
+	// State — `defaultExpanded` is the initial position only; the header button
+	// owns it afterwards.
+	// svelte-ignore state_referenced_locally
 	let internalExpanded = $state(defaultExpanded);
 
 	// Ties the header button to the panel it controls via aria-controls. Islands

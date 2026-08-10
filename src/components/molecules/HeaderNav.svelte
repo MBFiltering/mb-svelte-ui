@@ -37,6 +37,7 @@
 
 	let isOpen = $state(false);
 	let menuElement = $state(null);
+	let triggerElement = $state(null);
 
 	const menuId = $props.id();
 
@@ -45,7 +46,13 @@
 		`g2 flex items-center gap-2 rounded-lg border px-2 py-2 font-medium transition-colors ${getNavButtonColorClasses('azure')} ${getNavButtonStateClasses(false)}`
 	);
 
-	const close = () => (isOpen = false);
+	// Escape and outside-clicks destroy the panel; without moving focus back to the
+	// trigger it falls to <body> and the keyboard user restarts from the top.
+	function close() {
+		if (!isOpen) return;
+		isOpen = false;
+		triggerElement?.focus();
+	}
 
 	function handleItemClick(item, event) {
 		if (item.disabled) {
@@ -63,16 +70,19 @@
 	});
 </script>
 
+<!-- Labels are always visible in this panel, so the visible text names each item.
+     `title` stays a tooltip; using it as the name risked a mismatch with the
+     visible label (2.5.3). -->
 {#snippet menuItem(/** @type {NavItem} */ item)}
 	{#if item.href && !item.onclick}
 		<a
 			href={item.disabled ? undefined : item.href}
 			onclick={(event) => handleItemClick(item, event)}
 			class={getNavMenuItemClasses(item)}
-			aria-label={item.title || item.label}
+			title={item.title || undefined}
+			aria-label={item.label ? undefined : item.title}
 			aria-disabled={item.disabled}
 			tabindex={item.disabled ? -1 : 0}
-			role="menuitem"
 		>
 			{#if item.icon}
 				{@const ItemIcon = item.icon}
@@ -86,8 +96,8 @@
 			onclick={(event) => handleItemClick(item, event)}
 			disabled={item.disabled}
 			class={getNavMenuItemClasses(item)}
-			aria-label={item.title || item.label}
-			role="menuitem"
+			title={item.title || undefined}
+			aria-label={item.label ? undefined : item.title}
 		>
 			{#if item.icon}
 				{@const ItemIcon = item.icon}
@@ -128,11 +138,11 @@
 <div class="relative sm:hidden" bind:this={menuElement}>
 	<button
 		type="button"
-		onclick={() => (isOpen = !isOpen)}
+		bind:this={triggerElement}
+		onclick={() => (isOpen ? close() : (isOpen = true))}
 		class={triggerClasses}
 		title={menuLabel}
 		aria-label={menuLabel}
-		aria-haspopup="menu"
 		aria-expanded={isOpen}
 		aria-controls={menuId}
 	>
@@ -140,21 +150,26 @@
 	</button>
 
 	{#if isOpen}
-		<div id={menuId} class={NAV_PANEL_CLASSES} role="menu" aria-label={menuLabel}>
+		<!-- A disclosure of links, not an ARIA menu: `role="menu"` would promise
+		     arrow-key navigation and a roving tabindex that this does not implement.
+		     aria-expanded + aria-controls describe it correctly, and Tab works. -->
+		<ul id={menuId} class={NAV_PANEL_CLASSES} aria-label={menuLabel}>
 			{#each navItems as item}
 				{#if item.items?.length}
-					<div role="group" aria-label={item.title || item.label} class="space-y-1.5">
+					<li>
 						<div class="px-3 pt-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400">
 							{item.label}
 						</div>
-						{#each item.items as subItem}
-							{@render menuItem(subItem)}
-						{/each}
-					</div>
+						<ul class="space-y-1.5" aria-label={item.title || item.label}>
+							{#each item.items as subItem}
+								<li>{@render menuItem(subItem)}</li>
+							{/each}
+						</ul>
+					</li>
 				{:else}
-					{@render menuItem(item)}
+					<li>{@render menuItem(item)}</li>
 				{/if}
 			{/each}
-		</div>
+		</ul>
 	{/if}
 </div>

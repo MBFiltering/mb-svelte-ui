@@ -8,6 +8,9 @@
 		info = false,
 		infoLabel = '',
 		infoDirectory = null, // Custom info directory for i18n
+		// Accessible name for the info trigger. Host apps pass a translated string;
+		// left unset it falls back to Info's own English default.
+		infoAriaLabel = undefined,
 		prefix = undefined,
 		children = undefined
 	} = $props();
@@ -34,7 +37,7 @@
 			<span id={labelId} class="">{label}</span>
 			<span class="hidden h-5 sm:inline-block">
 				{#if info}
-					<Info label={infoLabel || label} {infoDirectory} />
+					<Info label={infoLabel || label} {infoDirectory} ariaLabel={infoAriaLabel} />
 				{/if}
 			</span>
 		</div>
@@ -43,7 +46,7 @@
 		{/if}
 		<div class="inline sm:hidden">
 			{#if info}
-				<Info label={infoLabel || label} variant="inline" {infoDirectory} />
+				<Info label={infoLabel || label} variant="inline" {infoDirectory} ariaLabel={infoAriaLabel} />
 			{/if}
 		</div>
 	</div>

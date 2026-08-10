@@ -31,6 +31,15 @@
 		variant = 'default',
 		showSearchIcon = false,
 		className = '',
+		// Error state. `invalid` is what reaches assistive tech; `variant="error"`
+		// only recolours the border, which on its own conveys the state by colour
+		// alone. `describedBy` points at the element holding the message.
+		invalid = undefined,
+		describedBy = undefined,
+		// Accessible names for the password visibility toggle. Host apps pass
+		// translations; the English defaults keep existing call sites working.
+		showPasswordLabel = 'Show password',
+		hidePasswordLabel = 'Hide password',
 		onchange = () => {},
 		oninput = () => {},
 		onkeydown = () => {},
@@ -112,7 +121,7 @@
 		<div
 			class="pointer-events-none absolute top-1/2 ltr:left-3 rtl:right-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-azure-700 dark:text-gray-500 dark:group-focus-within:text-azure-500"
 		>
-			<Search size={searchIconSize} strokeWidth={2} />
+			<Search size={searchIconSize} strokeWidth={2} aria-hidden="true" />
 		</div>
 	{/if}
 
@@ -130,6 +139,8 @@
 			{inputmode}
 			{rows}
 			aria-label={ariaLabel || placeholder || undefined}
+			aria-invalid={invalid || (variant === 'error' ? true : undefined)}
+			aria-describedby={describedBy}
 			{onchange}
 			{oninput}
 			{onkeydown}
@@ -159,6 +170,8 @@
 			{inputmode}
 			autocomplete={autocomplete || undefined}
 			aria-label={ariaLabel || placeholder || undefined}
+			aria-invalid={invalid || (variant === 'error' ? true : undefined)}
+			aria-describedby={describedBy}
 			{onchange}
 			{oninput}
 			{onkeydown}
@@ -176,13 +189,13 @@
 			onclick={togglePasswordVisibility}
 			{disabled}
 			class="absolute top-1/2 rtl:left-3 ltr:right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-600 dark:hover:text-gray-400"
-			aria-label={showPassword ? 'Hide password' : 'Show password'}
+			aria-label={showPassword ? hidePasswordLabel : showPasswordLabel}
 			aria-pressed={showPassword}
 		>
 			{#if showPassword}
-				<EyeOff size={18} />
+				<EyeOff size={18} aria-hidden="true" />
 			{:else}
-				<Eye size={18} />
+				<Eye size={18} aria-hidden="true" />
 			{/if}
 		</button>
 	{/if}

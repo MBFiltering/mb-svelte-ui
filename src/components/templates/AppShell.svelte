@@ -26,6 +26,12 @@
 		// Nav (header, end side) — see HeaderNav for the NavItem shape
 		navItems = [],
 		menuLabel = 'Menu',
+		navLabel = 'Main navigation',
+
+		// The skip link: the first thing in the tab order, so a keyboard user can
+		// jump the header (account chip, app search, the whole nav row) that
+		// precedes <main> on every page.
+		skipToContentLabel = 'Skip to main content',
 
 		// Brand (footer)
 		productName = '',
@@ -35,17 +41,28 @@
 		// Loading bar props
 		loadingProgress = 0,
 		isFullyLoaded = true,
+		loadingLabel = 'Loading page',
 
 		// Styling
 		className = '',
 
 		// Content snippets
-		headerContent,
-		children
+		headerContent = undefined,
+		children = undefined
 	} = $props();
 </script>
 
 <div class="flex min-h-screen flex-col bg-neutral-100 dark:bg-zinc-750 {className}">
+	<!-- Skip link: off-screen until focused, then a normal-looking button pinned
+	     over the header. `sr-only focus:not-sr-only` is the whole trick — it stays
+	     in the tab order (unlike `hidden`) while taking no visual space. -->
+	<a
+		href="#main"
+		class="g2 sr-only rounded-lg bg-white px-4 py-2 text-sm font-medium text-azure-700 shadow-lg focus:not-sr-only focus:absolute focus:top-2 focus:z-50 focus:ltr:left-2 focus:rtl:right-2 dark:bg-zinc-800 dark:text-azure-200"
+	>
+		{skipToContentLabel}
+	</a>
+
 	<!-- Sticky Header -->
 	<header class="sticky top-0 z-20 h-14 bg-white px-4 py-2 shadow-lg dark:bg-zinc-800">
 		<div class="flex items-center justify-between gap-4">
@@ -75,14 +92,23 @@
 				{#if headerContent}
 					{@render headerContent()}
 				{/if}
-				<HeaderNav items={navItems} {menuLabel} />
+				<nav aria-label={navLabel}>
+					<HeaderNav items={navItems} {menuLabel} />
+				</nav>
 			</div>
 		</div>
 	</header>
 
-	<!-- Loading Progress Bar -->
+	<!-- Loading Progress Bar. Once loaded it is not just invisible but gone from
+	     the a11y tree, so assistive tech is not left with a stale 100% bar. -->
 	<div class="sticky top-14 left-0 z-20 w-full">
 		<div
+			role="progressbar"
+			aria-label={loadingLabel}
+			aria-valuenow={Math.round(loadingProgress)}
+			aria-valuemin="0"
+			aria-valuemax="100"
+			aria-hidden={isFullyLoaded ? 'true' : undefined}
 			class="absolute h-1 bg-azure-500 transition-all duration-300 ease-out {isFullyLoaded
 				? 'opacity-0'
 				: 'opacity-100'}"
@@ -90,8 +116,9 @@
 		></div>
 	</div>
 
-	<!-- Main Content Area -->
-	<main class="flex-1">
+	<!-- Main Content Area. `tabindex="-1"` is what lets the skip link actually
+	     move focus here — without it the browser scrolls but focus stays put. -->
+	<main id="main" tabindex="-1" class="flex-1 focus:outline-none">
 		{#if children}
 			{@render children()}
 		{/if}

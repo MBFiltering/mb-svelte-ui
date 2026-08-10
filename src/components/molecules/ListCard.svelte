@@ -10,8 +10,8 @@
 		showArrow = true,
 		showOpenInNewTab = true,
 		openInNewTabHref = '',
-		icon,
-		actions,
+		icon = undefined,
+		actions = undefined,
 		children
 	} = $props();
 

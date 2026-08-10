@@ -8,7 +8,11 @@
 	// Props - Svelte 5 style
 	let { fields = [], initialData = {}, onSave = async () => {}, onUpdate = () => {} } = $props();
 
+	// Seeded from the first `initialData`; the $effect below re-seeds on change,
+	// and the form owns the values in between.
+	// svelte-ignore state_referenced_locally
 	let formData = $state({ ...initialData });
+	// svelte-ignore state_referenced_locally
 	let originalFormData = $state({ ...initialData });
 	let isEditing = $state(false);
 	let isSaving = $state(false);

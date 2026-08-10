@@ -2,9 +2,9 @@
 	import Toast from '../atoms/Toast.svelte';
 	import toasts, { removeToast } from '../../utils/toastStore.js';
 
-	// $effect(() => {
-	// 	console.log('Toasts in store:', $toasts);
-	// });
+	// Accessible name for each toast's dismiss button. Passed once here rather
+	// than per `toast.success(...)` call, since the store carries only the message.
+	let { dismissLabel = 'Dismiss' } = $props();
 </script>
 
 <!-- Toast Container -->
@@ -15,6 +15,7 @@
 			message={toast.message}
 			type={toast.type}
 			duration={toast.duration}
+			{dismissLabel}
 			onClose={() => removeToast(toast.id)}
 		/>
 	{/each}
