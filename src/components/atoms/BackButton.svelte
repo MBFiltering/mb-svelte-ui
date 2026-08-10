@@ -10,7 +10,7 @@
 	render a real anchor. With neither, it goes back in history.
 -->
 <script>
-	import { CornerLeftUp } from '@lucide/svelte';
+	import { CornerUpLeft } from '@lucide/svelte';
 	import CircleButton from './CircleButton.svelte';
 
 	/**
@@ -31,7 +31,7 @@
 		href = '',
 		onclick,
 		title = '',
-		icon = CornerLeftUp,
+		icon = CornerUpLeft,
 		iconSize = 20,
 		color = 'ghost',
 		size = 'md',
@@ -45,10 +45,10 @@
 			className
 	);
 
-	// The arrow must turn the way "back" goes in an RTL layout. CornerLeftUp
-	// mirrored horizontally is exactly CornerRightUp — same glyph, so one icon
+	// The arrow must turn the way "back" goes in an RTL layout. CornerUpLeft
+	// mirrored horizontally is exactly CornerUpRight — same glyph, so one icon
 	// covers both directions. Mirror, never rotate: upside down it would become
-	// CornerRightDown. The icon-only variant has no text to sit beside, so the
+	// CornerDownRight. The icon-only variant has no text to sit beside, so the
 	// whole circle mirrors, which is invisible on a round button.
 	const iconOnlyClasses = $derived('rtl:-scale-x-100 ' + className);
 
