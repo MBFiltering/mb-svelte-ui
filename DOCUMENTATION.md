@@ -1952,10 +1952,17 @@ Searchable, filterable list with optional bulk selection.
 | `emptyMessage`      | `string`  | `'No items found'` | Empty state message              |
 | `itemName`          | `string`  | `'item'`           | Singular item name               |
 | `filterTabs`        | `array`   | `[]`               | Tab filter definitions           |
-| `columns`           | `number`  | `1`                | Grid columns                     |
-| `columnsXl`         | `number`  | `1`                | Columns at xl breakpoint         |
-| `columnsXl2`        | `number`  | `1`                | Columns at xl2 breakpoint        |
-| `columns2Xl`        | `number`  | `2`                | Columns at 2xl breakpoint        |
+| `columns`           | `number`  | `1`                | Grid columns (base; the grid itself starts at 640px) |
+| `columnsSm`         | `number`  | `null`             | Columns at 640px+                |
+| `columnsSm2`        | `number`  | `null`             | Columns at 700px+                |
+| `columnsMd`         | `number`  | `null`             | Columns at 768px+                |
+| `columnsMd2`        | `number`  | `null`             | Columns at 850px+                |
+| `columnsLg`         | `number`  | `null`             | Columns at 1024px+               |
+| `columnsLg2`        | `number`  | `null`             | Columns at 1150px+               |
+| `columnsXl`         | `number`  | `1`                | Columns at 1280px+               |
+| `columnsXl2`        | `number`  | `1`                | Columns at 1440px+               |
+| `columns2Xl`        | `number`  | `2`                | Columns at 1536px+               |
+| `columns2Xl2`       | `number`  | `null`             | Columns at 1650px+               |
 | `disableGrid`       | `boolean` | `false`            | Use normal flow                  |
 | `searchActions`     | `snippet` | `undefined`        | Optional actions next to search  |
 | `children`          | `snippet` | -                  | Item render function             |
@@ -1976,6 +1983,11 @@ Searchable, filterable list with optional bulk selection.
 | `paginateText`      | `string`  | `'Paginate'`       | i18n label for the button that returns to paginated view when all items are shown |
 | `formatAllCount`    | `function`| `null`             | Optional `(count) => string \| null`, called with the total item count. Only applies while every item is visible (nothing hidden by search, tabs, or pagination); a non-empty string then becomes the entire count line. Return null/undefined/'' to keep the default forms. |
 | `showResultsCount`  | `boolean` | `true`             | When `false`, the built-in results count line is omitted (parent can render its own). |
+
+**Column behavior:**
+
+- Every stop is forwarded straight to [`Grid`](#grid), and a stop left `null` inherits the one below it. `columns` is the base, but the grid only exists from 640px up — below that `Grid` falls back to normal flow, so a phone always gets one item per row.
+- `columnsXl`, `columnsXl2` and `columns2Xl` are **not** `null` by default (`1`, `1`, `2`). A ramp that only sets a lower stop therefore collapses again higher up — `columnsLg={2}` alone drops back to one column at 1280px. Spell out every stop from the first one you set upwards.
 
 **Results count behavior:**
 

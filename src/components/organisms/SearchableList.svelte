@@ -18,10 +18,22 @@
 		itemName = 'item',
 		itemNamePlural = '', // Optional plural form (if not provided, will auto-pluralize itemName)
 		filterTabs = [], // Array of { key, label, filterFn }
+		// Column counts, forwarded to Grid. `columns` is the base (the grid only
+		// starts at 640px — below that Grid falls back to normal flow), and every
+		// other stop is opt-in: left null it inherits the stop below it. The
+		// xl/xl2/2xl trio keeps its historical defaults so existing call sites
+		// lay out exactly as before.
 		columns = 1, // Number of columns for calculating rows
+		columnsSm = null, // 640px+ column count
+		columnsSm2 = null, // 700px+ column count
+		columnsMd = null, // 768px+ column count
+		columnsMd2 = null, // 850px+ column count
+		columnsLg = null, // 1024px+ column count
+		columnsLg2 = null, // 1150px+ column count
 		columnsXl = 1, // 1280px+ column count
 		columnsXl2 = 1, // 1440px+ column count
 		columns2Xl = 2, // 1536px+ column count
+		columns2Xl2 = null, // 1650px+ column count
 		disableGrid = false, // When true, items display in normal flow instead of grid
 		searchActions = undefined, // Optional actions rendered beside the search input
 		children,
@@ -305,7 +317,22 @@
 	{/if}
 
 	<!-- List Container -->
-	<Grid flow="col" itemCount={paginatedItems.length} {columns} {columnsXl} {columnsXl2} {columns2Xl} disabled={disableGrid}>
+	<Grid
+		flow="col"
+		itemCount={paginatedItems.length}
+		{columns}
+		{columnsSm}
+		{columnsSm2}
+		{columnsMd}
+		{columnsMd2}
+		{columnsLg}
+		{columnsLg2}
+		{columnsXl}
+		{columnsXl2}
+		{columns2Xl}
+		{columns2Xl2}
+		disabled={disableGrid}
+	>
 		{#if paginatedItems.length === 0}
 			<div class="rounded-lg py-8 text-center text-gray-500 dark:text-gray-400">
 				{emptyMessage}
