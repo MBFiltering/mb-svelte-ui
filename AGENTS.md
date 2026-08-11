@@ -2,7 +2,7 @@
 
 > **Living Document**: Any AI agent making changes to this repository, or receives new maxims from the human, **must** update this file accordingly.
 
-> **Design rules live in [STYLE-GUIDE.md](../mb-specs/STYLE-GUIDE.md), in the `mb-specs`
+> **Design rules live in [STYLE-GUIDE.md](../mb-specs/resources/STYLE-GUIDE.md), in the `mb-specs`
 > repo** — the palette, light↔dark mappings, corners, fonts, RTL, accessibility and
 > browser tab titles, for this package *and* every app that consumes it. It is the
 > canonical copy and it is estate-wide, which is why it does not live here; every repo's
@@ -229,7 +229,7 @@ negotiable:
 - **Never on `rounded`/`rounded-sm` (≤ 4px)** — the arc is too short to read.
 
 The reasoning, the `--g2-scale` compensation and the browser-support story are in
-[STYLE-GUIDE.md](../mb-specs/STYLE-GUIDE.md#corners--g2-is-the-house-style); the per-component
+[STYLE-GUIDE.md](../mb-specs/resources/STYLE-GUIDE.md#corners--g2-is-the-house-style); the per-component
 list is in [DOCUMENTATION.md](DOCUMENTATION.md#css-classes-reference).
 
 ---
@@ -259,13 +259,25 @@ unrelated things depending on which product you were looking at. Keep the split:
 ## i18n — two data shapes, one engine
 
 `src/utils/i18n/` is the shared translation engine. Consumers register their own strings;
-this package ships only the `safety.*` namespace (`safetyTranslations.js`, used by
-`SafetyBadge`). Both shapes below resolve through the same `t` / `tr` / `getTranslation`.
+this package ships two namespaces of its own — `safety.*` (`safetyTranslations.js`, used
+by `SafetyBadge`) and `auth.*` (`authTranslations.js`, the estate-wide sign-in / sign-out
+vocabulary). Both shapes below resolve through the same `t` / `tr` / `getTranslation`.
+
+`auth.*` is here rather than in each app because it was in each app, four times, spelled
+four ways — "Login", "Log In", "Sign In", "Logout", "Log out", "Sign out" all shipped at
+once, and the five translations inherited the drift on top of their own. The house rule is
+"Sign in" / "Sign out", sentence case, hyphenated before a noun ("sign-in code"); the
+reasoning and the enforcement live in `../mb-specs/resources/STYLE-GUIDE.md`. Each app
+registers it beside its locale loaders. **Consumers must not re-author these keys
+locally** — locale-first wins over key-first, so a local copy shadows the shared one
+silently, which is exactly the failure this namespace exists to remove.
 
 **key-first** — `{ ns: { key: { en, es, fr, he, ru, yi } } }`, registered eagerly with
 `registerTranslations()`. Pleasant to author (all six languages side by side) but it is
 one module carrying every language, so every visitor downloads all of them. Fine for a
-handful of shared strings; that is why `safetyTranslations` still uses it.
+handful of shared strings; that is why `safetyTranslations` and `authTranslations` both
+use it — five and nine strings respectively, and a header's sign-out button must have a
+label before any locale chunk has landed.
 
 **locale-first** — `{ ns: { key: 'value' } }`, one module per language, registered as lazy
 loaders with `registerLocaleLoaders({ en: () => import(…), … })` and pulled in with

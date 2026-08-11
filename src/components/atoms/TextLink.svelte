@@ -1,7 +1,7 @@
 <script>
 	/**
 	 * TextLink - inline text link/button for secondary actions such as
-	 * "Log in", "Create account", "Back to login", or "Forgot password?".
+	 * "Sign in", "Create account", "Back to sign in", or "Forgot password?".
 	 *
 	 * Renders an <a> when `href` is provided, otherwise a <button> (use `onclick`).
 	 * Two color variants: `azure` (accent, medium weight) and `muted` (subtle gray).
@@ -9,7 +9,7 @@
 	 *
 	 * @component
 	 * @example
-	 * <TextLink onclick={() => goto('/auth/login')}>Log in</TextLink>
+	 * <TextLink onclick={() => goto('/auth/login')}>Sign in</TextLink>
 	 * <TextLink href="/terms">Terms</TextLink>
 	 * <TextLink color="muted" className="text-sm" onclick={back}>Back</TextLink>
 	 */

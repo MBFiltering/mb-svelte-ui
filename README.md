@@ -110,11 +110,11 @@ Importing the stylesheet is the whole of it:
 @source "../node_modules/@mbsmart/ui/dist"; /* use your actual path to node_modules */
 ```
 
-See the "Typography" section of [STYLE-GUIDE.md](../mb-specs/STYLE-GUIDE.md) for which faces ship and why.
+See the "Typography" section of [STYLE-GUIDE.md](../mb-specs/resources/STYLE-GUIDE.md) for which faces ship and why.
 
 ## Style guide
 
-[STYLE-GUIDE.md](../mb-specs/STYLE-GUIDE.md) in `mb-specs` is the canonical house style for
+[STYLE-GUIDE.md](../mb-specs/resources/STYLE-GUIDE.md) in `mb-specs` is the canonical house style for
 this package **and** every app that consumes it: the palette and its semantics, light↔dark mappings, the `g2`
 corner rules, typography, RTL, accessibility, browser tab titles and naming conventions.
 Read it before adding a colour, a radius or a title.
