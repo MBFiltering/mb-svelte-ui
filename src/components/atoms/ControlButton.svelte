@@ -6,6 +6,7 @@
 		onclick = () => {},
 		disabled = false,
 		loading = false,
+		loadingLabel = '',
 		color = 'azure',
 		size = 'md',
 		type = 'button',
@@ -44,10 +45,31 @@
 	disabled={disabled || loading}
 	{type}
 	aria-busy={loading}
-	class="g2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all disabled:cursor-default transition-shadows hover:scale-101 hover:shadow-md disabled:hover:scale-100 disabled:hover:shadow-none {colorClass} {sizeClass} {className}"
+	class="g2 relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all transition-shadows hover:scale-101 hover:shadow-md disabled:hover:scale-100 disabled:hover:shadow-none {loading
+		? 'cursor-wait'
+		: 'disabled:cursor-default'} {colorClass} {sizeClass} {className}"
 >
-	{#if loading}
+	{#if loading && loadingLabel}
+		<!-- Explained wait: the label names what is happening, so it replaces the
+		     children outright and the button is free to resize around it. -->
 		<LoaderCircle size={spinnerSize[size] || 16} class="animate-spin" aria-hidden="true" />
+		<span>{loadingLabel}</span>
+	{:else}
+		<!-- Silent wait: the children keep their box so the button never resizes
+		     under the pointer, and stay in the accessibility tree so the button
+		     keeps its name — `opacity-0`, never `invisible` or `{#if}`. The
+		     spinner is laid over that reserved space. -->
+		<span
+			class="inline-flex items-center justify-center gap-2 transition-opacity {loading
+				? 'opacity-0'
+				: ''}"
+		>
+			{@render children()}
+		</span>
+		{#if loading}
+			<span class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+				<LoaderCircle size={spinnerSize[size] || 16} class="animate-spin" />
+			</span>
+		{/if}
 	{/if}
-	{@render children()}
 </button>

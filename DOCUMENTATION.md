@@ -375,29 +375,41 @@ Circular icon button with color and size variants. Used for inline actions like 
 
 **Props:**
 
-| Prop       | Type        | Default    | Description                                                                   |
-| ---------- | ----------- | ---------- | ----------------------------------------------------------------------------- |
-| `onclick`  | `function`  | `() => {}` | Click handler                                                                            |
-| `disabled` | `boolean`   | `false`    | Disables the button                                                                      |
-| `title`    | `string`    | `''`       | Tooltip text                                                                             |
-| `type`     | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                           |
-| `color`    | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'ghost2'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
-| `size`     | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                                     |
-| `icon`     | `Component` | -          | Lucide icon component                                                                    |
-| `iconSize` | `number`    | `18`       | Size of the icon in pixels                                                               |
-| `className`| `string`    | `''`       | Additional CSS classes                                                                   |
+| Prop        | Type        | Default    | Description                                                                              |
+| ----------- | ----------- | ---------- | ---------------------------------------------------------------------------------------- |
+| `onclick`   | `function`  | `() => {}` | Click handler                                                                            |
+| `disabled`  | `boolean`   | `false`    | Disables the button                                                                      |
+| `loading`   | `boolean`   | `false`    | In-flight state. Disables the button, sets `aria-busy` and `cursor-wait`, and shows the wait in the icon's place. Do not also pass `disabled` |
+| `spinIcon`  | `boolean`   | `false`    | While `loading`, spin `icon` in place instead of swapping in a spinner. For icons that already mean the action, e.g. `RefreshCw` |
+| `title`     | `string`    | `''`       | Tooltip text                                                                             |
+| `ariaLabel` | `string`    | `''`       | Accessible name. An icon-only button needs one — a `title` is a tooltip, not a name       |
+| `type`      | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                           |
+| `color`     | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'ghost2'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
+| `size`      | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                                     |
+| `icon`      | `Component` | -          | Lucide icon component                                                                    |
+| `iconSize`  | `number`    | `18`       | Size of the icon in pixels                                                               |
+| `className` | `string`    | `''`       | Additional CSS classes                                                                   |
 
 **Usage:**
 
 ```svelte
 <!-- Ghost button (default) - transparent background with hover effect -->
-<CircleButton onclick={startEditing} title="Edit" icon={Pencil} />
+<CircleButton onclick={startEditing} title="Edit" ariaLabel={$t('common.edit')} icon={Pencil} />
 
 <!-- Colored button for primary actions -->
-<CircleButton onclick={save} color="azure" title="Save" icon={Check} />
+<CircleButton onclick={save} color="azure" title="Save" ariaLabel={$t('common.save')} icon={Check} />
 
 <!-- Disabled state -->
 <CircleButton onclick={cancel} disabled={isSaving} title="Cancel" icon={X} />
+
+<!-- In flight: the RefreshCw glyph spins where it stands -->
+<CircleButton
+	onclick={handleSync}
+	loading={isSyncing}
+	spinIcon
+	icon={RefreshCw}
+	ariaLabel={$t('common.requestDeviceSync')}
+/>
 
 <!-- Custom icon size -->
 <CircleButton onclick={doSomething} icon={Pencil} iconSize={24} size="lg" />
@@ -419,32 +431,54 @@ Styled button with color and size variants.
 
 **Props:**
 
-| Prop        | Type       | Default    | Description                                                        |
-| ----------- | ---------- | ---------- | ------------------------------------------------------------------ |
-| `onclick`   | `function` | `() => {}` | Click handler                                                      |
-| `disabled`  | `boolean`  | `false`    | Disables the button                                                |
-| `color`     | `string`   | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'`, `'gray'`, `'black'`, `'transparent'` |
-| `size`      | `string`   | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                               |
-| `type`      | `string`   | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                     |
-| `className` | `string`   | `''`       | Additional CSS classes                                             |
-| `children`  | `snippet`  | -          | Button content                                                     |
+| Prop           | Type       | Default    | Description                                                        |
+| -------------- | ---------- | ---------- | ------------------------------------------------------------------ |
+| `onclick`      | `function` | `() => {}` | Click handler                                                      |
+| `disabled`     | `boolean`  | `false`    | Disables the button                                                |
+| `loading`      | `boolean`  | `false`    | In-flight state. Disables the button, sets `aria-busy` and `cursor-wait`, and overlays a spinner without resizing it. Do not also pass `disabled` |
+| `loadingLabel` | `string`   | `''`       | Text to show *instead of* the children while `loading` — e.g. `'Saving…'`. Omit to keep the button's own label in place, hidden under the spinner |
+| `color`        | `string`   | `'azure'`  | Color variant: `'azure'`, `'green'`, `'orange'`, `'red'`, `'gray'`, `'black'`, `'transparent'` |
+| `size`         | `string`   | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                               |
+| `type`         | `string`   | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                     |
+| `className`    | `string`   | `''`       | Additional CSS classes                                             |
+| `children`     | `snippet`  | -          | Button content                                                     |
 
 A disabled button (or a `loading` one, which is disabled too) is inert under the
 pointer: it keeps its gray fill and neither lifts nor casts a shadow on hover, so
 an action that cannot be taken never looks clickable.
+
+**`disabled` vs `loading`.** They are not interchangeable: `disabled` means *you
+may not*, `loading` means *you did, and it is working*. `loading` already implies
+`disabled`, so pass one or the other, never both for the same flag.
+
+**Loading does not resize the button.** Without `loadingLabel` the children keep
+their box at `opacity-0` and the spinner is laid over that reserved space, so the
+button never grows or jumps under the pointer mid-click. They stay in the
+accessibility tree, so the button keeps its accessible name while busy. Give
+`loadingLabel` only where the wait is long enough to be worth naming — then the
+button *does* resize to fit the new text, which is the point.
+
+**Not every button wants this.** An action whose result is applied optimistically
+should stay optimistic; adding `loading` to it trades a fast-feeling UI for a
+spinner nobody asked for. Reach for `loading` where the user must actually wait on
+the network before anything changes on screen — form submits, above all.
 
 **Usage:**
 
 ```svelte
 <ControlButton onclick={handleSave} color="green" size="md">Save Changes</ControlButton>
 
-<ControlButton onclick={handleDelete} color="red" disabled={isDeleting}>
-	{isDeleting ? 'Deleting...' : 'Delete'}
+<!-- In flight: same box, label hidden under the spinner -->
+<ControlButton onclick={handleDelete} color="red" loading={isDeleting}>Delete</ControlButton>
+
+<!-- A wait worth naming -->
+<ControlButton onclick={handleSync} loading={isSyncing} loadingLabel={$t('common.syncing')}>
+	{$t('common.sync')}
 </ControlButton>
 
 <!-- Submit button in a form -->
 <form onsubmit={handleSubmit}>
-	<ControlButton type="submit" color="azure">Submit</ControlButton>
+	<ControlButton type="submit" color="azure" loading={$submitting}>Submit</ControlButton>
 </form>
 
 <!-- Gray variant for neutral actions -->
@@ -926,7 +960,7 @@ Loading placeholder with configurable rows and columns.
 
 ### Spinner
 
-Loading spinner with LoaderCircle icon.
+Loading spinner with LoaderCircle icon, for a page or panel waiting on its data.
 
 **Import:**
 
@@ -938,18 +972,32 @@ Loading spinner with LoaderCircle icon.
 
 **Props:**
 
-| Prop        | Type     | Default           | Description         |
-| ----------- | -------- | ----------------- | ------------------- |
-| `size`      | `number` | `32`              | Icon size in pixels |
-| `color`     | `string` | `'text-gray-500'` | Color class         |
-| `className` | `string` | `''`              | Additional classes  |
+| Prop        | Type      | Default           | Description                                                                 |
+| ----------- | --------- | ----------------- | --------------------------------------------------------------------------- |
+| `size`      | `number`  | `32`              | Icon size in pixels                                                         |
+| `color`     | `string`  | `'text-gray-500'` | Color class                                                                 |
+| `block`     | `boolean` | `true`            | Reserve `py-8` around the spinner. Pass `false` where it sits inline beside other content |
+| `className` | `string`  | `''`              | Additional classes                                                          |
+
+**Not for inside a button.** `ControlButton` and `CircleButton` have their own
+`loading` prop, which overlays the spinner without resizing the control. Dropping
+a `Spinner` into a fixed-height button instead means 64px of `block` padding
+fighting the button for room, and the label vanishing along with the button's
+accessible name.
 
 **Usage:**
 
 ```svelte
+<!-- Panel waiting on its first load -->
 <Spinner />
 
 <Spinner size={24} color="text-azure-500" />
+
+<!-- Inline beside a label — no reserved padding -->
+<div class="flex items-center gap-3">
+	<Spinner size={20} block={false} />
+	<span>{$t('device.loadingDetails')}</span>
+</div>
 ```
 
 ---
