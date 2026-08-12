@@ -151,7 +151,7 @@ src/
 |-------------|--------------------------------------|-----------------------------------|
 | **Atoms**   | Single-purpose, primitive UI         | Avatar, Badge, CheckBox, NavDropdown, Spinner, TextInput |
 | **Molecules** | Composed of atoms, reusable groups | Grid, HeaderNav, Island, MultiInput |
-| **Organisms** | Complex, self-contained features   | Modal, SearchableList, ToastContainer |
+| **Organisms** | Complex, self-contained features   | Modal, SearchableList, TermsContent, ToastContainer |
 | **Templates** | Page layouts and shells            | AppShell, SectionedPage           |
 
 ---
@@ -302,6 +302,38 @@ Things worth knowing before touching this:
 - **`getAvailableLanguages()` reports what is in memory**, which with locale-first data is
   only the loaded chunks. Use `SUPPORTED_LANGUAGES` (or `getRegisteredLocales()`) to
   enumerate what an app offers.
+
+---
+
+## The legal documents — content here, chrome in the app
+
+`components/organisms/TermsContent.svelte` is the **estate-wide single source of
+truth for the Terms & Conditions body**, and `utils/legal.js` is the house style
+the legal documents share. Both are here rather than in an app because more than
+one app has to show the same document and they were already drifting: the
+customer portal rendered its own copy while the technician portal's device form
+linked out to a separate one on the marketing site.
+
+- **The component renders the body and nothing else** — no title, no revision
+  line, no wrapper. Each surface frames it differently (a public page with a
+  sidebar TOC, an informational modal, an acceptance gate with a scroll
+  sentinel), so the frame belongs to the host. It takes no props; do not add a
+  variant prop to accommodate a new surface.
+- **`legalProse` must hold literal Tailwind class strings.** The consuming app's
+  Tailwind build scans this package's `dist` and emits only what it can see
+  spelled out. Compose one of these at runtime and the class attribute still
+  renders while the CSS behind it silently does not exist. This is also why an
+  app cannot use these without `@source '../../node_modules/@mbsmart/ui/dist'`
+  in its CSS — of the four portals only `customer-portal-svelte` has that line.
+- **English-only, `dir="ltr"`, never translated or mirrored.** Do not wire the
+  Terms into i18n. The host tells non-English readers why; the customer portal
+  uses its own `LegalLanguageNotice` for that.
+- **Section heading `id`s are a public API.** Hosts link to them from a table of
+  contents; renaming one breaks every deep link into the document.
+- **The revision date lives in `TERMS_LAST_UPDATED`, not in markup.** Note it is
+  a display string and is *not* the same thing as the `terms_version` the API
+  records against a customer's acceptance — if you change what the document
+  says, both have to move, and they are not currently connected.
 
 ---
 

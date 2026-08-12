@@ -56,6 +56,7 @@
    - [Modal](#modal)
    - [QuickLinks](#quicklinks)
    - [SearchableList](#searchablelist)
+   - [TermsContent](#termscontent)
    - [ToastContainer](#toastcontainer)
 5. [Templates (Page Layouts)](#templates)
    - [AppShell](#appshell)
@@ -66,6 +67,7 @@
    - [dateTime](#datetime)
    - [dismiss](#dismiss)
    - [labels](#labels)
+   - [legal](#legal)
    - [stringUtils](#stringutils)
    - [toastStore](#toaststore)
    - [urlUtils](#urlutils)
@@ -2152,6 +2154,57 @@ Pass `ctx.magicSearchQuery` as `externalQuery` to let SectionedPage's magic sear
 
 ---
 
+### TermsContent
+
+The MB Smart Terms & Conditions body (MB SMART FILTERING LLC) — the estate-wide
+single source of truth for that document. Anything that has to show the Terms
+renders this; nothing re-authors them.
+
+**Import:**
+
+```svelte
+<script>
+	import { TermsContent } from '@mbsmart/ui/organisms';
+</script>
+```
+
+**Props:** none.
+
+**Usage:**
+
+```svelte
+<script>
+	import { TermsContent, legalProse, TERMS_LAST_UPDATED } from '@mbsmart/ui';
+</script>
+
+<h2 class={legalProse.title}>Terms of Service Agreement</h2>
+<p class={legalProse.revised}><em>Last updated: {TERMS_LAST_UPDATED}</em></p>
+
+<!-- The document's first heading is `first:mt-0`, so the gap above it
+     belongs to whichever surface is introducing it. -->
+<div class="mt-8">
+	<TermsContent />
+</div>
+```
+
+**Behaviour:**
+
+- **Renders the body only** — no title, no revision line, no chrome. Each surface
+  frames it differently (a public page with a sidebar TOC, a modal, an
+  acceptance gate with a scroll sentinel), so the frame is the host's.
+- **English-only and forced `dir="ltr"`**, regardless of the host app's active
+  language. The Terms are kept in English and must not be translated or
+  mirrored. Telling a non-English reader so is the host's job —
+  `customer-portal-svelte` renders `LegalLanguageNotice` above it.
+- **Section headings carry stable `id`s** (`acceptance`, `use-of-software`,
+  `intellectual-property`, `software-function`, `privacy`, `liability`,
+  `miscellaneous`) for in-page anchors. A host with a table of contents links to
+  those; changing one breaks every deep link into the document.
+- **Styling comes from [`legal`](#legal)**, not from props. There is no variant
+  and no size prop.
+
+---
+
 ### ToastContainer
 
 Container component for displaying toast notifications.
@@ -2786,6 +2839,62 @@ Gets label for setting keys.
 ```javascript
 getSettingKeyLabel('global_system_filter_on'); // 'Filter Enabled'
 ```
+
+---
+
+### legal
+
+The house style for the legal documents, plus the facts about them that more
+than one surface has to agree on.
+
+**Import:**
+
+```javascript
+import { legalProse, TERMS_LAST_UPDATED } from '@mbsmart/ui/utils';
+```
+
+**Exports:**
+
+#### `legalProse`
+
+An object of Tailwind class strings, one per element role in a legal document.
+Applied by [`TermsContent`](#termscontent) and by the consuming app's own legal
+pages, so the documents read as one set.
+
+| Key             | Applies to                                          |
+| --------------- | --------------------------------------------------- |
+| `title`         | The document's own `<h2>`                           |
+| `revised`       | The "Last updated" line under the title             |
+| `heading`       | Section headings (`first:mt-0`)                     |
+| `body`          | `<li>` text and other bare body text                |
+| `paragraph`     | `<p>` — `body` plus a bottom margin                 |
+| `emphasis`      | Inline emphasis inside body text                    |
+| `link`          | Inline links                                        |
+| `listOuter`     | Top-level `<ol>` — lower-alpha markers              |
+| `listInner`     | Nested `<ol>` — lower-roman markers                 |
+| `listOuterDisc` | Top-level `<ul>`                                    |
+| `listInnerDisc` | Nested `<ul>`                                       |
+
+#### `TERMS_LAST_UPDATED`
+
+`string` — the Terms revision date (currently `'July 2026'`), printed by every
+surface that frames `TermsContent`. Deliberately not translated: it stamps an
+English-only document.
+
+**Notes:**
+
+- **The class strings must stay literal.** A consuming app's Tailwind build
+  emits only the utilities it can see spelled out, and it sees these because the
+  app's CSS carries `@source '../../node_modules/@mbsmart/ui/dist'`. Two things
+  break the styling silently: building a class by concatenation here, or an app
+  that consumes these without that `@source` line. Of the four portals only
+  `customer-portal-svelte` has it today.
+- **The ordered-list markers are explicit for a reason.** Tailwind's preflight
+  resets `list-style` to none, which swallowed the `type="a"` / `type="i"`
+  already on every `<ol>` in the Terms — leaving a document that
+  cross-references "section A" with no visible lettering to find it by.
+- **The density is tighter than an app's on purpose**, and there is no "compact"
+  variant — this *is* the size. See the module header for the reasoning.
 
 ---
 
