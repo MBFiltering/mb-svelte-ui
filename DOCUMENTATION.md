@@ -153,9 +153,9 @@ Circular identity mark with a plain-SVG person glyph. Used by `AppShell`'s accou
 
 ### BackButton
 
-Back navigation control. Renders an icon-only `CircleButton` by default; passing `label` opts into a labelled inline variant (arrow + text). The arrow flips automatically in RTL in **both** variants — the labelled one rotates its icon, the icon-only one rotates the whole circle (invisible on a round button). Consumers should not add an RTL class of their own.
+Back navigation control. It is a `CircleButton` either way: icon-only by default, and a labelled **pill** (arrow + text inside the same button) when you pass `label`. The arrow mirrors automatically in RTL in both variants — the labelled one mirrors its icon, the icon-only one mirrors the whole circle (invisible on a round button). Consumers should not add an RTL class of their own.
 
-Navigation is left to the host app — the library does not depend on a router. Pass `onclick` (e.g. SvelteKit's `goto`), or `href` on the labelled variant to render a real anchor. With neither, the button calls `history.back()`.
+Navigation is left to the host app — the library does not depend on a router. Pass `href` to render a real anchor (both variants), or `onclick` (e.g. SvelteKit's `goto`). With neither, the button calls `history.back()`.
 
 **Import:**
 
@@ -169,15 +169,16 @@ Navigation is left to the host app — the library does not depend on a router. 
 
 | Prop        | Type        | Default     | Description                                                                    |
 | ----------- | ----------- | ----------- | ------------------------------------------------------------------------------ |
-| `label`     | `string`    | `''`        | Empty renders the icon-only button; a value switches to the labelled variant   |
-| `href`      | `string`    | `''`        | Renders an `<a>` instead of a `<button>` (labelled variant only)               |
-| `onclick`   | `function`  | -           | Click handler; falls back to `history.back()` when omitted                     |
-| `title`     | `string`    | `''`        | Tooltip text                                                                   |
-| `icon`      | `Component` | `ArrowLeft` | Lucide icon component                                                          |
-| `iconSize`  | `number`    | `20`        | Size of the icon in pixels                                                     |
-| `color`     | `string`    | `'ghost'`   | Passed through to the internal `CircleButton` (icon-only variant)              |
-| `size`      | `string`    | `'md'`      | Passed through to the internal `CircleButton` (icon-only variant)              |
-| `className` | `string`    | `''`        | Additional CSS classes                                                         |
+| `label`     | `string`    | `''`          | Empty renders the icon-only circle; a value renders the labelled pill         |
+| `href`      | `string`    | `''`          | Renders an `<a>` instead of a `<button>` (either variant)                     |
+| `onclick`   | `function`  | -             | Click handler; falls back to `history.back()` when omitted                    |
+| `title`     | `string`    | `''`          | Tooltip text                                                                  |
+| `ariaLabel` | `string`    | `''`          | Accessible name for the icon-only variant; ignored when `label` is set        |
+| `icon`      | `Component` | `CornerUpLeft` | Lucide icon component                                                        |
+| `iconSize`  | `number`    | `20`          | Size of the icon in pixels                                                    |
+| `color`     | `string`    | `'ghost'`     | Passed through to the internal `CircleButton`                                 |
+| `size`      | `string`    | `'md'`        | Passed through to the internal `CircleButton`                                 |
+| `className` | `string`    | `''`          | Additional CSS classes                                                        |
 
 **Usage:**
 
@@ -188,11 +189,11 @@ Navigation is left to the host app — the library does not depend on a router. 
 <!-- Icon-only with explicit destination -->
 <BackButton onclick={() => goto('/dashboard')} />
 
-<!-- Labelled variant -->
-<BackButton label="Back to my devices" onclick={() => goto('/customer/home')} />
+<!-- Labelled pill: arrow + text inside one button -->
+<BackButton label="Back to devices" onclick={() => goto('/customer/home')} />
 
-<!-- Labelled variant as a real link -->
-<BackButton label="Back to my devices" href="/customer/home" />
+<!-- Same, as a real link (preferred — middle-click and "open in new tab" work) -->
+<BackButton label="Back to devices" href="/customer/home" />
 ```
 
 ---
@@ -364,6 +365,8 @@ Copy-to-clipboard button with visual feedback.
 
 Circular icon button with color and size variants. Used for inline actions like edit, save, cancel.
 
+Pass `label` and it becomes a **pill**: the same button with text beside the icon. The block padding is unchanged, so a labelled button lines up with an icon-only one in the same row; only the inline sides grow. Pass `href` and it renders an `<a>` instead of a `<button>`, so the control can be a real link.
+
 **Import:**
 
 ```svelte
@@ -377,18 +380,21 @@ Circular icon button with color and size variants. Used for inline actions like 
 
 | Prop        | Type        | Default    | Description                                                                              |
 | ----------- | ----------- | ---------- | ---------------------------------------------------------------------------------------- |
-| `onclick`   | `function`  | `() => {}` | Click handler                                                                            |
-| `disabled`  | `boolean`   | `false`    | Disables the button                                                                      |
-| `loading`   | `boolean`   | `false`    | In-flight state. Disables the button, sets `aria-busy` and `cursor-wait`, and shows the wait in the icon's place. Do not also pass `disabled` |
-| `spinIcon`  | `boolean`   | `false`    | While `loading`, spin `icon` in place instead of swapping in a spinner. For icons that already mean the action, e.g. `RefreshCw` |
-| `title`     | `string`    | `''`       | Tooltip text                                                                             |
-| `ariaLabel` | `string`    | `''`       | Accessible name. An icon-only button needs one — a `title` is a tooltip, not a name       |
-| `type`      | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                           |
-| `color`     | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'ghost2'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
-| `size`      | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                                     |
-| `icon`      | `Component` | -          | Lucide icon component                                                                    |
-| `iconSize`  | `number`    | `18`       | Size of the icon in pixels                                                               |
-| `className` | `string`    | `''`       | Additional CSS classes                                                                   |
+| `onclick`       | `function`  | `() => {}` | Click handler                                                                        |
+| `href`          | `string`    | `''`       | Renders an `<a>` instead of a `<button>`. `disabled`/`loading`/`type` do not apply to an anchor and are ignored |
+| `label`         | `string`    | `''`       | Visible text beside the icon. Turns the circle into a pill and supplies the accessible name |
+| `disabled`      | `boolean`   | `false`    | Disables the button                                                                  |
+| `loading`       | `boolean`   | `false`    | In-flight state. Disables the button, sets `aria-busy` and `cursor-wait`, and shows the wait in the icon's place. Do not also pass `disabled` |
+| `spinIcon`      | `boolean`   | `false`    | While `loading`, spin `icon` in place instead of swapping in a spinner. For icons that already mean the action, e.g. `RefreshCw` |
+| `title`         | `string`    | `''`       | Tooltip text                                                                         |
+| `ariaLabel`     | `string`    | `''`       | Accessible name. An icon-only button needs one — a `title` is a tooltip, not a name. Ignored when `label` is set, so the two can never disagree |
+| `type`          | `string`    | `'button'` | Button type: `'button'`, `'submit'`, `'reset'`                                       |
+| `color`         | `string`    | `'ghost'`  | Color variant: `'ghost'`, `'ghost2'`, `'azure'`, `'green'`, `'red'`, `'orange'`, `'gray'` |
+| `size`          | `string`    | `'md'`     | Size variant: `'sm'`, `'md'`, `'lg'`                                                 |
+| `icon`          | `Component` | -          | Lucide icon component                                                                |
+| `iconSize`      | `number`    | `18`       | Size of the icon in pixels                                                           |
+| `className`     | `string`    | `''`       | Additional CSS classes on the button                                                 |
+| `iconClassName` | `string`    | `''`       | Additional CSS classes on the icon — for a directional glyph that must mirror in RTL without mirroring the label |
 
 **Usage:**
 
@@ -413,6 +419,12 @@ Circular icon button with color and size variants. Used for inline actions like 
 
 <!-- Custom icon size -->
 <CircleButton onclick={doSomething} icon={Pencil} iconSize={24} size="lg" />
+
+<!-- Labelled pill — the label is the accessible name, so no ariaLabel -->
+<CircleButton onclick={startEditing} icon={Pencil} label={$t('common.edit')} />
+
+<!-- As a real link -->
+<CircleButton href="/customer/home" icon={House} label={$t('nav.home')} color="azure" />
 ```
 
 ---
