@@ -54,14 +54,20 @@
 		}
 	});
 
-	// Get the option to display in the dropdown button
+	// Get the option to display in the dropdown button.
+	// The live value wins over the remembered one: when the selection sits in the
+	// dropdown's half, that is what the button must show, however it got there —
+	// otherwise a change made elsewhere (a preset, a bulk action, a failed save
+	// rolling back) leaves a stale label behind. The remembered pick is only the
+	// fallback for when a *fixed* option is selected, so clicking the dropdown
+	// button toggles back to where the user last was.
 	const displayedDropdownOption = $derived.by(() => {
+		const current = toggleableOptions.find((opt) => opt.value === currentValue);
+		if (current) return current;
 		if (lastDropdownSelection) {
 			const remembered = toggleableOptions.find((opt) => opt.value === lastDropdownSelection);
 			if (remembered) return remembered;
 		}
-		const current = toggleableOptions.find((opt) => opt.value === currentValue);
-		if (current) return current;
 		return toggleableOptions[0];
 	});
 
