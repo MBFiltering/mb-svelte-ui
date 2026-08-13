@@ -26,6 +26,8 @@
 		columnsXl2 = null, // 1440px+
 		columns2Xl = null, // 1536px+
 		columns2Xl2 = null, // 1650px+
+		columns3Xl = null, // 1920px+
+		columns3Xl2 = null, // 2100px+
 		// Gap between items (in rem, e.g., 1 = 1rem = 16px)
 		gapX = 2, // Override horizontal gap
 		gapY = 0, // Override vertical gap
@@ -49,6 +51,8 @@
 	const rowsXl2 = $derived(columnsXl2 ? Math.ceil(itemCount / columnsXl2) : null);
 	const rows2Xl = $derived(columns2Xl ? Math.ceil(itemCount / columns2Xl) : null);
 	const rows2Xl2 = $derived(columns2Xl2 ? Math.ceil(itemCount / columns2Xl2) : null);
+	const rows3Xl = $derived(columns3Xl ? Math.ceil(itemCount / columns3Xl) : null);
+	const rows3Xl2 = $derived(columns3Xl2 ? Math.ceil(itemCount / columns3Xl2) : null);
 
 	// Build CSS variables for all grid properties
 	const cssVariables = $derived.by(() => {
@@ -68,6 +72,8 @@
 		if (columnsXl2 !== null) vars.push(`--grid-cols-xl2: ${columnsXl2}`);
 		if (columns2Xl !== null) vars.push(`--grid-cols-2xl: ${columns2Xl}`);
 		if (columns2Xl2 !== null) vars.push(`--grid-cols-2xl2: ${columns2Xl2}`);
+		if (columns3Xl !== null) vars.push(`--grid-cols-3xl: ${columns3Xl}`);
+		if (columns3Xl2 !== null) vars.push(`--grid-cols-3xl2: ${columns3Xl2}`);
 
 		// Rows for column-first flow
 		if (flow === 'col') {
@@ -82,6 +88,8 @@
 			if (rowsXl2 !== null) vars.push(`--grid-rows-xl2: ${rowsXl2}`);
 			if (rows2Xl !== null) vars.push(`--grid-rows-2xl: ${rows2Xl}`);
 			if (rows2Xl2 !== null) vars.push(`--grid-rows-2xl2: ${rows2Xl2}`);
+			if (rows3Xl !== null) vars.push(`--grid-rows-3xl: ${rows3Xl}`);
+			if (rows3Xl2 !== null) vars.push(`--grid-rows-3xl2: ${rows3Xl2}`);
 		}
 
 		// Gap values
@@ -105,6 +113,8 @@
 		if (columnsXl2 !== null) classes.push('has-xl2');
 		if (columns2Xl !== null) classes.push('has-2xl');
 		if (columns2Xl2 !== null) classes.push('has-2xl2');
+		if (columns3Xl !== null) classes.push('has-3xl');
+		if (columns3Xl2 !== null) classes.push('has-3xl2');
 		return classes.join(' ');
 	});
 
@@ -242,6 +252,26 @@
 		}
 		.grid-component.flow-col.has-2xl2 {
 			grid-template-rows: repeat(var(--grid-rows-2xl2), minmax(0, 1fr));
+		}
+	}
+
+	/* 3xl: 1920px+ */
+	@media (min-width: 1920px) {
+		.grid-component.has-3xl {
+			grid-template-columns: repeat(var(--grid-cols-3xl), minmax(0, 1fr));
+		}
+		.grid-component.flow-col.has-3xl {
+			grid-template-rows: repeat(var(--grid-rows-3xl), minmax(0, 1fr));
+		}
+	}
+
+	/* 3xl2: 2100px+ */
+	@media (min-width: 2100px) {
+		.grid-component.has-3xl2 {
+			grid-template-columns: repeat(var(--grid-cols-3xl2), minmax(0, 1fr));
+		}
+		.grid-component.flow-col.has-3xl2 {
+			grid-template-rows: repeat(var(--grid-rows-3xl2), minmax(0, 1fr));
 		}
 	}
 </style>

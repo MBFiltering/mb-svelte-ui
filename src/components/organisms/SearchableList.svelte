@@ -34,6 +34,8 @@
 		columnsXl2 = 1, // 1440px+ column count
 		columns2Xl = 2, // 1536px+ column count
 		columns2Xl2 = null, // 1650px+ column count
+		columns3Xl = null, // 1920px+ column count
+		columns3Xl2 = null, // 2100px+ column count
 		disableGrid = false, // When true, items display in normal flow instead of grid
 		searchActions = undefined, // Optional actions rendered beside the search input
 		children = undefined,
@@ -343,6 +345,8 @@
 		{columnsXl2}
 		{columns2Xl}
 		{columns2Xl2}
+		{columns3Xl}
+		{columns3Xl2}
 		disabled={disableGrid}
 	>
 		{#if paginatedItems.length === 0}

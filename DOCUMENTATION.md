@@ -1471,6 +1471,8 @@ Responsive grid with row-first or column-first flow.
 | `columnsXl2` | `number`  | `null`  | Columns at 1440px+                           |
 | `columns2Xl` | `number`  | `null`  | Columns at 1536px+                           |
 | `columns2Xl2` | `number` | `null`  | Columns at 1650px+                           |
+| `columns3Xl` | `number`  | `null`  | Columns at 1920px+                           |
+| `columns3Xl2` | `number` | `null`  | Columns at 2100px+                           |
 | `gapX`       | `number`  | `2`     | Horizontal gap in rem                        |
 | `gapY`       | `number`  | `0`     | Vertical gap in rem                          |
 | `disabled`   | `boolean` | `false` | Disable grid (normal flow)                   |
@@ -2025,6 +2027,8 @@ Searchable, filterable list with optional bulk selection.
 | `columnsXl2`        | `number`  | `1`                | Columns at 1440px+               |
 | `columns2Xl`        | `number`  | `2`                | Columns at 1536px+               |
 | `columns2Xl2`       | `number`  | `null`             | Columns at 1650px+               |
+| `columns3Xl`        | `number`  | `null`             | Columns at 1920px+               |
+| `columns3Xl2`       | `number`  | `null`             | Columns at 2100px+               |
 | `disableGrid`       | `boolean` | `false`            | Use normal flow                  |
 | `searchActions`     | `snippet` | `undefined`        | Optional actions next to search  |
 | `children`          | `snippet` | -                  | Item render function             |
@@ -2050,6 +2054,7 @@ Searchable, filterable list with optional bulk selection.
 
 - Every stop is forwarded straight to [`Grid`](#grid), and a stop left `null` inherits the one below it. `columns` is the base, but the grid only exists from 640px up — below that `Grid` falls back to normal flow, so a phone always gets one item per row.
 - `columnsXl`, `columnsXl2` and `columns2Xl` are **not** `null` by default (`1`, `1`, `2`). A ramp that only sets a lower stop therefore collapses again higher up — `columnsLg={2}` alone drops back to one column at 1280px. Spell out every stop from the first one you set upwards.
+- The `3xl` stops exist for the third column. Place it where the columns stay as wide as they were when the second one appeared: one more column costs one more column's width, so a list that splits in two at 1440px has room for a third around 1920px, and one that splits at 1536px around 2100px. Going earlier just makes every column narrower than the layout already decided it wanted to be.
 
 **Results count behavior:**
 
