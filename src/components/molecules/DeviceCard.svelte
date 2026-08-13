@@ -26,7 +26,8 @@
 		onSyncStart = null,
 		onSyncEnd = null,
 		labels = {},
-		actions = undefined
+		// Aliased: the `actions` snippet below would otherwise shadow this prop.
+		actions: actionsSnippet = undefined
 	} = $props();
 
 	const deviceIcons = {
@@ -144,7 +145,7 @@
 	{/snippet}
 
 	{#snippet actions()}
-		{#if actions}{@render actions()}{/if}
+		{#if actionsSnippet}{@render actionsSnippet()}{/if}
 		{#if showSyncButton && onSync}
 			<button
 				type="button"
