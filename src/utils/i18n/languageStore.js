@@ -44,20 +44,93 @@ export const SUPPORTED_LANGUAGES = [
 ];
 
 /**
- * Get the initial language from cookie or default
+ * Codes that were renamed after some stacks had already shipped the old one.
+ *
+ * Hebrew was `iw` until ISO 639 renamed it `he` in 1989, and Yiddish was `ji`; Java's
+ * `Locale` still normalises to the old spellings, and legacy Android WebViews inherit
+ * them. Modern browsers say `he-IL`, so this is a long tail rather than a common case —
+ * but it is a long tail made of exactly the two languages this product exists for, and
+ * an unrecognised tag falls through to English silently.
  */
-function getInitialLanguage() {
-	if (isBrowser) {
-		const saved = readPreference(LANGUAGE_COOKIE);
-		if (saved && SUPPORTED_LANGUAGES.some((l) => l.code === saved)) {
-			return saved;
-		}
+const LEGACY_LANGUAGE_ALIASES = { iw: 'he', ji: 'yi' };
+
+/**
+ * Reduce a BCP-47 tag to a supported language code, or null.
+ *
+ * `he-IL` → `he`, `IW` → `he`, `ru-RU` → `ru`, `de` → null. The region is dropped: we
+ * ship one translation per language and no regional variants.
+ *
+ * @param {string|null|undefined} tag
+ * @returns {string|null}
+ */
+export function normalizeLanguageTag(tag) {
+	if (!tag) return null;
+	const base = String(tag).toLowerCase().trim().split('-')[0];
+	const code = LEGACY_LANGUAGE_ALIASES[base] ?? base;
+	return isValidLanguage(code) ? code : null;
+}
+
+/**
+ * The first supported language in a list of tags, best first, or null.
+ *
+ * @param {readonly (string|null|undefined)[]} tags
+ * @returns {string|null}
+ */
+export function pickSupportedLanguage(tags) {
+	for (const tag of tags ?? []) {
+		const code = normalizeLanguageTag(tag);
+		if (code) return code;
 	}
-	return DEFAULT_LANGUAGE;
+	return null;
+}
+
+/**
+ * The best supported language an `Accept-Language` header asks for, or null.
+ *
+ * Sorted by `q` rather than trusting header order: browsers do emit descending q, but
+ * the ordering is the weights' to state and a proxy may rewrite the header. An entry
+ * with no `q` is 1, and `q=0` means "explicitly not this" and is dropped.
+ *
+ * @param {string|null|undefined} header
+ * @returns {string|null}
+ */
+export function languageFromAcceptLanguage(header) {
+	const entries = (header ?? '')
+		.split(',')
+		.map((entry) => {
+			const [tag, ...params] = entry.split(';').map((part) => part.trim());
+			const q = params
+				.map((param) => /^q=([\d.]+)$/i.exec(param))
+				.find(Boolean)?.[1];
+			return { tag, q: q === undefined ? 1 : Number.parseFloat(q) };
+		})
+		.filter(({ tag, q }) => tag && Number.isFinite(q) && q > 0)
+		.sort((a, b) => b.q - a.q);
+
+	return pickSupportedLanguage(entries.map(({ tag }) => tag));
+}
+
+/**
+ * The language to open in, for a browser with no `/{lang}` prefix to go on.
+ *
+ * The stored preference first — someone who has chosen a language has said the most —
+ * then what the device itself asks for, then English. That middle step is why an
+ * Israeli phone set to Hebrew opens in Hebrew without anyone touching a picker; it is
+ * the device's *declared preference*, not a guess from where the request came from.
+ *
+ * @returns {string}
+ */
+export function resolveInitialLanguage() {
+	if (!isBrowser) return DEFAULT_LANGUAGE;
+
+	const saved = readPreference(LANGUAGE_COOKIE);
+	if (saved && isValidLanguage(saved)) return saved;
+
+	return pickSupportedLanguage(navigator.languages ?? [navigator.language]) ?? DEFAULT_LANGUAGE;
 }
 
 // Create the language store
-export const language = writable(getInitialLanguage());
+export const language = writable(resolveInitialLanguage());
 
 /**
  * Check if a language code is valid/supported

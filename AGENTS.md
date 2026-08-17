@@ -292,6 +292,20 @@ Things worth knowing before touching this:
   copies are in DOCUMENTATION.md. Four repos, not one.
 - **A setting only one portal has does not belong here.** The technician portal's
   `mb_setting_*` cookies stay host-only.
+- **A first-time visitor's language comes from the device, never from geo-IP.**
+  `resolveInitialLanguage()` is the ladder: stored preference → `navigator.languages` →
+  English. `Accept-Language` is a *declared preference*; an IP is an inference, and for
+  this product it is wrong often — Hebrew, Yiddish and Russian speakers are spread
+  across Israel, the US, the UK and Belgium, so a country tells you very little about
+  what someone reads. It would also break `customer-portal-svelte`, whose marketing
+  pages are prerendered per language with an `hreflang` set that a crawler on a US IP
+  would then never see the truth of.
+- **Match language tags with `normalizeLanguageTag`, never by hand.** It drops the
+  region (`he-IL` → `he`; there is one translation per language, no regional variants)
+  and maps the pre-1989 codes `iw` → `he` and `ji` → `yi`, which Java-derived stacks and
+  legacy Android WebViews still emit. An unrecognised tag falls through to English
+  silently, so this is a bug that hides — and it hides in the two languages this
+  product is for.
 
 ## i18n — two data shapes, one engine
 

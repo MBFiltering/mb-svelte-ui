@@ -3008,9 +3008,10 @@ import {
 #### The pre-paint snippet — copied into each app, not imported
 
 The `dark` class has to be on `<html>` before the first paint or dark mode flashes
-white, which means an inline `<script>` in the app's `app.html`, running before any
-module — including this one — has loaded. There is no way to share it as code. This is
-the canonical copy; a change to the cookie name or the vocabulary has to be mirrored
+white, and `lang`/`dir` before it or RTL flips a frame in. That means an inline
+`<script>` in the app's `app.html`, running before any module — including this one —
+has loaded. There is no way to share it as code. This is the canonical copy; a change
+to a cookie name, to the theme vocabulary, or to the language list has to be mirrored
 into every app that has one:
 
 ```html
@@ -3020,12 +3021,37 @@ into every app that has one:
 			var m = ('; ' + document.cookie).split('; ' + name + '=');
 			return m.length === 2 ? decodeURIComponent(m.pop().split(';').shift()) : null;
 		}
-		var saved = getCookie('mb_theme');
+
+		// Colour scheme: 'light' | 'dark' | 'system'; absent means 'system'.
+		var savedTheme = getCookie('mb_theme');
 		var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 		document.documentElement.classList.toggle(
 			'dark',
-			saved === 'dark' || ((saved === 'system' || !saved) && prefersDark)
+			savedTheme === 'dark' || ((savedTheme === 'system' || !savedTheme) && prefersDark)
 		);
+
+		// Language: stored preference, then what the device asks for, then English.
+		// `iw`/`ji` are the pre-1989 codes for Hebrew and Yiddish — see
+		// normalizeLanguageTag. An app with /{lang} routes checks the path first.
+		var DIRECTIONS = { en: 'ltr', es: 'ltr', fr: 'ltr', he: 'rtl', ru: 'ltr', yi: 'rtl' };
+		var ALIASES = { iw: 'he', ji: 'yi' };
+		function normalize(tag) {
+			if (!tag) return null;
+			var base = String(tag).toLowerCase().split('-')[0];
+			var code = ALIASES[base] || base;
+			return DIRECTIONS[code] ? code : null;
+		}
+		function fromBrowser() {
+			var tags = navigator.languages || [navigator.language || ''];
+			for (var i = 0; i < tags.length; i++) {
+				var code = normalize(tags[i]);
+				if (code) return code;
+			}
+			return null;
+		}
+		var lang = normalize(getCookie('mb_lang')) || fromBrowser() || 'en';
+		document.documentElement.lang = lang;
+		document.documentElement.dir = DIRECTIONS[lang];
 	})();
 </script>
 ```
@@ -3336,6 +3362,36 @@ Language store available from same module:
 - `language` — Svelte writable store with current language code.
 - `setLanguage(lang)`, `setLanguageAndNavigate(lang, currentPath, navigateFn?)` — `setLanguageAndNavigate` accepts an optional navigation function (e.g., SvelteKit's `goto`).
 - `getCurrentLanguage()`, `getLanguageInfo(code)`, `SUPPORTED_LANGUAGES`, `DEFAULT_LANGUAGE`, `isRTL()`
+- `LANGUAGE_COOKIE` — the estate-wide preference cookie (`mb_lang`), see [preferences](#preferences).
+
+#### Which language a first-time visitor gets
+
+The store initialises with `resolveInitialLanguage()`: **stored preference → the
+device's own declared preference → English**. Someone who has picked a language has
+said the most; failing that, a phone set to Hebrew opens in Hebrew.
+
+That middle step is the browser's `navigator.languages` (or, on a server,
+`Accept-Language`) — a *declared preference*, not a guess from where the request came
+from. Do not add geo-IP to this ladder: country is not language, and for this product
+especially — Hebrew, Yiddish and Russian speakers are scattered across Israel, the US,
+the UK and Belgium — the IP is wrong far more often than the setting is.
+
+- `resolveInitialLanguage()` — the full ladder. Browser only; returns `DEFAULT_LANGUAGE`
+  on a server.
+- `normalizeLanguageTag(tag)` — one BCP-47 tag to a supported code or `null`. `he-IL` →
+  `he`, `de` → `null`. Regions are dropped; there is one translation per language.
+- `pickSupportedLanguage(tags)` — first supported code in a list, best first. Feed it
+  `navigator.languages`.
+- `languageFromAcceptLanguage(header)` — for server-side resolution. Sorts by `q` rather
+  than trusting header order, and drops `q=0` ("explicitly not this").
+
+**The legacy codes are handled, and they are not a curiosity here.** Hebrew was `iw`
+before ISO 639 renamed it `he`, and Yiddish was `ji`; Java's `Locale` still normalises
+to the old spellings and legacy Android WebViews inherit them. Modern browsers say
+`he-IL`, so it is a long tail — but one made of exactly the two languages this product
+exists for, and an unrecognised tag falls through to English in silence. Anything
+matching a language tag by hand must go through `normalizeLanguageTag`, including the
+hand-copied pre-paint snippets.
 
 ### Usage (project)
 
