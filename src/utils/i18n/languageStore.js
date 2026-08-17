@@ -15,13 +15,20 @@
  */
 
 import { writable, get } from 'svelte/store';
-import Cookies from 'js-cookie';
+import { readPreference, writePreference } from '../preferences.js';
 import { loadLanguage } from './localeRegistry.js';
 
 const isBrowser = typeof window !== 'undefined';
 
-// Cookie name for language preference
-const LANGUAGE_COOKIE = 'mb_language';
+/**
+ * Cookie name for the language preference.
+ *
+ * Estate-wide, written zone-wide by `writePreference` so picking a language in one
+ * portal picks it in all of them — see `utils/preferences.js`. It is mirrored in
+ * every app's pre-paint snippet (`<html lang>` and `dir` have to be right before the
+ * first paint or RTL flashes), so renaming it is a change in four repos.
+ */
+export const LANGUAGE_COOKIE = 'mb_lang';
 
 // Default language
 export const DEFAULT_LANGUAGE = 'en';
@@ -41,7 +48,7 @@ export const SUPPORTED_LANGUAGES = [
  */
 function getInitialLanguage() {
 	if (isBrowser) {
-		const saved = Cookies.get(LANGUAGE_COOKIE);
+		const saved = readPreference(LANGUAGE_COOKIE);
 		if (saved && SUPPORTED_LANGUAGES.some((l) => l.code === saved)) {
 			return saved;
 		}
@@ -83,11 +90,7 @@ export function setLanguage(langCode) {
 	language.set(langCode);
 
 	if (isBrowser) {
-		Cookies.set(LANGUAGE_COOKIE, langCode, {
-			expires: 365,
-			secure: false,
-			sameSite: 'lax',
-		});
+		writePreference(LANGUAGE_COOKIE, langCode);
 
 		const langInfo = SUPPORTED_LANGUAGES.find((l) => l.code === langCode);
 		if (langInfo) {

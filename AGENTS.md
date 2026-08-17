@@ -256,6 +256,43 @@ unrelated things depending on which product you were looking at. Keep the split:
 - **The footer is quiet on purpose** (40% / 35% opacity, `select-none`). Passing no
   `productName` removes it entirely.
 
+## Shared preferences — one cookie, every portal
+
+The colour scheme and the language are **estate-wide preferences**: set either one in
+any portal and every other portal follows. `utils/preferences.js` is the contract they
+share, `utils/theme.js` is the colour scheme, `utils/i18n/languageStore.js` the language.
+
+They are cookies, not `localStorage`, and that is the whole design. The portals are
+separate origins — `customer.`, `portal.`, `identity.` and `www.` under `mb-smart.net` —
+and one origin cannot read another's `localStorage`. A cookie written with
+`Domain=.mb-smart.net` is sent to all of them. Before August 2026 each portal kept its
+own copy and none of them agreed: the customer portal in `localStorage`, the technician
+portal in a host-only cookie under a different name and a different vocabulary, and the
+OAuth portal reading a `localStorage` key that nothing on its origin ever wrote — code
+that could not have worked and always fell through to `system`.
+
+Things worth knowing before touching this:
+
+- **`setTheme` / `setLanguage` are the only writers.** Both go through
+  `writePreference`, which is where the `Domain` is decided. A direct `Cookies.set`
+  writes a host-only cookie that only the portal that wrote it will ever see.
+- **A zone-wide cookie does not overwrite a host-only one of the same name.** Cookie
+  identity is (name, domain, path), so the browser keeps both and returns the older —
+  the host-only twin — pinning that one portal to a stale value forever.
+  `writePreference` deletes the twin first. This is the trap the whole file exists to
+  avoid; do not bypass it.
+- **Off-zone hosts degrade to host-only, deliberately.** `localhost`, `*.pages.dev`
+  previews (a public suffix) and `prod-test-customer.mbsmart.net` (the **un**hyphenated
+  zone) cannot share a cookie with anything. Each remembers its own preference. A
+  preview is therefore the one place this feature cannot be verified.
+- **The pre-paint readers cannot be imported from here.** `<html>` needs its `dark`
+  class and its `lang`/`dir` before the first paint, which means an inline `<script>` in
+  each app's `app.html`, running before any module loads. Those snippets are hand-copied
+  and have to be mirrored on any change to a cookie name or vocabulary — the canonical
+  copies are in DOCUMENTATION.md. Four repos, not one.
+- **A setting only one portal has does not belong here.** The technician portal's
+  `mb_setting_*` cookies stay host-only.
+
 ## i18n — two data shapes, one engine
 
 `src/utils/i18n/` is the shared translation engine. Consumers register their own strings;

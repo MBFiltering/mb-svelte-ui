@@ -68,7 +68,9 @@
    - [dismiss](#dismiss)
    - [labels](#labels)
    - [legal](#legal)
+   - [preferences](#preferences)
    - [stringUtils](#stringutils)
+   - [theme](#theme)
    - [toastStore](#toaststore)
    - [urlUtils](#urlutils)
 7. [CSS Classes Reference](#css-classes-reference)
@@ -2900,6 +2902,128 @@ English-only document.
   cross-references "section A" with no visible lettering to find it by.
 - **The density is tighter than an app's on purpose**, and there is no "compact"
   variant — this *is* the size. See the module header for the reasoning.
+
+---
+
+### preferences
+
+The cookie contract behind the two preferences the whole estate shares — the colour
+scheme ([theme](#theme)) and the language ([languageStore](#internationalization-i18n)).
+
+**Import:**
+
+```javascript
+import {
+	PREFERENCE_ZONE,
+	preferenceCookieDomain,
+	readPreference,
+	writePreference,
+	clearLegacyPreferences
+} from '@mbsmart/ui/utils';
+```
+
+The portals are separate origins — `customer.`, `portal.`, `identity.` and `www.` under
+`mb-smart.net` — so a shared preference cannot live in `localStorage`, which one origin
+cannot read from another. `writePreference` sets the cookie with `Domain=.mb-smart.net`,
+which every host under the zone is sent, and that is the whole mechanism.
+
+**Outside the zone it degrades to a host-only cookie, by design.** `localhost` (a
+`Domain` for it is invalid), Cloudflare Pages previews on `*.pages.dev` (a public suffix
+the browser refuses to span), and `prod-test-customer.mbsmart.net` (the **un**hyphenated
+zone — a different registrable domain) each remember the preference for themselves and
+share it with nobody. Do not verify cross-portal syncing on a preview.
+
+Two things are easy to get wrong and are handled here:
+
+- **A zone-wide cookie does not replace a host-only one of the same name.** Cookie
+  identity is (name, domain, path); the browser keeps both and, with equal paths, returns
+  the one created first — the stale host-only twin. `writePreference` clears it before
+  writing.
+- **Nothing is migrated from the old per-portal keys.** `clearLegacyPreferences` deletes
+  `mb_language`, `mb_setting_dark_mode` and the `theme` localStorage entry rather than
+  reading them: a portal-local preference says nothing about what someone wants
+  estate-wide, and the two portals that had one disagreed on the vocabulary anyway.
+
+#### `preferenceCookieDomain(hostname?)`
+
+The `Domain` to write with, or `undefined` off-zone. Takes an explicit hostname so a
+server-side caller (SvelteKit's `cookies.set`) can use the same rule.
+
+---
+
+### theme
+
+The estate-wide colour scheme: `light`, `dark` or `system`, in the `mb_theme` cookie.
+
+**Import:**
+
+```javascript
+import {
+	theme,
+	THEMES,
+	THEME_VALUES,
+	THEME_COOKIE,
+	getStoredTheme,
+	isDark,
+	prefersDark,
+	applyTheme,
+	setTheme,
+	syncTheme,
+	initTheme
+} from '@mbsmart/ui/utils';
+```
+
+**Usage:**
+
+```svelte
+<script>
+	import { onMount } from 'svelte';
+	import { theme, THEME_VALUES, setTheme, initTheme } from '@mbsmart/ui/utils';
+
+	onMount(() => initTheme()); // returns its own cleanup
+</script>
+
+<OneFromMany
+	options={THEME_VALUES.map((value) => ({ value, label: t(`settings.${value}`) }))}
+	selected={$theme}
+	onSelect={setTheme}
+/>
+```
+
+- **`setTheme` is the only writer.** It persists, paints and publishes. `theme.set` does
+  none of those.
+- **`applyTheme` paints and nothing else** — use it where the class may have been lost
+  (a page that broke out of the app shell) but the preference has not changed.
+- **`initTheme` is called once, from the root layout, in the browser.** It follows the
+  two things that move the preference without this tab doing anything: the OS flipping
+  its own scheme while we are on `system`, and another portal writing the cookie. The
+  latter is why it listens on `visibilitychange` — a cookie fires no `storage` event, so
+  a background tab is never told and has to look when it is next looked at.
+
+#### The pre-paint snippet — copied into each app, not imported
+
+The `dark` class has to be on `<html>` before the first paint or dark mode flashes
+white, which means an inline `<script>` in the app's `app.html`, running before any
+module — including this one — has loaded. There is no way to share it as code. This is
+the canonical copy; a change to the cookie name or the vocabulary has to be mirrored
+into every app that has one:
+
+```html
+<script>
+	(function () {
+		function getCookie(name) {
+			var m = ('; ' + document.cookie).split('; ' + name + '=');
+			return m.length === 2 ? decodeURIComponent(m.pop().split(';').shift()) : null;
+		}
+		var saved = getCookie('mb_theme');
+		var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		document.documentElement.classList.toggle(
+			'dark',
+			saved === 'dark' || ((saved === 'system' || !saved) && prefersDark)
+		);
+	})();
+</script>
+```
 
 ---
 
