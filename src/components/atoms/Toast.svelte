@@ -76,9 +76,12 @@
 </script>
 
 <!-- The toast itself is the message (role="alert"); dismissing it is a real
-     button, so it works from the keyboard and announces its own name. -->
+     button, so it works from the keyboard and announces its own name.
+     `pointer-events-auto` undoes the container's `pointer-events-none`, which
+     is inherited: the gaps around the toasts stay click-through, but the toast
+     and its dismiss button take clicks (and hover, which pauses auto-dismiss). -->
 <div
-	class="g2 flex items-center gap-3 rounded-lg px-4 py-3 shadow-lg transition-all duration-300 ease-out {typeStyles[
+	class="g2 pointer-events-auto flex items-center gap-3 rounded-lg px-4 py-3 shadow-lg transition-all duration-300 ease-out {typeStyles[
 		type
 	]} {visible ? 'translate-y-0 scale-100 opacity-100' : '-translate-y-2 scale-95 opacity-0'}"
 	role="alert"
