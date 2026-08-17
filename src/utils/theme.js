@@ -108,16 +108,48 @@ export function setTheme(value) {
 }
 
 /**
+ * Marks a page that paints its own scheme regardless of the preference.
+ *
+ * The legal documents are the case this exists for: the Terms and the Privacy Policy
+ * are always rendered light, so a page showing one takes the `dark` class off `<html>`
+ * itself. Without a way to say so, the next `syncTheme` — the reader coming back to
+ * the tab — would helpfully put it back.
+ */
+const LOCK_ATTRIBUTE = 'data-theme-locked';
+
+/**
+ * Pin the scheme this page painted, until the returned function is called.
+ *
+ * The preference itself is untouched: this suppresses repainting, so the page keeps
+ * whatever it set and the rest of the app resumes following on the way out.
+ *
+ * @returns {() => void} Release, and repaint to the current preference.
+ */
+export function lockTheme() {
+	if (!isBrowser) return () => {};
+
+	document.documentElement.setAttribute(LOCK_ATTRIBUTE, '');
+
+	return () => {
+		document.documentElement.removeAttribute(LOCK_ATTRIBUTE);
+		syncTheme();
+	};
+}
+
+/**
  * Re-read the cookie and repaint. Cheap, and safe to call as often as you like.
  *
  * This is what makes a portal sitting open in a background tab pick up a change made
  * in another one: a cookie fires no `storage` event, so nothing tells a tab its
  * preference moved and it has to look for itself.
+ *
+ * A page holding `lockTheme` is left alone — the store still moves, only the paint is
+ * withheld, so a picker rendered on such a page still shows the truth.
  */
 export function syncTheme() {
 	if (!isBrowser) return;
 	const current = getStoredTheme();
-	applyTheme(current);
+	if (!document.documentElement.hasAttribute(LOCK_ATTRIBUTE)) applyTheme(current);
 	theme.set(current);
 }
 

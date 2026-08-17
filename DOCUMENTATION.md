@@ -2969,6 +2969,7 @@ import {
 	applyTheme,
 	setTheme,
 	syncTheme,
+	lockTheme,
 	initTheme
 } from '@mbsmart/ui/utils';
 ```
@@ -2994,6 +2995,10 @@ import {
   none of those.
 - **`applyTheme` paints and nothing else** — use it where the class may have been lost
   (a page that broke out of the app shell) but the preference has not changed.
+- **A page that paints its own scheme calls `lockTheme`.** It returns a release
+  function, so `onMount(() => { …paint…; return lockTheme(); })` is the whole pattern.
+  Without it the next sync helpfully undoes the override — which is what would happen
+  to the always-light legal documents the moment their reader came back to the tab.
 - **`initTheme` is called once, from the root layout, in the browser.** It follows the
   two things that move the preference without this tab doing anything: the OS flipping
   its own scheme while we are on `system`, and another portal writing the cookie. The
