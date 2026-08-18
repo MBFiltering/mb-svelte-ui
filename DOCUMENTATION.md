@@ -1981,15 +1981,24 @@ flies the dialog into the **bottom-leading corner** (bottom-left, bottom-right
 under RTL) over 300ms and crossfades in a chip carrying `minimizedLabel ||
 ariaLabel`, a restore button (`SquareArrowOutUpRight`, mirrored to
 `SquareArrowOutUpLeft` under RTL) and, when `showCloseButton` is set, a close
-button. Several minimized modals **stack upwards** in that corner in the order
-they were minimized, and the stack closes up — with animation — when one of them
-is restored or closed.
+button, and wearing a 2px `azure-500` / `azure-400` border so it reads against
+whatever it is sitting on top of. Several minimized modals **stack upwards** in
+that corner in the order they were minimized, and the stack closes up — with
+animation — when one of them is restored or closed.
+
+**Exactly one modal is maximized at a time.** Restoring one sends every other
+open, minimizable modal to the corner, so a chip can be clicked while another
+modal is up and the two swap places. A modal without `minimizable` cannot be
+sent down and is left alone.
 
 While minimized:
 
 - **the backdrop goes away** (`bg-transparent` + `pointer-events-none`) so the
   page underneath is fully usable, and the dialog is `inert`, `opacity-0` and
   `pointer-events-none`;
+- **the wrapper moves to `z-60`** (from `z-50`), which is what keeps the chips
+  above the dimmed backdrop of whichever modal is currently up — the wrapper is
+  the stacking context, so raising the chip alone would not do it;
 - **the dialog stays mounted**, so form state, scroll position and any in-flight
   work survive — minimize is not a close;
 - **Escape and the Tab trap are off**, `aria-modal` is `false`, and focus moves to
@@ -3148,11 +3157,12 @@ fuzzyIncludes('serch', 'search'); // true
 
 ### minimizedModals
 
-The shared stack of minimized [`Modal`](#modal)s, oldest first. Each `Modal`
-registers itself while it is minimized and reads its own index out to work out
-where in the bottom corner it belongs — an app normally never touches this, but
-it is exported so a host can tell how many modals are parked (or render its own
-indicator).
+The shared stack of minimized [`Modal`](#modal)s, oldest first, plus the registry
+of open ones. Each `Modal` registers itself while it is minimized and reads its
+own index out to work out where in the bottom corner it belongs, and registers
+its `minimize()` while it is open so that restoring any one modal can send the
+others down. An app normally never touches either, but the stack is exported so a
+host can tell how many modals are parked (or render its own indicator).
 
 **Import:**
 
@@ -3168,6 +3178,9 @@ import { registerMinimized, unregisterMinimized } from '@mbsmart/ui/utils';
 | `minimizedModals`          | `Writable<string[]>`       | Ids of the minimized modals, in stack order     |
 | `registerMinimized(id)`    | `(string) => void`         | Adds an id to the bottom of the stack (idempotent) |
 | `unregisterMinimized(id)`  | `(string) => void`         | Removes an id from the stack                    |
+| `registerOpen(id, fn)`     | `(string, () => void) => void` | Notes an open modal and how to minimize it  |
+| `unregisterOpen(id)`       | `(string) => void`         | Forgets a modal that has closed                 |
+| `minimizeOthers(id)`       | `(string) => void`         | Minimizes every open modal except `id`          |
 
 ```svelte
 {#if $minimizedModals.length}

@@ -1,7 +1,13 @@
 <script>
 	import { X, Minus, SquareArrowOutUpLeft, SquareArrowOutUpRight } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
-	import minimizedModals, { registerMinimized, unregisterMinimized } from '../../utils/minimizedModals.js';
+	import minimizedModals, {
+		registerMinimized,
+		unregisterMinimized,
+		registerOpen,
+		unregisterOpen,
+		minimizeOthers
+	} from '../../utils/minimizedModals.js';
 
 	// Props - Svelte 5 style
 	let {
@@ -108,7 +114,7 @@
 	}
 
 	function minimize() {
-		if (!dialogEl) return;
+		if (!dialogEl || minimized) return;
 		const rect = dialogEl.getBoundingClientRect();
 		// getBoundingClientRect() is post-transform; back the swipe offset out of it.
 		baseRect = { left: rect.left, top: rect.top - dragY, width: rect.width, height: rect.height };
@@ -123,6 +129,11 @@
 	}
 
 	function restore() {
+		// Exactly one modal is maximized at a time: give up this slot, then send
+		// whatever else is up down to the corner — in that order, so the modal
+		// arriving lands in the slot this one is vacating instead of above it.
+		unregisterMinimized(uid);
+		minimizeOthers(uid);
 		animateFlight();
 		minimized = false;
 		requestAnimationFrame(() => {
@@ -243,6 +254,13 @@
 		return () => unregisterMinimized(uid);
 	});
 
+	// Reachable from a sibling for as long as this modal is open and can minimize.
+	$effect(() => {
+		if (!isOpen || !minimizable) return;
+		registerOpen(uid, minimize);
+		return () => unregisterOpen(uid);
+	});
+
 	// The chip corner and the restore icon mirror, so read the direction the page
 	// is actually rendering in. Re-read on open: the language can change under us.
 	$effect(() => {
@@ -300,13 +318,13 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 z-50 flex {verticalAlign === 'top'
+		class="fixed inset-0 flex {verticalAlign === 'top'
 			? 'items-end sm:items-start'
 			: verticalAlign === 'bottom'
 				? 'items-end'
 				: 'items-end sm:items-center'} justify-center transition-colors duration-300 sm:p-6 md:p-8 {minimized
-			? 'pointer-events-none bg-transparent'
-			: 'bg-neutral-900/40 dark:bg-neutral-900/60'}"
+			? 'z-60 pointer-events-none bg-transparent'
+			: 'z-50 bg-neutral-900/40 dark:bg-neutral-900/60'}"
 		onclick={handleBackdropClick}
 	>
 		<!-- Modal Content Container -->
@@ -383,7 +401,7 @@
 				style="width: {CHIP_WIDTH}px; height: {CHIP_HEIGHT}px; bottom: {chipBottom}px; inset-inline-start: {CHIP_EDGE}px;"
 			>
 				<div
-					class="g2 flex h-full items-center gap-1 rounded-xl bg-white px-2 shadow-lg dark:border dark:border-zinc-750 dark:bg-zinc-800"
+					class="g2 flex h-full items-center gap-1 rounded-xl border-2 border-azure-500 bg-white px-2 shadow-lg dark:border-azure-400 dark:bg-zinc-800"
 				>
 					<button
 						type="button"
