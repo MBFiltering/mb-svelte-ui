@@ -68,6 +68,7 @@
    - [dismiss](#dismiss)
    - [labels](#labels)
    - [legal](#legal)
+   - [minimizedModals](#minimizedmodals)
    - [preferences](#preferences)
    - [stringUtils](#stringutils)
    - [theme](#theme)
@@ -1914,8 +1915,12 @@ Full-screen modal overlay with backdrop.
 | `closeOnEscape`   | `boolean`                    | `true`     | Close on ESC key             |
 | `verticalAlign`   | `'top' \| 'center' \| 'bottom'` | `'center'` | Vertical placement of the modal |
 | `overflowVisible` | `boolean`                    | `false`    | When true, content uses `overflow-visible` so absolutely-positioned dropdowns are not clipped |
+| `minimizable`     | `boolean`                    | `false`    | Show the minimize button and allow the modal to collapse to a corner chip |
 | `ariaLabel`       | `string`                     | `''`       | Names the dialog for screen readers — pass the modal's own title |
 | `closeLabel`      | `string`                     | `'Close modal'` | Accessible name and tooltip for the X button |
+| `minimizeLabel`   | `string`                     | `'Minimize modal'` | Accessible name and tooltip for the minimize button |
+| `maximizeLabel`   | `string`                     | `'Restore modal'` | Accessible name and tooltip for the chip's restore button |
+| `minimizedLabel`  | `string`                     | `''`       | Text on the minimized chip; falls back to `ariaLabel` |
 | `children`        | `snippet`                    | -          | Modal content                |
 
 **Accessibility:** the content container is `role="dialog"` + `aria-modal="true"`,
@@ -1944,6 +1949,21 @@ keyboard and assistive tech.
 <Modal {isOpen} onClose={() => (isOpen = false)} overflowVisible>
 	<!-- custom select / absolute menus -->
 </Modal>
+
+<!-- Parkable in the corner while the user works on the page -->
+<Modal
+	{isOpen}
+	onClose={() => (isOpen = false)}
+	minimizable
+	ariaLabel={$t('device.note')}
+	closeLabel={$t('common.close')}
+	minimizeLabel={$t('common.minimize')}
+	maximizeLabel={$t('common.restore')}
+>
+	<Island title={$t('device.note')} collapsible={false} className="rounded-b-none sm:rounded-b-xl">
+		<!-- ... -->
+	</Island>
+</Modal>
 ```
 
 **Behaviour:**
@@ -1953,6 +1973,31 @@ the handle down (pointer events — touch or mouse, with pointer capture so the 
 survives leaving the handle) dismisses it when it passes ~28% of the sheet height
 **or** on a fast downward flick; otherwise it snaps back. Dismissal animates the
 sheet off-screen before `onClose` fires, rather than closing instantly.
+
+**Minimizing (`minimizable`, sm+):** a `Minus` button sits next to the close
+button — modal-level, so it is in the same place whatever the content is, and it
+takes the trailing corner itself when `showCloseButton` is `false`. Minimizing
+flies the dialog into the **bottom-leading corner** (bottom-left, bottom-right
+under RTL) over 300ms and crossfades in a chip carrying `minimizedLabel ||
+ariaLabel`, a restore button (`SquareArrowOutUpRight`, mirrored to
+`SquareArrowOutUpLeft` under RTL) and, when `showCloseButton` is set, a close
+button. Several minimized modals **stack upwards** in that corner in the order
+they were minimized, and the stack closes up — with animation — when one of them
+is restored or closed.
+
+While minimized:
+
+- **the backdrop goes away** (`bg-transparent` + `pointer-events-none`) so the
+  page underneath is fully usable, and the dialog is `inert`, `opacity-0` and
+  `pointer-events-none`;
+- **the dialog stays mounted**, so form state, scroll position and any in-flight
+  work survive — minimize is not a close;
+- **Escape and the Tab trap are off**, `aria-modal` is `false`, and focus moves to
+  the chip's restore button on the way down and back into the dialog on the way
+  up.
+
+The order of the stack is shared state, in
+[`minimizedModals`](#minimizedmodals) — each `Modal` knows only its own slot.
 
 ---
 
@@ -3101,6 +3146,37 @@ fuzzyIncludes('serch', 'search'); // true
 
 ---
 
+### minimizedModals
+
+The shared stack of minimized [`Modal`](#modal)s, oldest first. Each `Modal`
+registers itself while it is minimized and reads its own index out to work out
+where in the bottom corner it belongs — an app normally never touches this, but
+it is exported so a host can tell how many modals are parked (or render its own
+indicator).
+
+**Import:**
+
+```javascript
+import minimizedModals from '@mbsmart/ui/utils'; // The store itself
+import { registerMinimized, unregisterMinimized } from '@mbsmart/ui/utils';
+```
+
+**API:**
+
+| Export                     | Type                       | Description                                    |
+| -------------------------- | -------------------------- | ---------------------------------------------- |
+| `minimizedModals`          | `Writable<string[]>`       | Ids of the minimized modals, in stack order     |
+| `registerMinimized(id)`    | `(string) => void`         | Adds an id to the bottom of the stack (idempotent) |
+| `unregisterMinimized(id)`  | `(string) => void`         | Removes an id from the stack                    |
+
+```svelte
+{#if $minimizedModals.length}
+	<span>{$minimizedModals.length} minimized</span>
+{/if}
+```
+
+---
+
 ### toastStore
 
 Svelte store for toast notifications.
@@ -3309,7 +3385,7 @@ automatically:
 Components that apply `g2` internally do so on their own markup, so you get it for free:
 `ControlButton`, `NavButton`, `NavDropdown`, `HeaderNav`, `Kbd`, `Toast`, `SafetyBadge`, `TextInput`,
 `Info`, `ToggleSwitch` (the row, not the knob), `OneFromMany`, `Skeleton` (default),
-`Island`, `NamedControl`, `Tabs`, `MultiInput`, `QuickLinks`, `Modal` (close button),
+`Island`, `NamedControl`, `Tabs`, `MultiInput`, `QuickLinks`, `Modal` (corner buttons and the minimized chip),
 `SectionedPage`.
 
 ### Helper Visibility Classes

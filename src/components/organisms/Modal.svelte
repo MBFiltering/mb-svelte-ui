@@ -1,5 +1,7 @@
 <script>
-	import { X } from '@lucide/svelte';
+	import { X, Minus, SquareArrowOutUpLeft, SquareArrowOutUpRight } from '@lucide/svelte';
+	import { fade } from 'svelte/transition';
+	import minimizedModals, { registerMinimized, unregisterMinimized } from '../../utils/minimizedModals.js';
 
 	// Props - Svelte 5 style
 	let {
@@ -10,8 +12,12 @@
 		closeOnEscape = true,
 		verticalAlign = 'center', // 'top', 'center', or 'bottom'
 		overflowVisible = false,
+		minimizable = false, // Show the minimize button and allow the corner chip
 		ariaLabel = '', // Names the dialog for screen readers — pass the modal's own title
 		closeLabel = 'Close modal', // aria-label/title for the close button
+		minimizeLabel = 'Minimize modal', // aria-label/title for the minimize button
+		maximizeLabel = 'Restore modal', // aria-label/title for the restore button
+		minimizedLabel = '', // Text on the minimized chip; falls back to `ariaLabel`
 		children = undefined
 	} = $props();
 
@@ -48,9 +54,86 @@
 	const DISMISS_VELOCITY = 0.55; // px/ms flick speed
 	const SNAP_MS = 200; // matches transition-transform duration
 
+	// --- Minimize to the corner -------------------------------------------------
+	// The chip's geometry is fixed and known up front, which is what lets the
+	// dialog fly to it: minimizing is one transform on the dialog itself (it stays
+	// mounted, so form state and scroll position survive), and the chip crossfades
+	// in on top of where it lands.
+	const CHIP_WIDTH = 256;
+	const CHIP_HEIGHT = 44;
+	const CHIP_EDGE = 16; // gap to the viewport edges
+	const CHIP_GAP = 8; // gap between stacked chips
+	const MINIMIZE_MS = 300; // matches the transition duration on the dialog
+
+	// Ties this instance to its slot in the shared stack.
+	const uid = $props.id();
+
+	let minimized = $state(false);
+	let animating = $state(false);
+	/** @type {{ left: number, top: number, width: number, height: number } | null} Untransformed box, measured at minimize time */
+	let baseRect = $state(null);
+	let isRtl = $state(false);
+	let chipEl = $state(null);
+	let chipRestoreEl = $state(null);
+	let innerWidth = $state(0);
+	let innerHeight = $state(0);
+	let animateTimer;
+
+	let stackIndex = $derived(Math.max(0, $minimizedModals.indexOf(uid)));
+	let chipBottom = $derived(CHIP_EDGE + stackIndex * (CHIP_HEIGHT + CHIP_GAP));
+	let chipLabel = $derived(minimizedLabel || ariaLabel);
+
+	// Where the dialog has to land to sit exactly on top of its chip. Derived, so
+	// a chip that slides down when the one below it closes takes the dialog with
+	// it and the restore animation still starts from the right place.
+	let minimizeTransform = $derived.by(() => {
+		if (!baseRect) return '';
+		const left = isRtl ? innerWidth - CHIP_EDGE - CHIP_WIDTH : CHIP_EDGE;
+		const bottom = innerHeight - chipBottom;
+		const scale = CHIP_WIDTH / baseRect.width;
+		// Scale is uniform, so the shrunken dialog is taller than the chip: land it
+		// on the chip's *bottom* edge, or a tall modal shrinks past the screen edge.
+		return `translate(${left - baseRect.left}px, ${bottom - baseRect.top - baseRect.height * scale}px) scale(${scale})`;
+	});
+
+	let transform = $derived(
+		minimized && minimizeTransform ? minimizeTransform : `translateY(${dragY}px)`
+	);
+
+	/** Run the 300ms flight, in either direction. */
+	function animateFlight() {
+		animating = true;
+		clearTimeout(animateTimer);
+		animateTimer = setTimeout(() => (animating = false), MINIMIZE_MS);
+	}
+
+	function minimize() {
+		if (!dialogEl) return;
+		const rect = dialogEl.getBoundingClientRect();
+		// getBoundingClientRect() is post-transform; back the swipe offset out of it.
+		baseRect = { left: rect.left, top: rect.top - dragY, width: rect.width, height: rect.height };
+		// Claim the stack slot before the flight starts, or the dialog aims at
+		// whichever slot is free now and hops up to its own one tick later.
+		registerMinimized(uid);
+		animateFlight();
+		minimized = true;
+		// Focus follows the modal into the corner, or it would be left on a button
+		// inside a dialog that has just gone `inert`.
+		requestAnimationFrame(() => chipRestoreEl?.focus());
+	}
+
+	function restore() {
+		animateFlight();
+		minimized = false;
+		requestAnimationFrame(() => {
+			const items = focusableItems();
+			(items[0] ?? dialogEl)?.focus();
+		});
+	}
+
 	// Handle backdrop click
 	function handleBackdropClick(event) {
-		if (dismissing) return;
+		if (dismissing || minimized) return;
 		if (closeOnBackdrop && event.target === event.currentTarget) {
 			onClose();
 		}
@@ -59,6 +142,9 @@
 	// Handle escape key, and keep Tab inside the dialog.
 	function handleKeydown(event) {
 		if (!isOpen || dismissing) return;
+		// A minimized modal has handed the page back to the user: it neither traps
+		// Tab nor answers Escape.
+		if (minimized) return;
 		if (closeOnEscape && event.key === 'Escape') {
 			onClose();
 			return;
@@ -143,7 +229,25 @@
 			dragY = 0;
 			isDragging = false;
 			dismissing = false;
+			minimized = false;
+			animating = false;
+			baseRect = null;
 		}
+	});
+
+	// Hold a slot in the shared stack for exactly as long as this modal is
+	// minimized — the teardown also covers closing and unmounting while minimized.
+	$effect(() => {
+		if (!isOpen || !minimized) return;
+		registerMinimized(uid);
+		return () => unregisterMinimized(uid);
+	});
+
+	// The chip corner and the restore icon mirror, so read the direction the page
+	// is actually rendering in. Re-read on open: the language can change under us.
+	$effect(() => {
+		if (!isOpen) return;
+		isRtl = getComputedStyle(document.documentElement).direction === 'rtl';
 	});
 
 	// Move focus in on open and put it back on close. Several call sites focus
@@ -164,17 +268,32 @@
 
 		return () => {
 			cancelAnimationFrame(frame);
+			clearTimeout(animateTimer);
 			// Only take focus back if the dialog still owns it — if something else
-			// has deliberately moved focus on close, don't fight it.
-			if (!dialogEl || dialogEl.contains(document.activeElement) || document.activeElement === document.body) {
+			// has deliberately moved focus on close, don't fight it. The chip counts
+			// as the dialog here; closing from the corner has to return focus too.
+			const active = document.activeElement;
+			if (
+				!dialogEl ||
+				dialogEl.contains(active) ||
+				chipEl?.contains(active) ||
+				active === document.body
+			) {
 				returnFocusTo?.focus();
 			}
 			returnFocusTo = null;
 		};
 	});
+
+	// Corner buttons: one literal class string, two positions. The trailing corner
+	// belongs to close when it is shown, so minimize sits inboard of it.
+	const CORNER_BUTTON =
+		'g2 hidden sm:block sm:absolute top-1 z-10 cursor-pointer rounded-lg p-2 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 sm:top-2 dark:text-gray-200 dark:hover:bg-zinc-750 dark:hover:text-white';
+	const CHIP_BUTTON =
+		'g2 shrink-0 cursor-pointer rounded-lg p-1.5 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 dark:text-gray-200 dark:hover:bg-zinc-750 dark:hover:text-white';
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} bind:innerWidth bind:innerHeight />
 
 {#if isOpen}
 	<!-- Modal Backdrop -->
@@ -185,7 +304,9 @@
 			? 'items-end sm:items-start'
 			: verticalAlign === 'bottom'
 				? 'items-end'
-				: 'items-end sm:items-center'} justify-center bg-neutral-900/40 sm:p-6 md:p-8 dark:bg-neutral-900/60"
+				: 'items-end sm:items-center'} justify-center transition-colors duration-300 sm:p-6 md:p-8 {minimized
+			? 'pointer-events-none bg-transparent'
+			: 'bg-neutral-900/40 dark:bg-neutral-900/60'}"
 		onclick={handleBackdropClick}
 	>
 		<!-- Modal Content Container -->
@@ -193,24 +314,43 @@
 			bind:this={dialogEl}
 			bind:clientHeight={modalHeight}
 			role="dialog"
-			aria-modal="true"
+			aria-modal={!minimized}
 			aria-label={ariaLabel || undefined}
+			inert={minimized}
 			tabindex="-1"
 			class="relative max-h-[90dvh] w-full max-w-3xl focus:outline-none {overflowVisible
 				? 'overflow-visible'
-				: 'overflow-auto'} {isDragging ? '' : 'transition-transform duration-200'}"
-			style="transform: translateY({dragY}px)"
+				: 'overflow-auto'} {isDragging
+				? ''
+				: minimized || animating
+					? 'transition-[transform,opacity] duration-300 ease-in-out'
+					: 'transition-transform duration-200'} {minimized ? 'pointer-events-none opacity-0' : ''}"
+			style="transform: {transform}; transform-origin: 0 0;"
 		>
 			<!-- Close Button -->
 			{#if showCloseButton}
 				<button
 					type="button"
 					onclick={onClose}
-					class="g2 hidden sm:block sm:absolute top-1 rtl:left-1 ltr:right-1 z-10 cursor-pointer rounded-lg p-2 text-gray-700 transition-colors hover:bg-neutral-100 hover:text-gray-900 sm:top-2 ltr:sm:right-2 rtl:sm:left-2 dark:text-gray-200 dark:hover:bg-zinc-750 dark:hover:text-white"
+					class="{CORNER_BUTTON} rtl:left-1 ltr:right-1 ltr:sm:right-2 rtl:sm:left-2"
 					aria-label={closeLabel}
 					title={closeLabel}
 				>
 					<X size={20} aria-hidden="true" />
+				</button>
+			{/if}
+			<!-- Minimize Button (modal-level, so it sits beside close whatever the content is) -->
+			{#if minimizable}
+				<button
+					type="button"
+					onclick={minimize}
+					class="{CORNER_BUTTON} {showCloseButton
+						? 'rtl:left-10 ltr:right-10 ltr:sm:right-11 rtl:sm:left-11'
+						: 'rtl:left-1 ltr:right-1 ltr:sm:right-2 rtl:sm:left-2'}"
+					aria-label={minimizeLabel}
+					title={minimizeLabel}
+				>
+					<Minus size={20} aria-hidden="true" />
 				</button>
 			{/if}
 			<!-- Bottom Sheet Handle (swipe to dismiss on mobile) -->
@@ -231,5 +371,55 @@
 			<!-- Slot Content -->
 			{@render children?.()}
 		</div>
+
+		<!-- Minimized chip. Stacks up from the bottom corner — leading edge, so it
+		     lands bottom-right under RTL without a second rule. -->
+		{#if minimizable && minimized}
+			<div
+				bind:this={chipEl}
+				in:fade={{ duration: 150, delay: 150 }}
+				out:fade={{ duration: 100 }}
+				class="pointer-events-auto fixed transition-[bottom] duration-300 ease-in-out"
+				style="width: {CHIP_WIDTH}px; height: {CHIP_HEIGHT}px; bottom: {chipBottom}px; inset-inline-start: {CHIP_EDGE}px;"
+			>
+				<div
+					class="g2 flex h-full items-center gap-1 rounded-xl bg-white px-2 shadow-lg dark:border dark:border-zinc-750 dark:bg-zinc-800"
+				>
+					<button
+						type="button"
+						onclick={restore}
+						class="min-w-0 flex-1 cursor-pointer truncate px-1 text-start text-sm font-medium text-gray-900 dark:text-gray-50"
+						title={chipLabel}
+					>
+						{chipLabel}
+					</button>
+					<button
+						type="button"
+						bind:this={chipRestoreEl}
+						onclick={restore}
+						class={CHIP_BUTTON}
+						aria-label={maximizeLabel}
+						title={maximizeLabel}
+					>
+						{#if isRtl}
+							<SquareArrowOutUpLeft size={18} aria-hidden="true" />
+						{:else}
+							<SquareArrowOutUpRight size={18} aria-hidden="true" />
+						{/if}
+					</button>
+					{#if showCloseButton}
+						<button
+							type="button"
+							onclick={onClose}
+							class={CHIP_BUTTON}
+							aria-label={closeLabel}
+							title={closeLabel}
+						>
+							<X size={18} aria-hidden="true" />
+						</button>
+					{/if}
+				</div>
+			</div>
+		{/if}
 	</div>
 {/if}
