@@ -14,7 +14,11 @@
 		type = 'button',
 		color = 'ghost',
 		size = 'md',
-		icon,
+		// Defaulted rather than left bare so it is *optional*. The body already
+		// handles its absence — a labelled button with no icon is a plain pill —
+		// but with no default it was the one prop here without one, which made
+		// svelte2tsx generate it as required and every icon-less use a type error.
+		icon = undefined,
 		iconSize = 18,
 		className = '',
 		iconClassName = ''
