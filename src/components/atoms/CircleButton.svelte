@@ -28,7 +28,12 @@
 	const colorClasses = {
 		ghost: 'text-gray-700 hover:bg-gray-900/10 dark:text-gray-200 dark:hover:bg-gray-50/10',
 		ghost2: 'text-gray-500 hover:bg-gray-900/10 dark:text-gray-400 dark:hover:bg-gray-50/10',
-		azure: 'bg-azure-700 text-white hover:bg-azure-900 dark:bg-azure-500 dark:hover:bg-azure-700',
+		// Matches ControlButton's azure exactly, in both themes — see the note on
+		// its own colorClasses. The dark-mode override is deliberately gone: it
+		// lightened the pill to azure-500 (3.56:1) precisely where the surface
+		// behind it is darkest, and one colour that clears AA everywhere beats two
+		// that swap.
+		azure: 'bg-azure-600 text-white hover:bg-azure-800',
 		green: 'bg-green-alt-500 text-white hover:bg-green-alt-600',
 		red: 'bg-red-alt-500 text-white hover:bg-red-alt-600',
 		orange: 'bg-orange-alt-500 text-white hover:bg-orange-alt-600',

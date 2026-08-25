@@ -15,8 +15,17 @@
 	} = $props();
 
 	// Color variants
+	//
+	// **Azure is azure-600 on azure-800, and CircleButton's azure is the same
+	// pair** (August 2026). It was 500 on 700, which measures 3.56:1 against
+	// white — a 1.4.3 failure logged in the WCAG audit, whose prescribed fix was
+	// azure-600 (4.85:1) or azure-700. The two atoms had disagreed about what
+	// "azure" meant since they were written: this one lighter and failing, the
+	// pill darker and passing. They now name one colour, and it is the lighter of
+	// the two that still clears AA. The other five variants keep their -500 and
+	// are still on the audit's list.
 	const colorClasses = {
-		azure: 'bg-azure-500 hover:bg-azure-700 disabled:bg-gray-400 text-white',
+		azure: 'bg-azure-600 hover:bg-azure-800 disabled:bg-gray-400 text-white',
 		mulberry: 'bg-mulberry-500 hover:bg-mulberry-700 disabled:bg-gray-400 text-white',
 		green: 'bg-green-alt-500 hover:bg-green-alt-600 disabled:bg-gray-400 text-white',
 		orange: 'bg-orange-alt-500 hover:bg-orange-alt-600 disabled:bg-gray-400 text-white',
