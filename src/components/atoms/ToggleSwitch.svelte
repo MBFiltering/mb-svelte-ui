@@ -125,10 +125,10 @@
 			transform: scale(1, 1);
 		}
 		40% {
-			transform: scale(1.22, 0.8);
+			transform: scale(1.16, 0.86);
 		}
 		78% {
-			transform: scale(0.92, 1.08);
+			transform: scale(0.96, 1.04);
 		}
 	}
 
@@ -138,10 +138,10 @@
 			transform: scale(1, 1);
 		}
 		40% {
-			transform: scale(1.22, 0.8);
+			transform: scale(1.16, 0.86);
 		}
 		78% {
-			transform: scale(0.92, 1.08);
+			transform: scale(0.96, 1.04);
 		}
 	}
 
