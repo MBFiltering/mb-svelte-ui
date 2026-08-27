@@ -88,7 +88,7 @@ npm install svelte @lucide/svelte
 ```
 
 **Fonts need no setup in consuming projects — including for i18n.** `font-sans` covers
-every locale we support: Poppins for Latin (en/es/fr) and Google Sans for Cyrillic (ru) and
+every locale we support: Poppins for Latin (en/es/fr) and Arimo for Cyrillic (ru) and
 Hebrew (he/yi). Both ship inside this package as WOFF2 subsets and are declared by
 `styles.css` with relative `./fonts/…` URLs, so your bundler resolves and fingerprints them
 for you.
