@@ -1290,6 +1290,8 @@ Toggle switch with default and icon variants.
 />
 ```
 
+The default variant's knob squash-and-stretches slightly as it travels (skipped under `prefers-reduced-motion`). The icon variant is unchanged.
+
 ---
 
 ### VisibilityToggle

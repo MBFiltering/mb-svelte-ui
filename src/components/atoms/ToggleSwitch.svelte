@@ -29,6 +29,22 @@
 
 	// Only emit a name when one was actually supplied — see the note above.
 	const name = $derived(customLabel || ariaLabel || undefined);
+
+	// Squash-and-stretch plays on every *change*, not on first paint. Two
+	// class names (not one) so a second click restarts the animation — a
+	// single shared name would keep the computed `animation-name` identical
+	// and the browser would not replay it.
+	/** @type {null | 'on' | 'off'} */
+	let travel = $state(null);
+	let primed = false;
+	$effect(() => {
+		const on = checked;
+		if (!primed) {
+			primed = true;
+			return;
+		}
+		travel = on ? 'on' : 'off';
+	});
 </script>
 
 {#if variant === 'icon'}
@@ -69,10 +85,74 @@
 			aria-checked={checked}
 		>
 			<span
-				class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {checked
-					? 'ltr:translate-x-6 rtl:-translate-x-6'
-					: 'ltr:translate-x-1 rtl:-translate-x-1'}"
+				class="knob pointer-events-none absolute top-1 h-4 w-4 rounded-full bg-white"
+				class:on={checked}
+				class:travel-on={travel === 'on'}
+				class:travel-off={travel === 'off'}
 			></span>
 		</button>
 	</div>
 {/if}
+
+<style>
+	/*
+	  Position is `inset-inline-start` so LTR and RTL share one path; the
+	  squish is a scale animation that Tailwind cannot express (start and
+	  end are both 1, the stretch lives in the middle).
+	*/
+	.knob {
+		--knob-off: 0.25rem;
+		--knob-on: 1.5rem;
+		inset-inline-start: var(--knob-off);
+		transition: inset-inline-start 260ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.knob.on {
+		inset-inline-start: var(--knob-on);
+	}
+
+	.knob.travel-on {
+		animation: knob-squish-on 260ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.knob.travel-off {
+		animation: knob-squish-off 260ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	@keyframes knob-squish-on {
+		0%,
+		100% {
+			transform: scale(1, 1);
+		}
+		40% {
+			transform: scale(1.22, 0.8);
+		}
+		78% {
+			transform: scale(0.92, 1.08);
+		}
+	}
+
+	@keyframes knob-squish-off {
+		0%,
+		100% {
+			transform: scale(1, 1);
+		}
+		40% {
+			transform: scale(1.22, 0.8);
+		}
+		78% {
+			transform: scale(0.92, 1.08);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.knob {
+			transition: inset-inline-start 150ms ease;
+		}
+
+		.knob.travel-on,
+		.knob.travel-off {
+			animation: none;
+		}
+	}
+</style>
