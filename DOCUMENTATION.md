@@ -3414,10 +3414,10 @@ Components that apply `g2` internally do so on their own markup, so you get it f
 
 ### `raised` — light on top, shade underneath
 
-A flat fill reads as a coloured rectangle. `raised` adds the four things that make it
-read as a physical, pressable object instead: a 1px rim of white along the top edge, a
-1px shade along the bottom inner edge, a wash down the face that is lighter at the top
-than the bottom, and a drop shadow that grows on hover to lift the surface off the page.
+Three thin layers that make a flat fill read as a physical, pressable object rather
+than a coloured rectangle: a 1px rim of white along the top edge, a 1px shade along
+the bottom inner edge, and a drop shadow that grows on hover to lift the surface off
+the page.
 
 Like `g2` it is a real Tailwind utility registered in `styles.css`, so variants and
 `@apply` work. Pair it with a fill:
@@ -3426,26 +3426,27 @@ Like `g2` it is a real Tailwind utility registered in `styles.css`, so variants 
 <button class="g2 rounded-lg bg-azure-600 raised">…</button>
 ```
 
-The wash is a `background-image`, so it composes with any `bg-*` colour — those set
-`background-color` and `raised` paints over it. Do **not** combine it with a gradient
-utility (`bg-linear-*`): they claim the same property and the last one wins.
+The alphas are deliberately low. The effect should be felt at a glance and invisible
+under inspection; if you can point at the highlight, it is too strong. They are pure
+white and pure black rather than palette colours, so one class works on every fill and
+on both grounds.
 
-`&:disabled` strips the whole treatment back to the flat fill, so an inert control never
-sits up off the page asking to be pressed. That keys off the pseudo-class, so it works on
-real form controls; a `<div>` posing as a button has nothing to match and stays raised.
+`&:disabled` drops the whole treatment, so an inert control never sits up off the page
+asking to be pressed. That keys off the pseudo-class, so it works on real form
+controls; a `<div>` posing as a button has nothing to match and stays raised.
 
-**Where it does not belong.** Ghost and outline surfaces — with no fill there is no face
-to light, and the rim plus drop shadow draw the outline of a button the design is
+**Where it does not belong.** Ghost and outline surfaces — with no fill there is no
+face to light, and the rim plus drop shadow draw the outline of a button the design is
 deliberately not showing. Sunken surfaces (inputs, wells, tracks) want the opposite
 light: shade at the top, rim at the bottom.
 
-**The light stops at 22% of the height, and that is a contrast budget rather than a taste
-call.** Lightening a fill lowers its contrast with the white text on it, and `azure-600`
-tolerates only a 3.8% white overlay before dropping under 4.5:1 — it is that colour
-because a WCAG 1.4.3 audit prescribed it. 22% is where the shortest button's line box
-begins, so every lit pixel stays inside the top padding at all three sizes and the text
-band is the flat fill. Darkening is unconstrained in the other direction, which is why
-the gradient is asymmetric. Re-measure before moving that stop.
+**There is deliberately no wash down the face**, and the reason is stronger than taste.
+Lightening a fill lowers its contrast with the white text on it, and these fills have
+no room to give: `azure-600` tolerates only a 3.8% white overlay before dropping under
+4.5:1, and it is that colour because a WCAG 1.4.3 audit prescribed it. A gradient of
+any visible strength across the text band measures 3.97:1 and hands that failure back.
+The two edge lines are safe from this because they are 1px, inside the padding, where
+no glyph ever sits.
 
 Applied internally by `ControlButton` (every variant except `transparent`).
 

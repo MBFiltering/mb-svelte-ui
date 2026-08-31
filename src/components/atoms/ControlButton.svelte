@@ -51,8 +51,8 @@
 	// The ghost variant has no face to light, so it sits this one out: a rim and
 	// a drop shadow would draw the outline of a button the design is deliberately
 	// not showing. Every filled variant gets the treatment, `white` included —
-	// the white layers no-op against a white ground, and the bottom shade and
-	// drop shadow carry it on their own.
+	// its rim no-ops against a white ground, and the bottom shade and drop
+	// shadow carry it on their own.
 	const raisedClass = $derived(color === 'transparent' ? '' : 'raised');
 </script>
 
