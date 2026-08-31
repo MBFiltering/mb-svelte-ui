@@ -47,6 +47,13 @@
 
 	const colorClass = $derived(colorClasses[color] || colorClasses.azure);
 	const sizeClass = $derived(sizeClasses[size] || sizeClasses.md);
+
+	// The ghost variant has no face to light, so it sits this one out: a rim and
+	// a drop shadow would draw the outline of a button the design is deliberately
+	// not showing. Every filled variant gets the treatment, `white` included —
+	// the white layers no-op against a white ground, and the bottom shade and
+	// drop shadow carry it on their own.
+	const raisedClass = $derived(color === 'transparent' ? '' : 'raised');
 </script>
 
 <button
@@ -54,7 +61,7 @@
 	disabled={disabled || loading}
 	{type}
 	aria-busy={loading}
-	class="g2 relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all transition-shadows hover:scale-101 hover:shadow-md disabled:hover:scale-100 disabled:hover:shadow-none {loading
+	class="g2 relative inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-medium transition-all duration-100 motion-safe:enabled:hover:scale-101 motion-safe:enabled:active:scale-99 {raisedClass} {loading
 		? 'cursor-wait'
 		: 'disabled:cursor-default'} {colorClass} {sizeClass} {className}"
 >

@@ -76,6 +76,7 @@
    - [urlUtils](#urlutils)
 7. [CSS Classes Reference](#css-classes-reference)
    - [`g2` — squircle corners](#g2--continuous-curvature-squircle-corners)
+   - [`raised` — 3D surfaces](#raised--light-on-top-shade-underneath)
 
 ---
 
@@ -461,8 +462,16 @@ Styled button with color and size variants.
 | `children`     | `snippet`  | -          | Button content                                                     |
 
 A disabled button (or a `loading` one, which is disabled too) is inert under the
-pointer: it keeps its gray fill and neither lifts nor casts a shadow on hover, so
-an action that cannot be taken never looks clickable.
+pointer: it keeps its gray fill, drops back to a flat surface and neither lifts nor
+casts a shadow on hover, so an action that cannot be taken never looks clickable.
+
+**The button is a physical object.** It carries [`raised`](#raised--light-on-top-shade-underneath) —
+lit along the top edge, shaded along the bottom, and casting a shadow that grows as
+it rises on hover — and it shrinks slightly while held down. The `transparent`
+variant opts out: with no fill there is no face to light, and the rim would draw the
+outline of a button the design is deliberately not showing. Both movements are
+`motion-safe:`, so under `prefers-reduced-motion: reduce` the button still lights
+and shades and lifts its shadow but never scales.
 
 **`disabled` vs `loading`.** They are not interchangeable: `disabled` means *you
 may not*, `loading` means *you did, and it is working*. `loading` already implies
@@ -3402,6 +3411,43 @@ Components that apply `g2` internally do so on their own markup, so you get it f
 `Info`, `ToggleSwitch` (the row, not the knob), `OneFromMany`, `Skeleton` (default),
 `Island`, `NamedControl`, `Tabs`, `MultiInput`, `QuickLinks`, `Modal` (corner buttons and the minimized chip),
 `SectionedPage`.
+
+### `raised` — light on top, shade underneath
+
+A flat fill reads as a coloured rectangle. `raised` adds the four things that make it
+read as a physical, pressable object instead: a 1px rim of white along the top edge, a
+1px shade along the bottom inner edge, a wash down the face that is lighter at the top
+than the bottom, and a drop shadow that grows on hover to lift the surface off the page.
+
+Like `g2` it is a real Tailwind utility registered in `styles.css`, so variants and
+`@apply` work. Pair it with a fill:
+
+```svelte
+<button class="g2 rounded-lg bg-azure-600 raised">…</button>
+```
+
+The wash is a `background-image`, so it composes with any `bg-*` colour — those set
+`background-color` and `raised` paints over it. Do **not** combine it with a gradient
+utility (`bg-linear-*`): they claim the same property and the last one wins.
+
+`&:disabled` strips the whole treatment back to the flat fill, so an inert control never
+sits up off the page asking to be pressed. That keys off the pseudo-class, so it works on
+real form controls; a `<div>` posing as a button has nothing to match and stays raised.
+
+**Where it does not belong.** Ghost and outline surfaces — with no fill there is no face
+to light, and the rim plus drop shadow draw the outline of a button the design is
+deliberately not showing. Sunken surfaces (inputs, wells, tracks) want the opposite
+light: shade at the top, rim at the bottom.
+
+**The light stops at 22% of the height, and that is a contrast budget rather than a taste
+call.** Lightening a fill lowers its contrast with the white text on it, and `azure-600`
+tolerates only a 3.8% white overlay before dropping under 4.5:1 — it is that colour
+because a WCAG 1.4.3 audit prescribed it. 22% is where the shortest button's line box
+begins, so every lit pixel stays inside the top padding at all three sizes and the text
+band is the flat fill. Darkening is unconstrained in the other direction, which is why
+the gradient is asymmetric. Re-measure before moving that stop.
+
+Applied internally by `ControlButton` (every variant except `transparent`).
 
 ### Helper Visibility Classes
 

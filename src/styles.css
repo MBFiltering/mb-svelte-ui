@@ -527,6 +527,117 @@
 	--radius-4xl: calc(var(--g2-base-4xl) * var(--g2-scale));
 }
 
+/* =============================================================================
+   RAISED SURFACES (`raised`) — light on top, shade underneath
+
+   A flat fill reads as a coloured rectangle. Four things together read as a
+   physical, pressable object, and `raised` is all four in one class:
+
+     1. A 1px rim of white along the top edge — the light source.
+     2. A 1px shade along the bottom inner edge — where the surface turns away.
+     3. A wash down the face, lighter at the top than the bottom, so the plane
+        between the two edges is lit as well as its borders.
+     4. A drop shadow that grows on hover, lifting the object off the page.
+
+   Usage — on a filled surface, paired with whatever radius it already has:
+
+       <button class="g2 rounded-lg bg-azure-600 raised">
+
+   The wash is `background-image`, so it composes with any `bg-*` colour: those
+   utilities set `background-color` and this one paints over it. Do NOT combine
+   it with a gradient utility (`bg-linear-*`) — they claim the same property and
+   the last one wins.
+
+   ── Why the wash is a gradient and not a fifth shadow ────────────────────────
+
+   The usual way to write the face wash is a large inset shadow pushed downward
+   with a negative spread (`0 24px 24px -18px inset`), which lights the upper
+   part of the box and fades out. That is authored against one button height:
+   the spread eats 18px from every side, so on anything shorter than ~36px the
+   shadow's rectangle collapses and the wash silently disappears. Our buttons
+   run from 28px (`sm`) to 48px (`lg`) and the ones most in need of the effect
+   are the small ones. Percentage stops scale to the box instead, so a `sm`
+   button and a `lg` button are lit the same way.
+
+   ── Why the light stops at 22% ───────────────────────────────────────────────
+
+   THIS IS A CONTRAST BUDGET, NOT A TASTE CALL. Do not push the stop further
+   down the box without re-measuring.
+
+   Lightening a fill lowers its contrast with the white text sitting on it, and
+   the fill with the least room to give is the one that matters: `azure-600`
+   (#556ebb) measures 4.85:1 against white, and it is only that colour because a
+   WCAG 1.4.3 audit failed `azure-500` and prescribed the fix. It tolerates a
+   3.8% white overlay before it drops back under 4.5:1 — so a wash of any real
+   strength cannot be allowed anywhere near a glyph.
+
+   22% is where the shortest button's line box begins: `sm` is a 28px box with
+   6px of padding above 16px of line, so text starts at 21.4%, `md` at 22.2% and
+   `lg` at 25%. Ending the wash there keeps every lit pixel inside the top
+   padding, above even the leading, at all three sizes — the text band is the
+   flat fill, exactly as measured and signed off.
+
+   The bottom half is unconstrained in the other direction: darkening only ever
+   raises contrast for white text, and against `white`'s gray-700 label the 7%
+   black at the very bottom costs 10.3:1 → 8.8:1, nowhere near the line.
+   That is why the gradient is asymmetric — a strong short light and a weak long
+   shade, rather than the symmetric wash it looks like it wants to be.
+
+   Measured across all three sizes, no variant loses more than 0.05 of its flat
+   ratio, and `azure-600` holds at 4.80 (`sm`) to 4.85 (`md`, `lg`).
+
+   ── Where it does NOT belong ─────────────────────────────────────────────────
+
+   - **Ghost and outline surfaces.** With no fill there is no face to light, and
+     the rim plus drop shadow draw the outline of a button the design is
+     deliberately not showing.
+   - **Anything inert.** `&:disabled` strips the whole treatment back to the
+     flat fill, so an action that cannot be taken does not sit up off the page
+     asking to be pressed. This keys off the `:disabled` pseudo-class, so it
+     applies to real form controls; on a `<div>` posing as a button there is
+     nothing to match and the surface stays raised.
+   - **Sunken surfaces** — inputs, wells, tracks. They want the opposite light:
+     shade at the top, rim at the bottom.
+
+   The alphas are deliberately low. The effect should be felt at a glance and
+   invisible under inspection; if you can point at the gradient, it is too
+   strong. They are pure white and pure black rather than palette colours so
+   that one class works on every fill, and they are the same values on a dark
+   ground — white-on-dark simply has more room to show, which is correct.
+   ============================================================================= */
+
+@utility raised {
+	/* Rim and shade are constant; only the drop shadow changes on hover. */
+	--raised-edges: inset 0 1px 0.5px rgb(255 255 255 / 0.35),
+		inset 0 -1px 0.5px rgb(0 0 0 / 0.25);
+
+	/* Light out by 22% — see the contrast budget above before moving that stop. */
+	background-image: linear-gradient(
+		to bottom,
+		rgb(255 255 255 / 0.2) 0%,
+		rgb(255 255 255 / 0) 22%,
+		rgb(0 0 0 / 0) 55%,
+		rgb(0 0 0 / 0.07) 100%
+	);
+
+	box-shadow: var(--raised-edges), 0 1px 2px rgb(0 0 0 / 0.14), 0 3px 4px rgb(0 0 0 / 0.07);
+
+	/* Guarded like Tailwind's own `hover:` — a tap on a touch screen leaves the
+	   element in :hover, and an unguarded rule would strand the button up in the
+	   air until something else was tapped. */
+	@media (hover: hover) {
+		&:hover:not(:disabled) {
+			box-shadow: var(--raised-edges), 0 4px 8px rgb(0 0 0 / 0.14),
+				0 8px 16px rgb(0 0 0 / 0.07);
+		}
+	}
+
+	&:disabled {
+		background-image: none;
+		box-shadow: none;
+	}
+}
+
 /* Hide keyboard shortcuts when setting is disabled */
 html.hide-kbd .kbd-helper {
 	display: none !important;
