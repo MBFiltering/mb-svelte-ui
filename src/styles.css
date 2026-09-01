@@ -9,56 +9,45 @@
  */
 
 /* =============================================================================
-   UI FONT STACK (`font-sans`) — one typeface per script
-   Self-hosted from src/fonts (all OFL, see src/fonts/OFL.txt). WOFF2 only.
+   UI FONT STACK (`font-sans`) — one typeface, every script
+   Self-hosted from src/fonts (OFL, see src/fonts/OFL.txt). WOFF2 only.
 
-     Poppins    latin, latin-ext   en/es/fr and all Latin text
-     Noto Sans  cyrillic           ru
-     Noto Sans  hebrew             he/yi
+     Rubik   latin, latin-ext, cyrillic, hebrew   en/es/fr, ru, he/yi
 
-   Poppins has no Cyrillic and no Hebrew glyphs at all, so ru/he/yi used to fall
-   through to system-ui. Both non-Latin subsets are declared under the single
-   local family name 'Noto Sans' below so the two scripts share one entry in
-   `--font-sans`, but they are NOT one upstream family: the cyrillic face comes
-   from Google's `Noto Sans`, the hebrew face from the separately-maintained
-   `Noto Sans Hebrew` (the base `Noto Sans` has no Hebrew glyphs). Re-pulling
-   "Noto Sans" from Google Fonts to refresh a subset will not bring Hebrew with
-   it — that has to come from the Hebrew family specifically.
+   Rubik is a single upstream family with native Cyrillic and Hebrew glyph
+   coverage, unlike the Poppins/Noto Sans pairing this replaced — there is no
+   split between a Latin family and a separately-maintained non-Latin one, so
+   every script renders in the same typeface at the same weight and (unlike
+   before) the same italic. Re-pulling "Rubik" from Google Fonts refreshes all
+   four subsets at once.
 
-   Selection is per glyph, not per locale: every face carries a `unicode-range`,
-   so the browser picks the family that actually covers each character and
-   downloads nothing else. A Hebrew page with an English product name in it gets
-   Noto Sans and Poppins on the same line, with no i18n wiring in the host app.
+   Selection is still per glyph, not per locale: each subset file carries a
+   `unicode-range`, so the browser downloads only the subset(s) a page actually
+   needs. A Hebrew page with an English product name in it loads the hebrew and
+   latin files and nothing else, with no i18n wiring in the host app.
 
-   Poppins ships as seven static faces per subset — 400/500/600/700 upright plus
-   400, 600 and 700 italic, the only ones the portals render. The cyrillic face
-   ships as variable fonts clamped to `font-weight: 400 700`, one upright and
-   one italic, which is both smaller and fewer files than the equivalent statics.
-   Hebrew ships upright only (see the note above its font-face block) — three
-   files, ~56 KB total, and only on pages that render those scripts.
-   Anything heavier than 700 (`font-extrabold`) resolves to 700 in both families
-   by CSS font matching, which is the intended graceful degradation — do not add
-   faces or widen the weight range without a real usage.
+   Each subset ships as a single variable-weight WOFF2 per style — one upright,
+   one italic, clamped to `font-weight: 400 700` — so the four subsets below are
+   8 files total (versus 17 for the Poppins/Noto Sans stack they replaced), and
+   every weight in that range is available natively rather than resolved by CSS
+   font matching. Anything heavier than 700 (`font-extrabold`) still resolves to
+   700 by matching, which remains the intended graceful degradation — do not
+   widen the range without a real usage.
 
-   Two notes on Poppins' italic weights, because the failure is silent and looks
-   like a rendering bug rather than a missing file. They apply to Latin only:
-   the cyrillic face is variable across 400-700 in italic as well as upright, so
-   no weight in that range is missing for Cyrillic. (Hebrew has no italic face
-   at all, upright or otherwise — see below, a different kind of gap.)
-
-   - 700 italic exists because `italic` + an inherited `font-bold` is real (the
-     customer-portal hero `<h1>`). Without it, CSS font matching resolved bold
-     italic down to the 600 face, so the accent span rendered visibly lighter
-     than the upright bold span beside it in the same heading.
-   - 500 italic does NOT exist, so `font-medium` + `italic` resolves *down* to
-     400 and renders at regular weight. Nothing uses that combination today. If
-     you introduce it, add the face rather than accepting the silent fallback.
+   Both silent gaps the old stack carried are closed by the switch:
+   - Poppins had no 500 italic, so `font-medium` + `italic` rendered at 400.
+     Rubik's variable range covers every weight in both styles, so 500 italic
+     is just there.
+   - Noto Sans Hebrew shipped no italic face at any weight, so `<em>` and the
+     landing hero's italic accent span fell back to a browser-synthesised
+     oblique for he/yi. Rubik Hebrew has a real italic, so that fallback no
+     longer triggers.
    ============================================================================= */
 
 @font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-regular-latin.woff2') format('woff2');
-	font-weight: 400;
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-latin.woff2') format('woff2');
+	font-weight: 400 700;
 	font-style: normal;
 	font-display: swap;
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -67,9 +56,9 @@
 }
 
 @font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-regular-latin-ext.woff2') format('woff2');
-	font-weight: 400;
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-latin-ext.woff2') format('woff2');
+	font-weight: 400 700;
 	font-style: normal;
 	font-display: swap;
 	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
@@ -78,75 +67,9 @@
 }
 
 @font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-medium-latin.woff2') format('woff2');
-	font-weight: 500;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-medium-latin-ext.woff2') format('woff2');
-	font-weight: 500;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-semibold-latin.woff2') format('woff2');
-	font-weight: 600;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-semibold-latin-ext.woff2') format('woff2');
-	font-weight: 600;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-bold-latin.woff2') format('woff2');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-bold-latin-ext.woff2') format('woff2');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-italic-latin.woff2') format('woff2');
-	font-weight: 400;
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-italic-latin.woff2') format('woff2');
+	font-weight: 400 700;
 	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
@@ -155,9 +78,9 @@
 }
 
 @font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-italic-latin-ext.woff2') format('woff2');
-	font-weight: 400;
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-italic-latin-ext.woff2') format('woff2');
+	font-weight: 400 700;
 	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
@@ -165,57 +88,13 @@
 		U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* Cyrillic (ru). The cyrillic-ext subset (archaic Slavonic, Caucasian and
+   Central Asian letters) is deliberately not shipped: Russian is our only
+   Cyrillic locale and it lives entirely in the base range below, as does
+   Ukrainian. */
 @font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-semibolditalic-latin.woff2') format('woff2');
-	font-weight: 600;
-	font-style: italic;
-	font-display: swap;
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-semibolditalic-latin-ext.woff2') format('woff2');
-	font-weight: 600;
-	font-style: italic;
-	font-display: swap;
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-bolditalic-latin.woff2') format('woff2');
-	font-weight: 700;
-	font-style: italic;
-	font-display: swap;
-	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-		U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
-		U+FEFF, U+FFFD;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src: url('./fonts/Poppins-bolditalic-latin-ext.woff2') format('woff2');
-	font-weight: 700;
-	font-style: italic;
-	font-display: swap;
-	unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-		U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
-		U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* Noto Sans — Cyrillic (ru). Variable weight axis, clamped to the 400-700 the
-   portals use. The cyrillic-ext subset (archaic Slavonic, Caucasian and Central
-   Asian letters) is deliberately not shipped: Russian is our only Cyrillic
-   locale and it lives entirely in the base range below, as does Ukrainian. */
-@font-face {
-	font-family: 'Noto Sans';
-	src: url('./fonts/NotoSans-cyrillic.woff2') format('woff2');
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-cyrillic.woff2') format('woff2');
 	font-weight: 400 700;
 	font-style: normal;
 	font-display: swap;
@@ -223,32 +102,31 @@
 }
 
 @font-face {
-	font-family: 'Noto Sans';
-	src: url('./fonts/NotoSans-italic-cyrillic.woff2') format('woff2');
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-italic-cyrillic.woff2') format('woff2');
 	font-weight: 400 700;
 	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
-/* Noto Sans Hebrew (he, and yi which is written in the same script), declared
-   under the local family name 'Noto Sans' — see the stack comment above. The
-   range covers the Hebrew block plus the FB1D-FB4F presentation forms, which is
-   where the Yiddish digraphs and pointed forms live.
-
-   Upright only, on purpose: Noto Sans Hebrew ships no italic face at any
-   weight, unlike Open Sans before it. `<em>` and the landing hero's italic
-   accent span fall back to a browser-synthesised oblique for he/yi — the same
-   gap Heebo had, which the move to Open Sans in September 2026 had closed.
-   Accepted as a known tradeoff of the Noto Sans switch rather than worked
-   around; if that regresses noticeably, the fix is a `font-style: normal`
-   override on this unicode-range (the pre-Open-Sans workaround), not a second
-   font file, since no Google Noto Hebrew family draws a real italic. */
+/* Hebrew (he, and yi which is written in the same script). The range covers
+   the Hebrew block plus the FB1D-FB4F presentation forms, which is where the
+   Yiddish digraphs and pointed forms live. */
 @font-face {
-	font-family: 'Noto Sans';
-	src: url('./fonts/NotoSans-hebrew.woff2') format('woff2');
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-hebrew.woff2') format('woff2');
 	font-weight: 400 700;
 	font-style: normal;
+	font-display: swap;
+	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+	font-family: 'Rubik';
+	src: url('./fonts/Rubik-italic-hebrew.woff2') format('woff2');
+	font-weight: 400 700;
+	font-style: italic;
 	font-display: swap;
 	unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
 }
@@ -303,12 +181,10 @@
 	--breakpoint-xl2: 90rem; /* 1440px — between xl and 2xl */
 	--breakpoint-2xl2: 103.125rem; /* 1650px — above 2xl */
 
-	/* Font Family — Poppins (latin), Noto Sans (cyrillic and hebrew).
-	   Order matters: each family is declared with a `unicode-range` covering only
-	   its script, so the browser walks the list per character and lands on the one
-	   that actually has the glyph. See the font-face block at the top of this file. */
+	/* Font Family — Rubik, every script (latin, cyrillic, hebrew) in one family.
+	   See the font-face block at the top of this file for the per-subset files. */
 	--font-sans:
-		'Poppins', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		'Rubik', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
 		'Helvetica Neue', Arial, sans-serif;
 
 	/* Using: https://oklch.com/#0.322,0.0095,285.919,100 */

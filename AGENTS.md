@@ -139,8 +139,8 @@ src/
 │   ├── molecules/        # Composite components (Grid, Island, NamedControl, Tabs)
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
-├── fonts/                # Poppins + Noto Sans (OFL) — WOFF2 subsets,
-│                         #   declared in styles.css, one family per script.
+├── fonts/                # Rubik (OFL) — WOFF2 subsets, one family for every
+│                         #   script, declared in styles.css.
 │                         #   See "Fonts" below before adding or removing a face.
 └── utils/                # Helper functions (dateTime, stringUtils, toastStore, etc.)
 ```
@@ -158,70 +158,59 @@ src/
 
 ## Fonts
 
-`font-sans` is **two typefaces split by script**, and they ship **with this package** —
-consumers get them from `@import '@mbsmart/ui/styles.css'` and must never re-declare one
+`font-sans` is **one typeface for every script**, and it ships **with this package** —
+consumers get it from `@import '@mbsmart/ui/styles.css'` and must never re-declare it
 or copy it into their own `static/fonts`.
 
-| Family    | Script / subset  | Locales | Files |
-|-----------|------------------|---------|-------|
-| Poppins   | latin, latin-ext | en/es/fr and all Latin text | 14 static, ~101 KB |
-| Noto Sans | cyrillic         | ru      | 2 variable, ~44 KB |
-| Noto Sans | hebrew           | he, yi  | 1 variable, ~12 KB |
+| Family | Script / subset            | Locales | Files |
+|--------|-----------------------------|---------|-------|
+| Rubik  | latin, latin-ext, cyrillic, hebrew | en/es/fr, ru, he/yi | 8 variable, ~163 KB |
 
-Noto Sans replaced **Open Sans** in September 2026, which had itself replaced **Arimo**
-in September 2026 and, before that, **Montserrat** (cyrillic) and **Heebo** (hebrew) in
-August 2026, by way of a short stint on **Google Sans** that was reverted because Google
-Sans is not licensed for commercial use — do not reintroduce it. Both non-Latin subsets
-are declared under one local family name, `'Noto Sans'`, so Hebrew and Russian share a
-single entry in `--font-sans` — but unlike Open Sans, they are **not one upstream family**:
-the cyrillic face is Google's `Noto Sans`, the hebrew face is the separately-maintained
-`Noto Sans Hebrew` (the base `Noto Sans` carries no Hebrew glyphs). Re-pulling "Noto Sans"
-alone from Google Fonts will not refresh Hebrew.
+Rubik replaced the **Poppins + Noto Sans** split in September 2026. Noto Sans had itself
+replaced **Open Sans** in September 2026, which had replaced **Arimo** in September 2026
+and, before that, **Montserrat** (cyrillic) and **Heebo** (hebrew) in August 2026, by way
+of a short stint on **Google Sans** that was reverted because Google Sans is not licensed
+for commercial use — do not reintroduce it. Every prior stack split the non-Latin scripts
+across separately-maintained upstream families sharing a local CSS name; Rubik is a single
+upstream family with native Latin, Cyrillic and Hebrew glyph coverage, so that split is
+gone — one `font-family` in `--font-sans`, one visual weight and italic across every
+script. Re-pulling "Rubik" from Google Fonts refreshes all four subsets at once.
 
-**Selection is per glyph, not per locale.** Every face carries a `unicode-range`, so the
-browser walks `--font-sans` per character and lands on the family that has the glyph — a
-Hebrew page with an English product name in it renders Noto Sans and Poppins on the same
-line. Host apps need **no i18n wiring for fonts at all**; nothing keys off `$language` or
-`dir`. It also means a page downloads only the scripts it renders: an English page pulls
-three or four latin Poppins faces (~26–35 KB) and never touches Noto Sans.
+**Selection is still per glyph, not per locale.** Every face carries a `unicode-range`, so
+the browser walks the file list per character and lands on the subset that has the glyph —
+a Hebrew page with an English product name in it downloads the hebrew and latin files and
+nothing else. Host apps need **no i18n wiring for fonts at all**; nothing keys off
+`$language` or `dir`.
 
-`src/fonts/` holds **WOFF2 only**. Poppins is seven static faces per subset (400/500/600/700
-upright plus 400, 600 and 700 italic); the cyrillic face is one upright and one italic
-variable font, declared `font-weight: 400 700`, which is smaller and fewer files than the
-equivalent statics. The hebrew face is upright only — see the italics note below.
+`src/fonts/` holds **WOFF2 only**. Each of the four subsets ships as one upright and one
+italic variable font, declared `font-weight: 400 700` — 8 files total, versus 17 for the
+Poppins/Noto Sans stack this replaced.
 
 Before changing this:
 
 - **Do not add a face, subset, or weight without a real usage.** CSS font matching resolves
   an unavailable weight to the nearest available one — `font-extrabold` (one usage, in
-  device-portal) correctly renders as 700 in both families. That is the intended
-  degradation. Poppins' Devanagari block and the cyrillic face's `cyrillic-ext` are dropped
-  for the same reason; Russian (and Ukrainian) live entirely in the base `cyrillic` range.
-  Noto Sans ships in many subsets on the Google Fonts API and we take **one** of them; Noto
-  Sans Hebrew similarly contributes only its `hebrew` subset: do not pull in greek,
-  vietnamese or the rest without a locale that needs them.
-- **Mind the italic weight ramp — a missing italic face is a silent bug.** Poppins has
-  400/600/700 italic but **no 500**, so `font-medium` + `italic` resolves *down* to 400 and
-  renders at regular weight. This bit us once already: before 700 italic existed, the
-  customer-portal hero's `italic` accent span resolved down to 600 and read visibly lighter
-  than the upright `font-bold` span next to it in the same `<h1>`. Note the weight is often
-  **inherited** from an ancestor rather than sitting on the italic element, so grepping for
-  `italic` and `font-bold` in one class attribute will not find these — check computed
-  styles, or measure rendered widths per weight in a browser.
+  device-portal) correctly renders as 700. That is the intended degradation. Rubik's
+  `cyrillic-ext` and `arabic` subsets are dropped for the same reason it was always dropped:
+  Russian (and Ukrainian) live entirely in the base `cyrillic` range, and no locale we
+  support needs Arabic script. Do not pull in additional subsets without a locale that needs
+  them.
 - **Do not ship TTF.** WOFF2 is ~70% smaller and universally supported. The per-subset
   WOFF2 files can be pulled straight from the Google Fonts `css2` API with a modern
   browser UA — that is where the current files came from, and the `unicode-range` values in
   `styles.css` are copied verbatim from its output. Otherwise regenerate with
   `pyftsubset SRC.ttf --unicodes=<range> --layout-features='*' --flavor=woff2`.
-- **Hebrew italics are synthesised, not drawn — a known, accepted gap.** Heebo had no
-  italic at any weight, so Hebrew `<em>` and the landing hero's italic accent span rendered
-  as a browser-synthesised oblique that slanted right, i.e. against the reading direction in
-  RTL. Open Sans (September 2026) drew a real Hebrew italic and closed that gap; Noto Sans
-  Hebrew reopens it — no Google Noto Hebrew family ships a drawn italic at any weight, so
-  this is a property of the family choice, not a missing file to go add. If the synthesised
-  oblique becomes a real problem, the fix is a `font-style: normal` override on the Hebrew
-  `unicode-range` (the pre-Open-Sans workaround, which the brochure used), not a second font
-  file.
+- **The two silent gaps the old stack carried are now closed, not just worked around.**
+  Poppins had no 500 italic (`font-medium` + `italic` rendered at 400 — this bit us once,
+  before 700 italic existed, when the customer-portal hero's `italic` accent span resolved
+  down to 600 and read visibly lighter than the upright `font-bold` span beside it). Noto
+  Sans Hebrew shipped no italic at any weight, so Hebrew `<em>` and the landing hero's
+  italic accent span fell back to a browser-synthesised oblique — the same gap Heebo had.
+  Rubik's variable range covers every weight in both styles for every subset, italic
+  included, so neither gap exists to work around anymore. If a future family swap
+  reintroduces either one, the historical fixes were: adding the missing static face
+  (Poppins 700 italic), or a `font-style: normal` override on the affected `unicode-range`
+  (the pre-Open-Sans Hebrew workaround, which the brochure used).
 
 ---
 

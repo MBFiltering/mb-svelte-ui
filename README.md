@@ -87,11 +87,10 @@ Make sure to install them in your project:
 npm install svelte @lucide/svelte
 ```
 
-**Fonts need no setup in consuming projects — including for i18n.** `font-sans` covers
-every locale we support: Poppins for Latin (en/es/fr) and Noto Sans for Cyrillic (ru) and
-Hebrew (he/yi). Both ship inside this package as WOFF2 subsets and are declared by
-`styles.css` with relative `./fonts/…` URLs, so your bundler resolves and fingerprints them
-for you.
+**Fonts need no setup in consuming projects — including for i18n.** `font-sans` is Rubik
+for every locale we support: Latin (en/es/fr), Cyrillic (ru) and Hebrew (he/yi) all in one
+family. It ships inside this package as WOFF2 subsets and is declared by `styles.css` with
+relative `./fonts/…` URLs, so your bundler resolves and fingerprints them for you.
 
 The right family is picked **per character** by `unicode-range`, so there is nothing to
 wire up: no `:lang()` rules, no switching on `$language` or `dir`, and mixed-script text
