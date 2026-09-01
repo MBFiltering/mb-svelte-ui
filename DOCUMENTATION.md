@@ -760,7 +760,7 @@ Segmented button selector for choosing one option from a list.
 | ------------ | --------- | ----------- |
 | `value`      | `string`  | Option value (required) |
 | `label`      | `string`  | Display label |
-| `color`      | `string`  | Tailwind bg class when selected. Azure options take `'bg-azure-600 hover:bg-azure-800'` — the 500/700 pair measures 3.56:1 against white, a WCAG 1.4.3 failure |
+| `color`      | `string`  | Tailwind bg class when selected. Azure options take `bg-azure-600` — azure-500 measures 3.56:1 against white, a WCAG 1.4.3 failure |
 | `textColor`  | `string`  | Text color when selected (defaults to `'text-white'`) |
 | `disabled`   | `boolean` | When true, this option cannot be selected (permission-gating, etc.) |
 | `cursor`     | `string`  | Optional Tailwind cursor class when the option is interactive |
@@ -774,7 +774,7 @@ Segmented button selector for choosing one option from a list.
 	const options = [
 		{ value: 'blocked', label: 'Blocked', color: 'bg-red-alt-500', disabled: true },
 		{ value: 'allowed', label: 'Allowed', color: 'bg-green-alt-500', textColor: 'text-white' },
-		{ value: 'filtered', label: 'Filtered', color: 'bg-azure-600 hover:bg-azure-800', disabled: !canFilter }
+		{ value: 'filtered', label: 'Filtered', color: 'bg-azure-600', disabled: !canFilter }
 	];
 </script>
 
@@ -1263,21 +1263,21 @@ Toggle switch with default and icon variants.
 
 **Props:**
 
-| Prop          | Type        | Default                             | Description                         |
-| ------------- | ----------- | ----------------------------------- | ----------------------------------- |
-| `label`       | `string`    | `''`                                | Used for aria-label                 |
-| `customLabel` | `string`    | `null`                              | Override aria-label                 |
-| `checked`     | `boolean`   | `false`                             | Toggle state                        |
-| `onChange`    | `function`  | `() => {}`                          | Callback with new value             |
-| `disabled`    | `boolean`   | `false`                             | Disables toggle                     |
-| `colorOn`     | `string`    | `'bg-azure-600 hover:bg-azure-800'` | Background when on                  |
-| `colorOff`    | `string`    | `'bg-gray-300'`                     | Background when off                 |
-| `variant`     | `string`    | `'default'`                         | `'default'` or `'icon'`             |
-| `iconOn`      | `component` | `null`                              | Lucide icon when on (icon variant)  |
-| `iconOff`     | `component` | `null`                              | Lucide icon when off (icon variant) |
-| `iconSize`    | `number`    | `18`                                | Icon size (icon variant)            |
-| `onText`      | `string`    | `'On'`                              | i18n "On" text                      |
-| `offText`     | `string`    | `'Off'`                             | i18n "Off" text                     |
+| Prop          | Type        | Default          | Description                         |
+| ------------- | ----------- | ---------------- | ----------------------------------- |
+| `label`       | `string`    | `''`             | Used for aria-label                 |
+| `customLabel` | `string`    | `null`           | Override aria-label                 |
+| `checked`     | `boolean`   | `false`          | Toggle state                        |
+| `onChange`    | `function`  | `() => {}`       | Callback with new value             |
+| `disabled`    | `boolean`   | `false`          | Disables toggle                     |
+| `colorOn`     | `string`    | `'bg-azure-600'` | Background when on                  |
+| `colorOff`    | `string`    | `'bg-gray-300'`  | Background when off                 |
+| `variant`     | `string`    | `'default'`      | `'default'` or `'icon'`             |
+| `iconOn`      | `component` | `null`           | Lucide icon when on (icon variant)  |
+| `iconOff`     | `component` | `null`           | Lucide icon when off (icon variant) |
+| `iconSize`    | `number`    | `18`             | Icon size (icon variant)            |
+| `onText`      | `string`    | `'On'`           | i18n "On" text                      |
+| `offText`     | `string`    | `'Off'`          | i18n "Off" text                     |
 
 **Usage:**
 

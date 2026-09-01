@@ -17,7 +17,7 @@
 		checked = false,
 		onChange = () => {},
 		disabled = false,
-		colorOn = 'bg-azure-600 hover:bg-azure-800',
+		colorOn = 'bg-azure-600',
 		colorOff = 'bg-gray-300 dark:bg-gray-600',
 		variant = 'default',
 		iconOn = null,
