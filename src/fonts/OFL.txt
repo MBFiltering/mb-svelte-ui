@@ -1,5 +1,5 @@
 Copyright 2020 The Poppins Project Authors (https://github.com/itfoundry/Poppins)
-Copyright 2026 The Arimo Project Authors (https://github.com/googlefonts/arimo)
+Copyright 2020 The Open Sans Project Authors (https://github.com/googlefonts/opensans)
 
 Both families in this directory are licensed under the same terms.
 

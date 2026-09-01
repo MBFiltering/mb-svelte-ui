@@ -139,7 +139,7 @@ src/
 │   ├── molecules/        # Composite components (Grid, Island, NamedControl, Tabs)
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
-├── fonts/                # Poppins + Arimo (OFL) — WOFF2 subsets,
+├── fonts/                # Poppins + Open Sans (OFL) — WOFF2 subsets,
 │                         #   declared in styles.css, one family per script.
 │                         #   See "Fonts" below before adding or removing a face.
 └── utils/                # Helper functions (dateTime, stringUtils, toastStore, etc.)
@@ -162,28 +162,27 @@ src/
 consumers get them from `@import '@mbsmart/ui/styles.css'` and must never re-declare one
 or copy it into their own `static/fonts`.
 
-| Family  | Script / subset  | Locales | Files |
-|---------|------------------|---------|-------|
-| Poppins | latin, latin-ext | en/es/fr and all Latin text | 14 static, ~101 KB |
-| Arimo   | cyrillic         | ru      | 2 variable, ~29 KB |
-| Arimo   | hebrew           | he, yi  | 2 variable, ~23 KB |
+| Family    | Script / subset  | Locales | Files |
+|-----------|------------------|---------|-------|
+| Poppins   | latin, latin-ext | en/es/fr and all Latin text | 14 static, ~101 KB |
+| Open Sans | cyrillic         | ru      | 2 variable, ~57 KB |
+| Open Sans | hebrew           | he, yi  | 2 variable, ~34 KB |
 
-Arimo replaced **Montserrat** (cyrillic) and **Heebo** (hebrew) in August 2026, by way
-of a short stint on **Google Sans** that was reverted because Google Sans is not
-licensed for commercial use — do not reintroduce it. One family now carries both
-non-Latin scripts, so Hebrew and Russian share letterforms instead of borrowing two
-unrelated ones, and it is smaller than the pair it replaced despite adding a Hebrew
-italic that Heebo never had.
+Open Sans replaced **Arimo** in September 2026, which had itself replaced
+**Montserrat** (cyrillic) and **Heebo** (hebrew) in August 2026, by way of a short
+stint on **Google Sans** that was reverted because Google Sans is not licensed for
+commercial use — do not reintroduce it. One family carries both non-Latin scripts,
+so Hebrew and Russian share letterforms instead of borrowing two unrelated ones.
 
 **Selection is per glyph, not per locale.** Every face carries a `unicode-range`, so the
 browser walks `--font-sans` per character and lands on the family that has the glyph — a
-Hebrew page with an English product name in it renders Arimo and Poppins on the same
+Hebrew page with an English product name in it renders Open Sans and Poppins on the same
 line. Host apps need **no i18n wiring for fonts at all**; nothing keys off `$language` or
 `dir`. It also means a page downloads only the scripts it renders: an English page pulls
-three or four latin Poppins faces (~26–35 KB) and never touches Arimo.
+three or four latin Poppins faces (~26–35 KB) and never touches Open Sans.
 
 `src/fonts/` holds **WOFF2 only**. Poppins is seven static faces per subset (400/500/600/700
-upright plus 400, 600 and 700 italic); Arimo is one upright and one italic variable font
+upright plus 400, 600 and 700 italic); Open Sans is one upright and one italic variable font
 per subset, declared `font-weight: 400 700`, which is smaller and fewer files than the
 equivalent statics.
 
@@ -192,9 +191,9 @@ Before changing this:
 - **Do not add a face, subset, or weight without a real usage.** CSS font matching resolves
   an unavailable weight to the nearest available one — `font-extrabold` (one usage, in
   device-portal) correctly renders as 700 in both families. That is the intended
-  degradation. Poppins' Devanagari block and Arimo's `cyrillic-ext` are dropped for
+  degradation. Poppins' Devanagari block and Open Sans' `cyrillic-ext` are dropped for
   the same reason; Russian (and Ukrainian) live entirely in the base `cyrillic` range.
-  Arimo ships in eight subsets on the Google Fonts API and we take **two** of them:
+  Open Sans ships in ten subsets on the Google Fonts API and we take **two** of them:
   do not pull in greek, vietnamese or the rest without a locale that needs them.
 - **Mind the italic weight ramp — a missing italic face is a silent bug.** Poppins has
   400/600/700 italic but **no 500**, so `font-medium` + `italic` resolves *down* to 400 and
@@ -209,9 +208,9 @@ Before changing this:
   browser UA — that is where the current files came from, and the `unicode-range` values in
   `styles.css` are copied verbatim from its output. Otherwise regenerate with
   `pyftsubset SRC.ttf --unicodes=<range> --layout-features='*' --flavor=woff2`.
-- **Hebrew italics are now real.** Heebo had no italic at any weight, so Hebrew `<em>` and
+- **Hebrew italics are real.** Heebo had no italic at any weight, so Hebrew `<em>` and
   the landing hero's italic accent span used to render as a browser-synthesised oblique
-  that slanted right, i.e. against the reading direction in RTL. Arimo draws a Hebrew
+  that slanted right, i.e. against the reading direction in RTL. Open Sans draws a Hebrew
   italic, so both are a designed face. Consumers that worked around the old gap by forcing
   RTL emphasis upright (the brochure did) can drop that workaround.
 
