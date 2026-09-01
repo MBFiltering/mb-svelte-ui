@@ -325,6 +325,13 @@ registers it beside its locale loaders. **Consumers must not re-author these key
 locally** — locale-first wins over key-first, so a local copy shadows the shared one
 silently, which is exactly the failure this namespace exists to remove.
 
+**No em dashes in copy. Ever.** Anything shipped from here that a person reads —
+`authTranslations`, `safetyTranslations`, `TermsContent`, a component's English default
+label — takes a full stop, a semicolon, a colon or a comma instead, or gets rewritten as
+two sentences. It ships to four portals at once, so a dash authored here is a dash in all
+of them. Nothing lints it. Code comments and commit messages are not copy. The rule is in
+`../mb-specs/dev-resources/STYLE-GUIDE.md`.
+
 **key-first** — `{ ns: { key: { en, es, fr, he, ru, yi } } }`, registered eagerly with
 `registerTranslations()`. Pleasant to author (all six languages side by side) but it is
 one module carrying every language, so every visitor downloads all of them. Fine for a
