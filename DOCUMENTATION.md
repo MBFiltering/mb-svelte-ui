@@ -26,6 +26,7 @@
    - [Clipboard](#clipboard)
    - [ControlButton](#controlbutton)
    - [ExternalLinkText](#externallinktext)
+   - [FieldError](#fielderror)
    - [Info](#info)
    - [JSONPrint](#jsonprint)
    - [Kbd](#kbd)
@@ -45,6 +46,7 @@
    - [VisibilityToggle](#visibilitytoggle)
 3. [Molecules (Composite Components)](#molecules)
 	- [DeviceCard](#devicecard)
+   - [Field](#field)
    - [Grid](#grid)
    - [HeaderNav](#headernav)
    - [Island](#island)
@@ -66,6 +68,7 @@
    - [categoryColors](#categorycolors)
    - [dateTime](#datetime)
    - [dismiss](#dismiss)
+   - [fieldError](#fielderror-util)
    - [labels](#labels)
    - [legal](#legal)
    - [minimizedModals](#minimizedmodals)
@@ -313,11 +316,14 @@ Custom checkbox with Lucide icons supporting checked, unchecked, and indetermina
 
 | Prop            | Type       | Default    | Description                       |
 | --------------- | ---------- | ---------- | --------------------------------- |
-| `checked`       | `boolean`  | `false`    | Whether the checkbox is checked   |
-| `indeterminate` | `boolean`  | `false`    | Shows minus icon instead of check |
-| `disabled`      | `boolean`  | `false`    | Disables interaction              |
-| `ariaLabel`     | `string`   | `''`       | Accessibility label               |
-| `onclick`       | `function` | `() => {}` | Click handler                     |
+| `checked`       | `boolean`           | `false`     | Whether the checkbox is checked   |
+| `indeterminate` | `boolean`           | `false`     | Shows minus icon instead of check |
+| `disabled`      | `boolean`           | `false`     | Disables interaction              |
+| `ariaLabel`     | `string`            | `''`        | Accessibility label               |
+| `error`         | `string \| string[]` | `undefined` | Inline validation message (first of an array) |
+| `invalid`       | `boolean`           | `undefined` | Marks the control invalid when the message lives elsewhere (`Field`) |
+| `describedBy`   | `string`            | `undefined` | `aria-describedby` id when the message lives elsewhere |
+| `onclick`       | `function`          | `() => {}`  | Click handler                     |
 
 **Usage:**
 
@@ -539,6 +545,30 @@ External link with icon that opens in a new tab.
 ```svelte
 <ExternalLinkText href="https://example.com" text="Visit Website" />
 ```
+
+---
+
+### FieldError
+
+The inline validation message used by `TextInput`, `Field` and `CheckBox`. Host apps rarely render this directly.
+
+**Import:**
+
+```svelte
+<script>
+	import { FieldError } from '@mbsmart/ui/atoms';
+</script>
+```
+
+**Props:**
+
+| Prop        | Type     | Default     | Description                         |
+| ----------- | -------- | ----------- | ----------------------------------- |
+| `id`        | `string` | `undefined` | Id the control points at with `aria-describedby` |
+| `message`   | `string` | `''`        | The error text. Renders nothing when empty |
+| `className` | `string` | `''`        | Extra classes (e.g. `mt-1.5`)       |
+
+Renders with `role="alert"`, `red-alt` colour, and a `CircleAlert` icon so the state is not colour alone.
 
 ---
 
@@ -1100,9 +1130,15 @@ Styled text input component for text, password, email, textarea, and other text-
 | `rows`           | `number`   | `4`         | Number of rows (for textarea)                                                                              |
 | `size`           | `string`   | `'md'`      | Size variant: `'sm'`, `'md'`, `'lg'`                                                                       |
 | `variant`        | `string`   | `'default'` | Style variant: `'default'`, `'error'`, `'success'`                                                         |
-| `showSearchIcon` | `boolean`  | `false`     | Show magnifying glass icon on left side                                                                    |
-| `className`      | `string`   | `''`        | Additional CSS classes                                                                                     |
-| `onchange`       | `function` | `() => {}`  | Change event handler                                                                                       |
+| `showSearchIcon` | `boolean`            | `false`     | Show magnifying glass icon on left side                                                                    |
+| `className`      | `string`             | `''`        | Additional CSS classes                                                                                     |
+| `label`          | `string`             | `''`        | Visible label above the control. When set, it is the accessible name (do not also pass `ariaLabel`)        |
+| `hint`           | `string`             | `''`        | Helper text under the control. Hidden while `error` is showing                                             |
+| `textInfo`       | `string`             | `''`        | Alias for `hint` (the portals' previous Field prop)                                                        |
+| `error`          | `string \| string[]` | `undefined` | Validation message under the control. Arrays show the first entry only. Sets `aria-invalid` and the error variant |
+| `invalid`        | `boolean`            | `undefined` | Marks the control invalid without a message (when `Field` owns the copy)                                   |
+| `describedBy`    | `string`             | `undefined` | Extra `aria-describedby` id. Combined with the error message's id when both are set                        |
+| `onchange`       | `function`           | `() => {}`  | Change event handler                                                                                       |
 | `oninput`        | `function` | `() => {}`  | Input event handler                                                                                        |
 | `onkeydown`      | `function` | `() => {}`  | Keydown event handler                                                                                      |
 | `onkeypress`     | `function` | `() => {}`  | Keypress event handler                                                                                     |
@@ -1144,12 +1180,13 @@ Styled text input component for text, password, email, textarea, and other text-
 <!-- Password with built-in visibility toggle -->
 <TextInput type="password" placeholder="Enter password" bind:value={password} />
 
-<!-- Email with validation variant -->
+<!-- Email with an inline validation message (preferred over a toast) -->
 <TextInput
 	type="email"
+	label="Email"
 	placeholder="Email address"
 	bind:value={email}
-	variant={email && !email.includes('@') ? 'error' : 'default'}
+	error={email && !email.includes('@') ? 'Enter a valid email' : undefined}
 />
 
 <!-- Textarea for multi-line input -->
@@ -1778,6 +1815,44 @@ Multi-field form with Edit/Save/Cancel and change tracking.
 	}}
 	onUpdate={(newData) => (device = { ...device, ...newData })}
 />
+```
+
+---
+
+### Field
+
+Label + hint + inline error wrapper for controls that are not a `TextInput` (a checkbox row, a native select). `TextInput` already owns this surface via its `error` / `label` / `hint` props; do not wrap a labelled `TextInput` in `Field` or the message appears twice.
+
+The error sits **under** the control, never beside the label. Superforms `string[]` errors are reduced to the first message. Children receive the error's id as a snippet argument so the control can set `aria-describedby`.
+
+**Import:**
+
+```svelte
+<script>
+	import { Field } from '@mbsmart/ui/molecules';
+</script>
+```
+
+**Props:**
+
+| Prop       | Type                 | Default     | Description                                              |
+| ---------- | -------------------- | ----------- | -------------------------------------------------------- |
+| `label`    | `string`             | `''`        | Optional label above the control                         |
+| `error`    | `string \| string[]` | `undefined` | Validation message. Arrays show the first entry only     |
+| `hint`     | `string`             | `''`        | Helper text under the control. Hidden while `error` is showing |
+| `textInfo` | `string`             | `''`        | Alias for `hint`                                         |
+| `children` | `snippet`            | —           | `{#snippet children(describedBy)}` — pass `describedBy` to the control |
+
+**Usage:**
+
+```svelte
+<Field label="State" error={errors.state}>
+	{#snippet children(describedBy)}
+		<select aria-describedby={describedBy} aria-invalid={!!errors.state}>
+			<option value="mb_filter">MB Filter</option>
+		</select>
+	{/snippet}
+</Field>
 ```
 
 ---
@@ -2812,6 +2887,22 @@ $effect(() => {
 ```
 
 Call it from an effect that only runs while the surface is open, and return its result as the effect's teardown. It touches `document` directly, so it must not run during SSR — inside `$effect` it never does.
+
+---
+
+### fieldError util
+
+Turns a superforms-style field error (`string | string[] | undefined`) into the single message the UI should show.
+
+```javascript
+import { firstError } from '@mbsmart/ui/utils';
+
+firstError(['Device name is required', 'Device name must be at least 3 characters']);
+// 'Device name is required'
+firstError(''); // undefined
+```
+
+`TextInput`, `Field` and `CheckBox` already call this. Use it only when rendering an error by hand.
 
 ---
 

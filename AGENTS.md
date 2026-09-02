@@ -89,9 +89,15 @@ here, in the component:
   not in `toastStore` — a store-side timer removes a toast someone is still
   reading.
 - **Error state needs `aria-invalid` and `aria-describedby`, not just a red
-  border.** `TextInput` takes `invalid` and `describedBy` props for this; a
-  colour-only error fails 1.4.1, and a message that is neither the name nor the
-  description reaches assistive tech nowhere at all.
+  border.** `TextInput` takes `error` (a string or superforms `string[]`) and
+  renders the first message under the control, wiring `aria-invalid` and
+  `aria-describedby` itself. `invalid` and `describedBy` remain for callers that
+  render the message themselves. A colour-only error fails 1.4.1, and a message
+  that is neither the name nor the description reaches assistive tech nowhere
+  at all. **Field validation belongs on the input, never in a toast.**
+- **`Field` is the wrapper for controls that are not a `TextInput`** (a
+  checkbox row, a native select). Same message treatment: one line, under the
+  control, `role="alert"`, `CircleAlert` so the state is not colour alone.
 
 Known gaps, tracked in
 [`mb-specs/resources/WCAG-AA-AUDIT-2026-08.md`](../mb-specs/resources/WCAG-AA-AUDIT-2026-08.md):
@@ -152,8 +158,8 @@ src/
 
 | Layer       | Purpose                              | Examples                          |
 |-------------|--------------------------------------|-----------------------------------|
-| **Atoms**   | Single-purpose, primitive UI         | Avatar, Badge, CheckBox, NavDropdown, Spinner, TextInput |
-| **Molecules** | Composed of atoms, reusable groups | Grid, HeaderNav, Island, MultiInput |
+| **Atoms**   | Single-purpose, primitive UI         | Avatar, Badge, CheckBox, FieldError, NavDropdown, Spinner, TextInput |
+| **Molecules** | Composed of atoms, reusable groups | Field, Grid, HeaderNav, Island, MultiInput |
 | **Organisms** | Complex, self-contained features   | Modal, SearchableList, TermsContent, ToastContainer |
 | **Templates** | Page layouts and shells            | AppShell, SectionedPage           |
 

@@ -1,10 +1,15 @@
 <script>
 	import { Eye, EyeOff, Search } from '@lucide/svelte';
 	import { onMount } from 'svelte';
+	import FieldError from './FieldError.svelte';
+	import { firstError } from '../../utils/fieldError.js';
 
 	/**
 	 * TextInput component for text, password, number, date inputs, and textareas
-	 * Consistent styling with focus states and optional password visibility toggle
+	 * Consistent styling with focus states and optional password visibility toggle.
+	 *
+	 * Field errors belong here, not in a toast. `error` accepts a string or a
+	 * superforms `string[]` and shows the first message under the control.
 	 */
 	let {
 		type = 'text',
@@ -31,9 +36,12 @@
 		variant = 'default',
 		showSearchIcon = false,
 		className = '',
-		// Error state. `invalid` is what reaches assistive tech; `variant="error"`
-		// only recolours the border, which on its own conveys the state by colour
-		// alone. `describedBy` points at the element holding the message.
+		label = '',
+		hint = '',
+		textInfo = '',
+		// Error state. `error` is the message; `invalid` / `describedBy` remain
+		// for callers that render the message themselves (e.g. Field).
+		error = undefined,
 		invalid = undefined,
 		describedBy = undefined,
 		// Accessible names for the password visibility toggle. Host apps pass
@@ -48,6 +56,22 @@
 		onfocus = () => {},
 		onblur = () => {}
 	} = $props();
+
+	const uid = $props.id();
+	const errorId = `text-input-error-${uid}`;
+	const inputId = $derived(id || (label ? `text-input-${uid}` : ''));
+	const message = $derived(firstError(error));
+	const helper = $derived(hint || textInfo);
+	const isInvalid = $derived(Boolean(invalid) || Boolean(message) || variant === 'error');
+	const effectiveVariant = $derived(message || invalid ? 'error' : variant);
+	const errorDescribedBy = $derived(message ? errorId : undefined);
+	const combinedDescribedBy = $derived(
+		[describedBy, errorDescribedBy].filter(Boolean).join(' ') || undefined
+	);
+	// A visible label already names the control. aria-label would override it.
+	const effectiveAriaLabel = $derived(
+		ariaLabel || (label ? undefined : placeholder || undefined)
+	);
 
 	// Programmatic autofocus (avoids the native `autofocus` attribute, which
 	// Svelte flags for a11y — focusing on mount is the accepted pattern and
@@ -109,94 +133,111 @@
 	// themes: lighter than gray-400 on white, and down to gray-500 on the dark
 	// surface, where a 50% tint of gray-200 was nearly as bright as real input.
 	const baseClasses = $derived(
-		`g2 w-full rounded-lg border text-gray-700 placeholder-gray-400/80 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200 dark:placeholder-gray-500 ${sizeClasses[size]} ${paddingClasses} ${variantClasses[variant]} ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''} ${readonly ? 'bg-gray-50 dark:bg-gray-900' : ''} ${className}`
+		`g2 w-full rounded-lg border text-gray-700 placeholder-gray-400/80 transition-colors focus:ring-2 focus:outline-none dark:text-gray-200 dark:placeholder-gray-500 ${sizeClasses[size] ?? sizeClasses.md} ${paddingClasses} ${variantClasses[effectiveVariant] ?? variantClasses.default} ${disabled ? 'cursor-not-allowed bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : ''} ${readonly ? 'bg-gray-50 dark:bg-gray-900' : ''} ${className}`
 	);
 
 	// Search icon size based on input size
 	const searchIconSize = $derived(size === 'sm' ? 16 : size === 'lg' ? 22 : 20);
 </script>
 
-<div class="group relative w-full">
-	{#if showSearchIcon}
-		<div
-			class="pointer-events-none absolute top-1/2 ltr:left-3 rtl:right-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-azure-700 dark:text-gray-500 dark:group-focus-within:text-azure-500"
+<div class="w-full">
+	{#if label}
+		<label
+			for={inputId}
+			class="mb-2 block text-[14px] text-gray-700 dark:text-gray-200"
 		>
-			<Search size={searchIconSize} strokeWidth={2} aria-hidden="true" />
-		</div>
+			{label}
+		</label>
 	{/if}
 
-	{#if isTextarea}
-		<textarea
-			bind:value
-			{placeholder}
-			{disabled}
-			{id}
-			{name}
-			{required}
-			{readonly}
-			{maxlength}
-			{minlength}
-			{inputmode}
-			{rows}
-			aria-label={ariaLabel || placeholder || undefined}
-			aria-invalid={invalid || (variant === 'error' ? true : undefined)}
-			aria-describedby={describedBy}
-			{onchange}
-			{oninput}
-			{onkeydown}
-			{onkeypress}
-			{onkeyup}
-			{onfocus}
-			{onblur}
-			class={baseClasses}
-		></textarea>
-	{:else}
-		<input
-			bind:this={ref}
-			type={inputType}
-			bind:value
-			{placeholder}
-			{disabled}
-			{id}
-			{name}
-			{required}
-			{readonly}
-			{maxlength}
-			{minlength}
-			{pattern}
-			{min}
-			{max}
-			{step}
-			{inputmode}
-			autocomplete={autocomplete || undefined}
-			aria-label={ariaLabel || placeholder || undefined}
-			aria-invalid={invalid || (variant === 'error' ? true : undefined)}
-			aria-describedby={describedBy}
-			{onchange}
-			{oninput}
-			{onkeydown}
-			{onkeypress}
-			{onkeyup}
-			{onfocus}
-			{onblur}
-			class={baseClasses}
-		/>
-	{/if}
+	<div class="group relative w-full">
+		{#if showSearchIcon}
+			<div
+				class="pointer-events-none absolute top-1/2 ltr:left-3 rtl:right-3 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-azure-700 dark:text-gray-500 dark:group-focus-within:text-azure-500"
+			>
+				<Search size={searchIconSize} strokeWidth={2} aria-hidden="true" />
+			</div>
+		{/if}
 
-	{#if type === 'password'}
-		<button
-			type="button"
-			onclick={togglePasswordVisibility}
-			{disabled}
-			class="absolute top-1/2 rtl:left-3 ltr:right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-600 dark:hover:text-gray-400"
-			aria-label={showPassword ? hidePasswordLabel : showPasswordLabel}
-			aria-pressed={showPassword}
-		>
-			{#if showPassword}
-				<EyeOff size={18} aria-hidden="true" />
-			{:else}
-				<Eye size={18} aria-hidden="true" />
-			{/if}
-		</button>
+		{#if isTextarea}
+			<textarea
+				bind:value
+				{placeholder}
+				{disabled}
+				id={inputId || undefined}
+				{name}
+				{required}
+				{readonly}
+				{maxlength}
+				{minlength}
+				{inputmode}
+				{rows}
+				aria-label={effectiveAriaLabel}
+				aria-invalid={isInvalid || undefined}
+				aria-describedby={combinedDescribedBy}
+				{onchange}
+				{oninput}
+				{onkeydown}
+				{onkeypress}
+				{onkeyup}
+				{onfocus}
+				{onblur}
+				class={baseClasses}
+			></textarea>
+		{:else}
+			<input
+				bind:this={ref}
+				type={inputType}
+				bind:value
+				{placeholder}
+				{disabled}
+				id={inputId || undefined}
+				{name}
+				{required}
+				{readonly}
+				{maxlength}
+				{minlength}
+				{pattern}
+				{min}
+				{max}
+				{step}
+				{inputmode}
+				autocomplete={autocomplete || undefined}
+				aria-label={effectiveAriaLabel}
+				aria-invalid={isInvalid || undefined}
+				aria-describedby={combinedDescribedBy}
+				{onchange}
+				{oninput}
+				{onkeydown}
+				{onkeypress}
+				{onkeyup}
+				{onfocus}
+				{onblur}
+				class={baseClasses}
+			/>
+		{/if}
+
+		{#if type === 'password'}
+			<button
+				type="button"
+				onclick={togglePasswordVisibility}
+				{disabled}
+				class="absolute top-1/2 rtl:left-3 ltr:right-3 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-600 dark:hover:text-gray-400"
+				aria-label={showPassword ? hidePasswordLabel : showPasswordLabel}
+				aria-pressed={showPassword}
+			>
+				{#if showPassword}
+					<EyeOff size={18} aria-hidden="true" />
+				{:else}
+					<Eye size={18} aria-hidden="true" />
+				{/if}
+			</button>
+		{/if}
+	</div>
+
+	{#if message}
+		<FieldError id={errorId} {message} className="mt-1.5" />
+	{:else if helper}
+		<p class="mt-1.5 text-xs text-gray-600 dark:text-gray-300">{helper}</p>
 	{/if}
 </div>

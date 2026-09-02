@@ -4,6 +4,7 @@ import '../version.js';
 export * from './categoryColors.js';
 export * from './dateTime.js';
 export * from './dismiss.js';
+export * from './fieldError.js';
 export * from './legal.js';
 export * from './preferences.js';
 export * from './stringUtils.js';

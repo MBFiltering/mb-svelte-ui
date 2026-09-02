@@ -2,6 +2,7 @@ import '../../version.js';
 
 // Molecule components barrel export
 export { default as DeviceCard } from './DeviceCard.svelte';
+export { default as Field } from './Field.svelte';
 export { default as Grid } from './Grid.svelte';
 export { default as HeaderNav } from './HeaderNav.svelte';
 export { default as Island } from './Island.svelte';

@@ -10,6 +10,7 @@ export { default as CircleButton } from './CircleButton.svelte';
 export { default as Clipboard } from './Clipboard.svelte';
 export { default as ControlButton } from './ControlButton.svelte';
 export { default as ExternalLinkText } from './ExternalLinkText.svelte';
+export { default as FieldError } from './FieldError.svelte';
 export { default as Info } from './Info.svelte';
 export { default as JSONPrint } from './JSONPrint.svelte';
 export { default as Kbd } from './Kbd.svelte';

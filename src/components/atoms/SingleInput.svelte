@@ -37,6 +37,7 @@
 	// svelte-ignore state_referenced_locally
 	let currentValue = $state(value);
 	let isSaving = $state(false);
+	let saveError = $state('');
 
 	// Update currentValue when value prop changes
 	$effect(() => {
@@ -45,11 +46,13 @@
 
 	function startEditing() {
 		if (disabled) return;
+		saveError = '';
 		isEditing = true;
 	}
 
 	function cancelEditing() {
 		currentValue = value;
+		saveError = '';
 		isEditing = false;
 	}
 
@@ -62,21 +65,22 @@
 		}
 
 		isSaving = true;
+		saveError = '';
 
 		try {
 			const result = await onSave(currentValue);
 
 			if (result?.error) {
-				toast.error(result.error);
+				saveError = result.error;
 			} else if (result?.ok || result === true) {
 				isEditing = false;
 				// Notify parent of the update
 				onUpdate(currentValue);
 			} else {
-				toast.error('Update failed');
+				saveError = 'Update failed';
 			}
 		} catch (error) {
-			toast.error(`Failed to update ${label.toLowerCase()}`);
+			saveError = `Failed to update ${label.toLowerCase()}`;
 			console.error('Save error:', error);
 		}
 
@@ -104,6 +108,7 @@
 				{rows}
 				{placeholder}
 				size={inputSize}
+				error={saveError}
 			/>
 		{:else if type === 'textarea'}
 			<p
