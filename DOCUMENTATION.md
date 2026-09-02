@@ -1235,17 +1235,19 @@ Individual toast notification component (usually used via ToastContainer).
 | ---------- | ---------- | ----------- | --------------------------------------------------- |
 | `message`  | `string`   | `''`        | Toast message                                       |
 | `type`     | `string`   | `'success'` | Type: `'success'`, `'error'`, `'info'`, `'warning'` |
-| `duration` | `number`   | `3000`      | Auto-dismiss in ms (0 = no auto-dismiss)            |
+| `duration` | `number`   | `8000`      | Auto-dismiss in ms (0 = no auto-dismiss)            |
 | `onClose`  | `function` | `() => {}`  | Close callback                                      |
 
 **Type Styling:**
 
 | Type      | Color  | Default Duration |
 | --------- | ------ | ---------------- |
-| `success` | Green  | 3000ms           |
-| `error`   | Red    | 5000ms           |
-| `info`    | Blue   | 3000ms           |
-| `warning` | Yellow | 4000ms           |
+| `success` | Green  | 8000ms           |
+| `error`   | Red    | 30000ms          |
+| `info`    | Blue   | 8000ms           |
+| `warning` | Yellow | 10000ms          |
+
+The countdown **pauses while the pointer is over the toast or focus is inside it**, so these are idle timeouts, not hard cut-offs. Errors used to persist until dismissed; they now expire after 30s so a stack of them cannot cover the page for someone who does not know how to close them. Pass `duration: 0` to opt back into persist-until-dismissed.
 
 ---
 
@@ -3216,7 +3218,7 @@ import toasts from '@mbsmart/ui/utils'; // The store itself
 
 #### `toast.success(message, duration?)`
 
-Shows a success toast (green, 3000ms default).
+Shows a success toast (green, 8000ms default).
 
 ```javascript
 toast.success('Settings saved!');
@@ -3225,7 +3227,7 @@ toast.success('Done', 5000); // Custom duration
 
 #### `toast.error(message, duration?)`
 
-Shows an error toast (red, 5000ms default).
+Shows an error toast (red, 30000ms default). Pass `0` to persist until dismissed.
 
 ```javascript
 toast.error('Failed to save');
@@ -3233,7 +3235,7 @@ toast.error('Failed to save');
 
 #### `toast.info(message, duration?)`
 
-Shows an info toast (blue, 3000ms default).
+Shows an info toast (blue, 8000ms default).
 
 ```javascript
 toast.info('Syncing...');
@@ -3241,7 +3243,7 @@ toast.info('Syncing...');
 
 #### `toast.warning(message, duration?)`
 
-Shows a warning toast (yellow, 4000ms default).
+Shows a warning toast (yellow, 10000ms default).
 
 ```javascript
 toast.warning('Battery low');

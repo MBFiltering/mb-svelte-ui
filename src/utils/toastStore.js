@@ -35,12 +35,12 @@ export function removeToast(id) {
 /**
  * Convenience functions for different toast types
  *
- * Durations are generous because they are a 2.2.1 time limit on reading the
- * message: 8s for the routine ones, and errors stay until dismissed.
+ * 8s routine, 10s warnings, 30s errors. Hover/focus pauses the countdown
+ * (that lives in Toast). Pass 0 to persist until dismissed.
  */
 export const toast = {
 	success: (message, duration = 8000) => showToast(message, 'success', duration),
-	error: (message, duration = 0) => showToast(message, 'error', duration),
+	error: (message, duration = 30000) => showToast(message, 'error', duration),
 	info: (message, duration = 8000) => showToast(message, 'info', duration),
 	warning: (message, duration = 10000) => showToast(message, 'warning', duration)
 };

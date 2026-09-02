@@ -82,9 +82,12 @@ here, in the component:
   *bubble* (not the trigger), tie the two together with `aria-describedby`, and
   dismiss on Escape (1.4.13).
 - **Auto-dismissing anything is a time limit (2.2.1).** `Toast` pauses its
-  countdown on hover and on focus within, defaults to 8 s rather than 3 s, and
-  lets errors persist until dismissed. Timing belongs in the component, not in
-  `toastStore` — a store-side timer removes a toast someone is still reading.
+  countdown on hover and on focus within. Routine toasts last 8 s, warnings
+  10 s, errors 30 s — long enough to read, short enough that a toast someone
+  does not know how to dismiss cannot cover the page forever. Pass `duration: 0`
+  only when a toast must stay until dismissed. Timing belongs in the component,
+  not in `toastStore` — a store-side timer removes a toast someone is still
+  reading.
 - **Error state needs `aria-invalid` and `aria-describedby`, not just a red
   border.** `TextInput` takes `invalid` and `describedBy` props for this; a
   colour-only error fails 1.4.1, and a message that is neither the name nor the
