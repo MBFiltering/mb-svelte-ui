@@ -35,6 +35,11 @@
 	  sentinel sits at the bottom of the in-flow block; the bar appears exactly
 	  as the big title disappears under the app header, so there is never a
 	  moment with no title and never a moment with two.
+	- **The bar wears no chrome.** It is painted in the page's own background,
+	  with no rounding, shadow or blur, so it reads as the page keeping the title
+	  in view rather than as a panel sliding over it. The background is opaque
+	  because content has to pass cleanly underneath, which means a host that
+	  paints its pages some other color gets a strip of `neutral-100` here.
 	- **The offset comes from `--mb-header-h`**, which `AppShell` publishes. The
 	  bar cannot know how tall the app header above it is, and it must not cover
 	  the loading bar underneath it — hence `z-10` against the shell's `z-20`.
@@ -109,11 +114,16 @@
      page column, which is as tall as the page. -->
 {#if sticky}
 	<div class="sticky top-[var(--mb-header-h,56px)] z-10 h-0">
+		<!-- No card: no rim, no rounding, no shadow, no blur. The bar is painted
+		     in the page's own background so that it reads as the page carrying
+		     the title down with it, not as a panel that slid over the top. Which
+		     is also why the background is opaque rather than translucent: the
+		     content passing underneath has to disappear behind it cleanly. -->
 		<div
 			inert={!collapsed}
-			class="g2 flex h-12 items-center gap-1 rounded-b-xl bg-neutral-100/90 shadow-md backdrop-blur-sm transition-[opacity,transform] duration-200 motion-reduce:transition-none dark:bg-zinc-750/90 {collapsed
+			class="flex h-12 items-center gap-1 bg-neutral-100 transition-opacity duration-200 motion-reduce:transition-none dark:bg-zinc-750 {collapsed
 				? 'opacity-100'
-				: '-translate-y-2 opacity-0'}"
+				: 'opacity-0'}"
 		>
 			<BackButton {href} onclick={onback} ariaLabel={backName} />
 			<!-- A second rendering of the same heading, not a second heading: the

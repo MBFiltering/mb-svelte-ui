@@ -1938,7 +1938,7 @@ Navigation is left to the host app, exactly as `BackButton` leaves it: `href` fo
 <!-- Technician portal: one destination is "wherever you came from" -->
 <PageHeader
 	title={$t('settings.mySettings')}
-	backLabel={$t('common.back')}
+	backLabel={$t('common.goBack')}
 	onback={() => navigateBack(lang, '/dashboard')}
 	className="mb-3 sm:mb-6"
 />
@@ -1960,7 +1960,8 @@ Navigation is left to the host app, exactly as `BackButton` leaves it: `href` fo
 - **It reads `--mb-header-h`** to know how far down to pin itself, and sits at `z-10` so it passes under `AppShell`'s header and loading bar (`z-20`). Outside an `AppShell` it falls back to `56px`. The bar is `position: sticky`, so a host that puts this inside an `overflow-auto` region gets a bar pinned to *that* box, not the viewport.
 - **The heading truncates rather than wrapping.** A 3xl device name on a phone is what this is for.
 - **Both back controls are in the DOM while collapsed**, the compact one first. Tabbing forward reaches the visible one; going on to the scrolled-off original scrolls back up to it, which expands the header and makes the compact copy `inert` again. `inert` is what keeps the hidden state out of the tab order and out of the accessibility tree at once, and the compact bar's title is `aria-hidden` because it is a second rendering of the heading, not a second heading.
-- **`prefers-reduced-motion` drops the transition**, so the bar swaps state without sliding.
+- **The bar wears no chrome.** No rounding, no shadow, no blur: it is painted in the page background (`neutral-100` / `zinc-750`) so it reads as the page keeping the title in view, not as a panel sliding over it. The paint is opaque because content has to pass cleanly underneath, so a host that paints its pages some other color gets a strip of that default here.
+- **`prefers-reduced-motion` drops the transition**, so the bar swaps state without fading.
 
 ---
 

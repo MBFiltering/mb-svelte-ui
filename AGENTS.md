@@ -297,7 +297,12 @@ scroll behaviour is not decoration: it is what let one component replace both.
   `href`, or `onback`, or neither for `history.back()`. The technician portal's
   back is language-aware (`navigateBack(lang, fallback)`), which is app routing
   and does not belong in this package.
-- **The label is the caller's call.** The technician portal says just "Back",
+- **The bar wears no chrome.** No rounding, no shadow, no blur, just the page
+  background painted opaque. It is meant to read as the page keeping the title
+  in view, not as a panel that slid over the top, and the paint is opaque only
+  because the content passing underneath has to disappear cleanly. Resist
+  dressing it up.
+- **The label is the caller's call.** The technician portal says "Go back",
   because where it goes depends on history. The customer portal says "Back to
   your device", because every one of its section pages returns to one fixed
   place. `backAriaLabel` exists so the compact circle keeps the same accessible
