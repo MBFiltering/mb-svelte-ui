@@ -53,6 +53,7 @@
 	- [ListCard](#listcard)
    - [MultiInput](#multiinput)
    - [NamedControl](#namedcontrol)
+   - [PageHeader](#pageheader)
    - [Tabs](#tabs)
 4. [Organisms (Complex Components)](#organisms)
    - [Modal](#modal)
@@ -1902,6 +1903,67 @@ down a list and needs to name its own row (e.g. per-app or per-category rows).
 
 ---
 
+### PageHeader
+
+The title block a page with a way out wears: a labelled back pill on its own row, the `<h1>` under it, and an optional quieter line under that. As the page scrolls, a **compact bar** takes over — the pill loses its text, the title comes back beside it a size smaller, pinned under the app header. This is the phone-app idiom, and it works at every width.
+
+It replaced eight hand-spelled copies of the same header across the two portals, which had drifted into two layouts: the technician portal's icon-only button inline with the heading, and the customer portal's stacked labelled pill. Those are now the same component's collapsed and expanded states.
+
+Navigation is left to the host app, exactly as `BackButton` leaves it: `href` for a real anchor, `onback` for programmatic navigation (SvelteKit's `goto`, a language-aware helper), neither for `history.back()`. A router does not belong in this package.
+
+**Import:**
+
+```svelte
+<script>
+	import { PageHeader } from '@mbsmart/ui/molecules';
+</script>
+```
+
+**Props:**
+
+| Prop            | Type       | Default | Description                                                                     |
+| --------------- | ---------- | ------- | ------------------------------------------------------------------------------- |
+| `title`         | `string`   | `''`    | The `<h1>`, and the text the compact bar echoes                                 |
+| `subtitle`      | `string`   | `''`    | A quieter line under the heading; omitted entirely when empty                   |
+| `backLabel`     | `string`   | `''`    | Visible text on the pill. Empty renders the icon-only circle in both states     |
+| `backAriaLabel` | `string`   | `''`    | Accessible name for the compact circle; defaults to `backLabel`, then `Go back` |
+| `href`          | `string`   | `''`    | Renders the back control as an `<a>`                                            |
+| `onback`        | `function` | -       | Click handler; falls back to `history.back()` when omitted                      |
+| `sticky`        | `boolean`  | `true`  | `false` drops the compact bar and leaves a plain static header                  |
+| `className`     | `string`   | `''`    | Additional CSS classes on the wrapper; this is where page spacing goes          |
+
+**Usage:**
+
+```svelte
+<!-- Technician portal: one destination is "wherever you came from" -->
+<PageHeader
+	title={$t('settings.mySettings')}
+	backLabel={$t('common.back')}
+	onback={() => navigateBack(lang, '/dashboard')}
+	className="mb-3 sm:mb-6"
+/>
+
+<!-- Customer portal: a fixed destination, so the label can name it -->
+<PageHeader
+	title={heading}
+	{subtitle}
+	backLabel={$t('DeviceDetail.back_to_device')}
+	href={resolve(deviceManualHref(serie))}
+/>
+```
+
+**Behaviour:**
+
+- **The compact bar has no height in flow.** It is an overlay inside a zero-height sticky box, so appearing and disappearing never moves the content beneath it. A bar with real height would shove the page up by its own height at the moment it appeared, and that shove can move the trigger back out of range and set the bar flickering.
+- **It renders two root elements**, the bar and the header block, because `position: sticky` is confined to its parent box and a wrapper around the header would let the bar travel the header's height and then scroll away. The practical consequence: a parent that is a `flex` column with a `gap` pays that gap for the zero-height bar too, so space the header with `className` rather than a parent gap.
+- **A sentinel and an `IntersectionObserver`, not a scroll handler.** The sentinel sits at the bottom of the in-flow block, so the bar arrives exactly as the big title goes under the app header: never a moment with no title, never a moment with two.
+- **It reads `--mb-header-h`** to know how far down to pin itself, and sits at `z-10` so it passes under `AppShell`'s header and loading bar (`z-20`). Outside an `AppShell` it falls back to `56px`. The bar is `position: sticky`, so a host that puts this inside an `overflow-auto` region gets a bar pinned to *that* box, not the viewport.
+- **The heading truncates rather than wrapping.** A 3xl device name on a phone is what this is for.
+- **Both back controls are in the DOM while collapsed**, the compact one first. Tabbing forward reaches the visible one; going on to the scrolled-off original scrolls back up to it, which expands the header and makes the compact copy `inert` again. `inert` is what keeps the hidden state out of the tab order and out of the accessibility tree at once, and the compact bar's title is `aria-hidden` because it is a second rendering of the heading, not a second heading.
+- **`prefers-reduced-motion` drops the transition**, so the bar swaps state without sliding.
+
+---
+
 ### Tabs
 
 Horizontal tab strip with an active underline and optional per-tab icons. Wraps
@@ -2472,6 +2534,8 @@ Complex page template with sidebar navigation, magic search, and section content
 Full page layout template: sticky header, loading progress bar, main content area, and a faded brand footer.
 
 **The header is identity, the footer is product.** The header carries the signed-in account (avatar + name) and the nav; the product name ("MB Smart Filtering", "MB Smart Technician") lives in the footer with the version, the way a copyright line does. Do not pass a product name as `userName` — that conflation is what made the two portals' headers mean different things.
+
+**It publishes `--mb-header-h`** (`56px`, the header's own `h-14`) on its wrapper, so anything pinning itself under the header can read the offset instead of guessing it. [PageHeader](#pageheader) is the one consumer today. The header and the loading bar both sit at `z-20`; anything pinned beneath them belongs below that.
 
 **Import:**
 

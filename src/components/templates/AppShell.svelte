@@ -52,7 +52,14 @@
 	} = $props();
 </script>
 
-<div class="flex min-h-screen flex-col bg-neutral-100 dark:bg-zinc-750 {className}">
+<!-- `--mb-header-h` is the sticky header's own height, published so that
+     anything pinning itself underneath the header can read it instead of
+     guessing. `PageHeader` is the one consumer today. Keep it in step with the
+     `h-14` below: 14 * 4px = 56px. -->
+<div
+	class="flex min-h-screen flex-col bg-neutral-100 dark:bg-zinc-750 {className}"
+	style="--mb-header-h: 56px"
+>
 	<!-- Skip link: off-screen until focused, then a normal-looking button pinned
 	     over the header. `sr-only focus:not-sr-only` is the whole trick — it stays
 	     in the tab order (unlike `hidden`) while taking no visual space. -->

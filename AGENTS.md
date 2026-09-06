@@ -145,7 +145,7 @@ src/
 ├── components/
 │   ├── index.js          # Barrel export for all components
 │   ├── atoms/            # Basic building blocks (Button, Badge, Input, NavDropdown, etc.)
-│   ├── molecules/        # Composite components (Grid, Island, NamedControl, Tabs)
+│   ├── molecules/        # Composite components (Grid, Island, NamedControl, PageHeader, Tabs)
 │   ├── organisms/        # Complex components (Modal, SearchableList, ToastContainer)
 │   └── templates/        # Page-level layouts (AppShell, SectionedPage)
 ├── fonts/                # Rubik (OFL) — WOFF2 subsets, one family for every
@@ -159,7 +159,7 @@ src/
 | Layer       | Purpose                              | Examples                          |
 |-------------|--------------------------------------|-----------------------------------|
 | **Atoms**   | Single-purpose, primitive UI         | Avatar, Badge, CheckBox, FieldError, NavDropdown, Spinner, TextInput |
-| **Molecules** | Composed of atoms, reusable groups | Field, Grid, HeaderNav, Island, MultiInput |
+| **Molecules** | Composed of atoms, reusable groups | Field, Grid, HeaderNav, Island, MultiInput, PageHeader |
 | **Organisms** | Complex, self-contained features   | Modal, SearchableList, TermsContent, ToastContainer |
 | **Templates** | Page layouts and shells            | AppShell, SectionedPage           |
 
@@ -263,6 +263,45 @@ unrelated things depending on which product you were looking at. Keep the split:
   technician portal's device search is the one real case.
 - **The footer is quiet on purpose** (40% / 35% opacity, `select-none`). Passing no
   `productName` removes it entirely.
+
+## The page header — one block, two states
+
+`PageHeader` is the title block for any page that has a way out: the labelled
+back pill on its own row, the `<h1>` under it, and a compact bar that takes over
+as you scroll, where the pill loses its text and the title returns beside it a
+size smaller. **Use it rather than spelling a heading and a `BackButton` by
+hand.** Eight pages across the two portals had done exactly that, down to the
+same `text-xl font-bold text-gray-700 sm:text-3xl dark:text-gray-200`, and the
+two portals had drifted into two different layouts for it — icon-only inline in
+the technician portal, stacked labelled pill in the customer portal. Those two
+are now the same component's collapsed and expanded states, which is why the
+scroll behaviour is not decoration: it is what let one component replace both.
+
+- **`AppShell` publishes `--mb-header-h`; `PageHeader` reads it.** The bar cannot
+  know how tall the header above it is, and it must pass *under* the shell's
+  header and loading bar — hence `z-10` against their `z-20`. Change the header's
+  `h-14` and the variable moves with it, in that one place.
+- **The bar has no height in flow, and it is a root element of its own.** It is
+  an overlay inside a zero-height sticky box: a bar with real height shoves the
+  page up by its own height the moment it appears, and that shove can move the
+  trigger back out of range and set the bar flickering on and off. It sits
+  *beside* the header block rather than inside it because `position: sticky` is
+  confined to its parent box. Do not "simplify" either half of that away. The
+  cost is two root elements, so a gapped `flex` column parent pays a gap for the
+  zero-height bar; space the header with `className` instead.
+- **A sentinel and an `IntersectionObserver`, never a scroll handler.** Per-frame
+  work in a scroll listener is what makes this pattern janky on a phone, and the
+  sentinel is also what times the swap so there is never a moment with no title
+  and never a moment with two.
+- **Navigation stays in the host app**, the same way `BackButton` leaves it.
+  `href`, or `onback`, or neither for `history.back()`. The technician portal's
+  back is language-aware (`navigateBack(lang, fallback)`), which is app routing
+  and does not belong in this package.
+- **The label is the caller's call.** The technician portal says just "Back",
+  because where it goes depends on history. The customer portal says "Back to
+  your device", because every one of its section pages returns to one fixed
+  place. `backAriaLabel` exists so the compact circle keeps the same accessible
+  name the pill had.
 
 ## Shared preferences — one cookie, every portal
 
