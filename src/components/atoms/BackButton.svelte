@@ -10,7 +10,7 @@
 	neither, it goes back in history.
 -->
 <script>
-	import { CornerUpLeft } from '@lucide/svelte';
+	import { ArrowLeft } from '@lucide/svelte';
 	import CircleButton from './CircleButton.svelte';
 
 	/**
@@ -33,17 +33,16 @@
 		onclick,
 		title = '',
 		ariaLabel = '',
-		icon = CornerUpLeft,
+		icon = ArrowLeft,
 		iconSize = 20,
 		color = 'ghost',
 		size = 'md',
 		className = ''
 	} = $props();
 
-	// The arrow must turn the way "back" goes in an RTL layout. CornerUpLeft
-	// mirrored horizontally is exactly CornerUpRight — same glyph, so one icon
-	// covers both directions. Mirror, never rotate: upside down it would become
-	// CornerDownRight.
+	// The arrow must turn the way "back" goes in an RTL layout. ArrowLeft
+	// mirrored horizontally is exactly ArrowRight — same glyph, so one icon
+	// covers both directions.
 	//
 	// Which element gets mirrored depends on the variant. The icon-only button
 	// has no text to sit beside, so the whole circle flips, which is invisible

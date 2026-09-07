@@ -184,7 +184,7 @@ Navigation is left to the host app — the library does not depend on a router. 
 | `onclick`   | `function`  | -             | Click handler; falls back to `history.back()` when omitted                    |
 | `title`     | `string`    | `''`          | Tooltip text                                                                  |
 | `ariaLabel` | `string`    | `''`          | Accessible name for the icon-only variant; ignored when `label` is set        |
-| `icon`      | `Component` | `CornerUpLeft` | Lucide icon component                                                        |
+| `icon`      | `Component` | `ArrowLeft` | Lucide icon component                                                        |
 | `iconSize`  | `number`    | `20`          | Size of the icon in pixels                                                    |
 | `color`     | `string`    | `'ghost'`     | Passed through to the internal `CircleButton`                                 |
 | `size`      | `string`    | `'md'`        | Passed through to the internal `CircleButton`                                 |
