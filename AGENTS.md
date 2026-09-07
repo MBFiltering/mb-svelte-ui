@@ -163,6 +163,22 @@ src/
 | **Organisms** | Complex, self-contained features   | Modal, SearchableList, TermsContent, ToastContainer |
 | **Templates** | Page layouts and shells            | AppShell, SectionedPage           |
 
+### Magic search and lists
+
+`SectionedPage` filters by `data-magicsearch` + CSS. An island whose terms match
+gets `magicsearch-island-match` and every `.magicsearch-item` inside it is shown.
+`SearchableList` *also* filters by `externalQuery` so a hit on page 3 is findable
+without mounting the whole array for CSS to scan. Those two layers disagree when
+the **island** is the hit and the rows are not: the list empties and a matching
+island looks like it has no contents.
+
+When `externalQuery` matches the enclosing island, **do not filter the rows**.
+Pass `containerTerms` (the island's `data-magicsearch` string) so the first frame
+is already right; without it the list reads the closest `.magicsearch-island`
+after mount. Item hits still go through `externalQuery`. Do not mount the full
+unpaginated list for CSS to scan; pagination is the guard that keeps keystrokes
+fast.
+
 ---
 
 ## Fonts

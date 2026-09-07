@@ -2245,7 +2245,8 @@ Searchable, filterable list with optional bulk selection.
 | `selectId`          | `string`  | `'id'`             | Path to item ID                  |
 | `idKey`             | `string`  | `null`             | Key for #each block              |
 | `pageSize`          | `number`  | `28`               | Items per page (0 = no pagination) |
-| `externalQuery`     | `string`  | `''`               | Supplied search query from outside |
+| `externalQuery`     | `string`  | `''`               | Supplied search query from outside (e.g. SectionedPage magic search). Filters rows for **item** hits. |
+| `containerTerms`    | `string`  | `''`               | The enclosing island's `data-magicsearch` string. When `externalQuery` matches these terms, rows are **not** filtered — the island itself is the hit. Omit to fall back to the closest `.magicsearch-island` after mount. |
 | `searchQuery`       | `string`  | `''`               | The built-in search box's text. Bindable — a parent can read what is being searched for (e.g. to widen `items` beyond the category it is showing while a query is active) or clear it |
 | `ofText`            | `string`  | `'of'`             | i18n "of" text                   |
 | `selectedText`      | `string`  | `'selected'`       | i18n "selected" text             |
@@ -2348,19 +2349,26 @@ Searchable, filterable list with optional bulk selection.
 
 **Magic Search Integration:**
 
-Pass `ctx.magicSearchQuery` as `externalQuery` to let SectionedPage's magic search drive the list's filtering. It feeds into the same search pipeline as the built-in search bar (which is automatically hidden by magic search CSS). Pagination, tab filters, and special filters all continue to work normally.
+Pass `ctx.magicSearchQuery` as `externalQuery` so SectionedPage's magic search can filter **rows** (an app name, a URL). That JS pass is what finds a hit pagination has not rendered; CSS can only see the current page. Pagination, tab filters, and `specialFilters` keep working.
+
+When the **island** matches the query, the list must not filter. CSS already shows every child of a matching island (`magicsearch-island-match`); emptying the list would make that island look like it had no rows. Pass `containerTerms` — the same string as the island's `data-magicsearch` — so the first frame is already correct. If it is omitted, the list reads the closest `.magicsearch-island` after mount. The built-in search box still filters if someone types in it. Do not mount the full unpaginated list for CSS to scan.
 
 ```svelte
 {#snippet sectionContent(ctx)}
-	<SearchableList
-		{items}
-		searchKeys={['name', 'package']}
-		externalQuery={ctx.magicSearchQuery}
-	>
-		{#snippet children(item)}
-			<span>{item.name}</span>
-		{/snippet}
-	</SearchableList>
+	<div class="magicsearch-island" data-magicsearch={islandTerms}>
+		<Island title="Installed Apps">
+			<SearchableList
+				{items}
+				searchKeys={['name', 'package']}
+				externalQuery={ctx.magicSearchQuery}
+				containerTerms={islandTerms}
+			>
+				{#snippet children(item)}
+					<span>{item.name}</span>
+				{/snippet}
+			</SearchableList>
+		</Island>
+	</div>
 {/snippet}
 ```
 
@@ -2740,7 +2748,7 @@ Pass `hotkeysEnabled={false}` to disable all of the above and hide their `Kbd` h
 ```
 
 **Magic Search:**
-The template includes a "magic search" that searches across all elements with `data-magicsearch` attributes:
+The template includes a "magic search" that searches across all elements with `data-magicsearch` attributes. An island whose own terms match the query gets `magicsearch-island-match` and CSS shows every `.magicsearch-item` inside it. Lists that also take `externalQuery` must pass `containerTerms` (see SearchableList) so they do not JS-filter those rows away.
 
 ```svelte
 <!-- Elements will be filtered by magic search -->

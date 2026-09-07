@@ -48,6 +48,12 @@
 		// Pagination props
 		pageSize = 24, // 0 = no pagination, >0 = items per page
 		externalQuery = '', // Supplied search query from outside (e.g. SectionedPage magic search)
+		// Same string as the enclosing island's data-magicsearch. When
+		// externalQuery matches these terms, the island itself is the hit and
+		// rows stay unfiltered — CSS already shows every child of a matching
+		// island, and emptying the list would make it look like it had none.
+		// Omit to fall back to the closest .magicsearch-island after mount.
+		containerTerms = '',
 		// The built-in search box's text. Bindable so a parent can read what is
 		// being searched for — e.g. to widen `items` beyond the category it is
 		// currently showing while a query is active — or clear it.
@@ -83,8 +89,29 @@
 	// Only surface the search input once the list is long enough to warrant it.
 	const showSearch = $derived(searchThreshold <= 0 || items.length >= searchThreshold);
 
-	// Effective query: externalQuery takes priority over the built-in search
-	const effectiveQuery = $derived(externalQuery.trim() || searchQuery);
+	let rootEl = $state(null);
+
+	// Island-title hit: the query matched the container, not the rows. Skip
+	// the JS filter so the list stays intact (still paginated). Item hits
+	// keep filtering so a name on page 3 is findable without mounting the
+	// whole array for CSS to scan.
+	const containerMatched = $derived.by(() => {
+		const q = externalQuery.trim().toLowerCase();
+		if (!q) return false;
+		const terms = (
+			containerTerms ||
+			rootEl?.closest('.magicsearch-island')?.dataset.magicsearch ||
+			''
+		).toLowerCase();
+		return terms ? fuzzyIncludes(q, terms) : false;
+	});
+
+	// Effective query: externalQuery takes priority over the built-in search,
+	// except when the enclosing island already matched — then only the list's
+	// own box filters.
+	const effectiveQuery = $derived(
+		containerMatched ? searchQuery : externalQuery.trim() || searchQuery
+	);
 
 	// Reset to page 1 and collapse show-all when search or filter changes
 	$effect(() => {
@@ -261,7 +288,7 @@
 
 </script>
 
-<div class="space-y-4">
+<div class="space-y-4" bind:this={rootEl}>
 	<!-- Filter Tabs -->
 	{#if filterTabs.length > 0}
 		<div
