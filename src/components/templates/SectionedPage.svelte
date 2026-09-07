@@ -71,12 +71,12 @@
 		// Default expanded state for all Islands (used on initial render)
 		defaultIslandsExpanded = true,
 
-		// Keyboard shortcuts (Alt+Shift+M, Alt+Shift+<letter>, double-tap CC) and their
+		// Keyboard shortcuts (Alt+Shift+<letter>, double-tap CC) and their
 		// Kbd hints — on by default, some host apps opt out entirely.
 		hotkeysEnabled = true,
 
 		// Master switch for magic search — on by default. Set false to hide the search
-		// input, its no-results message and hints, and stop bare-key typing / Alt+Shift+M
+		// input, its no-results message and hints, and stop bare-key typing
 		// from feeding the search. Section tabs and the collapse/expand-all control remain.
 		magicSearchEnabled = true,
 
@@ -263,28 +263,10 @@
 			event.target.tagName === 'TEXTAREA' ||
 			event.target.isContentEditable
 		) {
-			// Exception: Allow Alt+Shift+M even in inputs
-			if (
-				hotkeysEnabled &&
-				magicSearchEnabled &&
-				event.altKey &&
-				event.shiftKey &&
-				event.key.toUpperCase() === 'M'
-			) {
-				event.preventDefault();
-				magicSearchInput?.focus();
-			}
 			return;
 		}
 
 		if (hotkeysEnabled) {
-			// Alt+Shift+M to focus magic search (definite shortcut — bypass typing delay)
-			if (magicSearchEnabled && event.altKey && event.shiftKey && event.key.toUpperCase() === 'M') {
-				event.preventDefault();
-				magicSearchInput?.focus();
-				return;
-			}
-
 			// Alt + Shift + letter section navigation (definite shortcut — bypass typing delay)
 			if (event.altKey && event.shiftKey) {
 				const key = event.key.toUpperCase();
@@ -567,19 +549,13 @@
 										magicSearchInput?.blur();
 									}
 								}}
-								class="peer g2 w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 sm:pe-28 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400/80 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
+								class="peer g2 w-full rounded-lg border border-gray-900/25 bg-neutral-100 py-2 pe-9 ps-9 text-sm text-gray-700 placeholder-gray-400/80 transition-colors focus:border-azure-700 focus:pe-8 focus:outline-none dark:border-white/25 dark:bg-zinc-750 dark:text-gray-200 dark:placeholder-gray-500 dark:focus:border-azure-500"
 							/>
 							{#if magicSearchFocused}
 								<div
 									class="helper pointer-events-none absolute top-1/2 rtl:left-2 ltr:right-2 -translate-y-4"
 								>
 									<Kbd>Esc</Kbd>
-								</div>
-							{:else if !magicSearchActive && hotkeysEnabled}
-								<div
-									class="helper pointer-events-none absolute top-1/2 rtl:left-2 ltr:right-2 -translate-y-4"
-								>
-									<Kbd>Alt+Shift+M</Kbd>
 								</div>
 							{/if}
 							{#if magicSearchActive && !magicSearchFocused}
