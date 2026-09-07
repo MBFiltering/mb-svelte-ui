@@ -47,6 +47,22 @@
 		"./i18n": {
 			"types": "./dist/utils/i18n/index.d.ts",
 			"default": "./dist/utils/i18n/index.js"
+		},
+		"./i18n/consistency": {
+			"types": "./dist/utils/i18n/consistency.d.ts",
+			"default": "./dist/utils/i18n/consistency.js"
+		},
+		"./i18n/consistency-loader": {
+			"types": "./dist/utils/i18n/consistencyLoader.d.ts",
+			"default": "./dist/utils/i18n/consistencyLoader.js"
+		},
+		"./i18n/glossary": {
+			"types": "./dist/utils/i18n/glossary.d.ts",
+			"default": "./dist/utils/i18n/glossary.js"
+		},
+		"./i18n/sentence-case": {
+			"types": "./dist/utils/i18n/sentenceCase.d.ts",
+			"default": "./dist/utils/i18n/sentenceCase.js"
 		}
 	},
 	"files": [

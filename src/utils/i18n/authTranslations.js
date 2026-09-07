@@ -31,6 +31,19 @@ export const authTranslations = {
 			ru: 'Войти',
 			yi: 'אַרײַנלאָגן'
 		},
+		// The tab title and page heading are a noun, not the button's verb: French
+		// and Russian name the screen ("Connexion", "Вход") where the button says
+		// "Se connecter" / "Войти". English spells them the same, which is how the
+		// two used to end up as one key per app and drift apart in the locales that
+		// distinguish them.
+		sign_in_title: {
+			en: 'Sign in',
+			es: 'Iniciar sesión',
+			fr: 'Connexion',
+			he: 'התחברות',
+			ru: 'Вход',
+			yi: 'אַרײַנגאַנג'
+		},
 		sign_out: {
 			en: 'Sign out',
 			es: 'Cerrar sesión',
