@@ -313,11 +313,13 @@ scroll behaviour is not decoration: it is what let one component replace both.
   `href`, or `onback`, or neither for `history.back()`. The technician portal's
   back is language-aware (`navigateBack(lang, fallback)`), which is app routing
   and does not belong in this package.
-- **The bar wears no chrome.** No rounding, no shadow, no blur, just the page
-  background painted opaque. It is meant to read as the page keeping the title
-  in view, not as a panel that slid over the top, and the paint is opaque only
-  because the content passing underneath has to disappear cleanly. Resist
-  dressing it up.
+- **The bar is still the page, not a card.** No rounding, no blur, just the
+  page background painted opaque so content passing underneath disappears
+  cleanly. It is a little wider than the column (`-mx-4`, with matching `px-4`
+  so the controls stay aligned) so Island `shadow-lg` does not peek around it.
+  The shadow is bottom-only (`shadow-[0_8px_8px_-8px_…]`): a normal drop shadow
+  blooms out of the sides and the top and reads as a panel. Do not put
+  `shadow-md` / `rounded-b-xl` / `backdrop-blur` back on it.
 - **The label is the caller's call.** The technician portal says "Go back",
   because where it goes depends on history. The customer portal says "Back to
   your device", because every one of its section pages returns to one fixed

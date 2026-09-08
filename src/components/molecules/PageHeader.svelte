@@ -35,11 +35,14 @@
 	  sentinel sits at the bottom of the in-flow block; the bar appears exactly
 	  as the big title disappears under the app header, so there is never a
 	  moment with no title and never a moment with two.
-	- **The bar wears no chrome.** It is painted in the page's own background,
-	  with no rounding, shadow or blur, so it reads as the page keeping the title
-	  in view rather than as a panel sliding over it. The background is opaque
-	  because content has to pass cleanly underneath, which means a host that
-	  paints its pages some other color gets a strip of `neutral-100` here.
+	- **The bar is still the page, not a card.** No rounding, no blur. It is
+	  painted in the page's own background, opaque so content passing underneath
+	  disappears cleanly — a host that paints its pages some other color gets a
+	  strip of `neutral-100` here. It is a little wider than the column (`-mx-4`)
+	  so Island `shadow-lg` does not peek around it, with matching `px-4` so the
+	  back control and title stay aligned with the in-flow header. The shadow is
+	  bottom-only (`0 8px 8px -8px`): a normal drop shadow would bloom out of the
+	  sides and the top and read as a panel sliding over the page.
 	- **The offset comes from `--mb-header-h`**, which `AppShell` publishes. The
 	  bar cannot know how tall the app header above it is, and it must not cover
 	  the loading bar underneath it — hence `z-10` against the shell's `z-20`.
@@ -114,14 +117,15 @@
      page column, which is as tall as the page. -->
 {#if sticky}
 	<div class="sticky top-[var(--mb-header-h,56px)] z-10 h-0">
-		<!-- No card: no rim, no rounding, no shadow, no blur. The bar is painted
-		     in the page's own background so that it reads as the page carrying
-		     the title down with it, not as a panel that slid over the top. Which
-		     is also why the background is opaque rather than translucent: the
-		     content passing underneath has to disappear behind it cleanly. -->
+		<!-- Still the page, not a card: no rounding, no blur, opaque page
+		     background. `-mx-4` / `px-4` make the paint a little wider than the
+		     column so Island `shadow-lg` is covered rather than peeking around
+		     the bar, without shifting the back control or title. The shadow uses
+		     a negative spread equal to its blur so it only lands under the bar,
+		     not out of the sides or the top. -->
 		<div
 			inert={!collapsed}
-			class="flex h-12 items-center gap-1 bg-neutral-100 transition-opacity duration-200 motion-reduce:transition-none dark:bg-zinc-750 {collapsed
+			class="-mx-4 flex h-12 items-center gap-1 bg-neutral-100 px-4 shadow-[0_8px_8px_-8px_rgb(0_0_0_/_0.15)] transition-opacity duration-200 motion-reduce:transition-none dark:bg-zinc-750 {collapsed
 				? 'opacity-100'
 				: 'opacity-0'}"
 		>
